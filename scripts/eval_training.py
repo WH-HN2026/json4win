@@ -28,6 +28,30 @@ TARGET = {
 }
 
 
+def run_app(inp: Path, out: Path) -> int:
+    run = subprocess.run(
+        [sys.executable, "-m", "json4win", "--input", inp, "--output", out], cwd=APP
+    )
+    if run.returncode:
+        print(f"json4win exited with {run.returncode} (some documents failed)", file=sys.stderr)
+    return run.returncode
+
+
+def map_case_outputs(case_out: Path, case_pred: Path, label: str) -> None:
+    case_pred.mkdir(parents=True, exist_ok=True)
+    if not case_out.exists():
+        return
+    for f in sorted(case_out.glob("*.json")):
+        doc = json.loads(f.read_text(encoding="utf-8"))
+        name = next((TARGET[k] for k in doc if k in TARGET), None)
+        if name is None:
+            continue
+        if (case_pred / name).exists():
+            print(f"{label}: {f.name} is a second {name}; evaluator only scores one, skipped")
+            continue
+        shutil.copy2(f, case_pred / name)
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--cases", help="comma-separated case dirs (default: all with ground truth)")
@@ -51,23 +75,10 @@ def main() -> int:
     for c in cases:
         shutil.copy2(EVAL / "ground_truth" / f"{c}.yaml", ev / "ground_truth" / f"{c}.yaml")
 
-    run = subprocess.run(
-        [sys.executable, "-m", "json4win", "--input", inp, "--output", out], cwd=APP
-    )
-    if run.returncode:
-        print(f"json4win exited with {run.returncode} (some documents failed)", file=sys.stderr)
+    run_app(inp, out)
 
     for c in cases:
-        (pred / c).mkdir(parents=True)
-        for f in sorted((out / c).glob("*.json")):
-            doc = json.loads(f.read_text(encoding="utf-8"))
-            name = next((TARGET[k] for k in doc if k in TARGET), None)
-            if name is None:
-                continue
-            if (pred / c / name).exists():
-                print(f"{c}: {f.name} is a second {name}; evaluator only scores one, skipped")
-                continue
-            shutil.copy2(f, pred / c / name)
+        map_case_outputs(out / c, pred / c, c)
 
     score = subprocess.run(
         [sys.executable, ev / "evaluate.py", "--pred-root", pred] + (["-v"] if a.verbose else [])
