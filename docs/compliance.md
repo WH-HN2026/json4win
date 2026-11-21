@@ -108,7 +108,7 @@ Because our pipeline sends scanned KIO appeals, powers of attorney, and bank-tra
 
 - Verified with the dev key: `GET https://api.eu.mistral.ai/v1/models` lists `zai-glm-5-3-flash` (and
   `deepseek-v4-1-flash-1017`), and a JSON-mode chat completion with `zai-glm-5-3-flash` on the EU endpoint returns
-  `finish_reason: stop`. The app now defaults to `https://api.eu.mistral.ai/v1` (`LLM_BASE_URL`).
+  `finish_reason: stop`. Development stays on the cheaper global endpoint; the delivery switches `LLM_BASE_URL` to `https://api.eu.mistral.ai/v1` (task D1).
 - DeepSeek V4.1 Flash is dropped from the comparison (Public Preview: no opt-out, no ZDR).
 - Before delivery (task D1, user action): in the Mistral admin panel opt out of training (*Privacy → Data usage
   for improving our services*), consider requesting ZDR, and create the separate jury key on that organisation.

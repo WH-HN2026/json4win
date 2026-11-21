@@ -21,7 +21,7 @@ from json4win import env
 
 log = logging.getLogger(__name__)
 
-DEFAULT_BASE_URL = "https://api.eu.mistral.ai/v1"  # EU regional endpoint (docs/compliance.md)
+DEFAULT_BASE_URL = "https://api.mistral.ai/v1"  # delivery: api.eu.mistral.ai (task D1)
 DEFAULT_MODEL = "zai-glm-5-3-flash"
 
 

@@ -51,9 +51,10 @@ Ours: [`ewaluacja/`](../ewaluacja), an approximation of the organizers' F1 metri
   run. Results are cached by (PDF sha256, page, model revision, render settings) in a per-user cache dir shared
   by all worktrees (`JSON4WIN_CACHE_DIR` overrides). `OCR_CACHE_ONLY=1` turns a cache miss into an error (dev/eval).
   Contract: `json4win/json4win/ocr.py`.
-- **D11 LLM:** Mistral La Plateforme (Mistral AI, France), OpenAI-compatible chat completions, **EU regional
-  endpoint** `https://api.eu.mistral.ai/v1` (inference in EU/EFTA data centers; the default `api.mistral.ai`
-  is global with no location commitment, see [`compliance.md`](compliance.md)). Only GA models: Public Preview
+- **D11 LLM:** Mistral La Plateforme (Mistral AI, France), OpenAI-compatible chat completions. Development uses
+  the global endpoint `https://api.mistral.ai/v1` (cheaper); the **delivery uses the EU regional endpoint**
+  `https://api.eu.mistral.ai/v1` (inference in EU/EFTA data centers, 1.1× price; the global endpoint has no
+  location commitment, see [`compliance.md`](compliance.md)) — switched in task D1. Only GA models: Public Preview
   models (e.g. DeepSeek V4.1 Flash) allow no training opt-out or ZDR. Decision model and extraction model are both `zai-glm-5-3-flash`
   (GLM-5.3-Flash, MIT, 320B MoE / 18B active), set separately in env (`LLM_MODEL_DECISION`, `LLM_MODEL_EXTRACT`)
   so others (smaller GA open-weight models) can be compared. GLM is a reasoning model: on
