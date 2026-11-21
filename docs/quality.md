@@ -78,3 +78,22 @@ request — see [`docs/models.md`](models.md) for primary-source metadata, per-f
 | `ministral-14b-latest` (`ministral-14b-2512`) | 13.95B / 13.95B | 0.998 | 0.980 | 0.985 | **0.991** | 1120 / 5 / 15 | 37 / 0 | 0 / 16 | 189.3s | 0 |
 | `mistral-small-latest` (`mistral-small-2603`) | 119B / 6.5B | 0.994 | 1.000 | 0.996 | **0.996** | 1131 / 6 / 4 | 33 / 4 | 0 / 16 | 70.9s | 0 |
 | `zai-glm-5-3-flash` *(ref. baseline above)* | 320B / 18B | 0.999 | 1.000 | 0.987 | **0.997** | 1128 / 0 / 7 | 37 / 0 | 0 / 16 | *n/a* | 1 `finish_reason='length'` (`przyklad_31/potwierdzenie_przelewu.pdf`) |
+
+## Real scans, local OCR (2026-11-21)
+
+`make eval-skany V=1` on all 30 scans in `dane/skany/`: local Unlimited-OCR-2 on CPU (Ryzen 9 7900X, 12 threads),
+zai-glm-5-3-flash with `LLM_REASONING_EFFORT=low`, global Mistral endpoint.
+
+| kind | TP | FP | FN | null ok / wrong | F1 |
+|---|---|---|---|---|---|
+| odwolania (10) | 138 | 0 | 0 | 36 / 0 | 1.000 |
+| pelnomocnictwa (10) | 74 | 1 | 0 | 1 / 1 | 0.993 |
+| potwierdzenia (10) | 54 | 0 | 0 | 6 / 0 | 1.000 |
+| **total (30)** | **266** | **1** | **0** | 43 / 1 | **0.998** |
+
+- The only miss: `pelnomocnictwa_0010` `mocodawca[0].data.nazwa`. The ground truth is null for a sole trader
+  (osoba_fizyczna); we output the business name. The training JSONs disagree here: 4 of 5 sole traders in `przyklad_*`
+  have the business name filled in (noted in E2).
+- Pages OCR'd per odwolanie: 1 page ×4, 2 pages ×5, 3 pages ×1. OCR time per page: min 24.6 s, median 55.9 s, max
+  102 s. Wall time 30:54 for 30 documents (a few pages were already cached). Peak RSS 11.1 GB.
+- LLM time per document: 1.5–10.3 s.

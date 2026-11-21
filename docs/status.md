@@ -33,6 +33,7 @@ trzeba wpisać w `json4win/.env.local` (wzór: `.env.example`).
 | Czas tego testu (Ryzen 9, 12 wątków) | 5,5 min, prawie wyłącznie OCR: 47–90 s na stronę, LLM 2–12 s na dokument |
 | „Idealny OCR” (tekst z PDF zamiast OCR, tylko pomiar dev) na `przyklad_01..39` | F1 **0.997**, 0 FP, 16/16 negatywów `{}` |
 | Mniejsze modele, „idealny OCR” ([`models.md`](models.md)) | ministral-14b 0.991, mistral-small 0.996, ministral-8b 0.980, ministral-3b 0.973 |
+| **Wszystkie 30 prawdziwych skanów** (`make eval-skany`, lokalny OCR, GLM z `low`) | **F1 0.998**: odwołania 1.000, pełnomocnictwa 0.993, przelewy 1.000; jedyny błąd to sporna nazwa firmy osoby fizycznej; 31 min, mediana OCR 56 s/strona (24–102 s), RAM do 11,1 GB |
 | OCR, warunki jak u jury (8 wątków, limit 12 GB, AVX2) | RAM 9,6 GB (ok), 41–57 s lekkie strony, 67–86 s gęste (za wolno wobec celu 60 s) |
 
 ## Znane ograniczenia
@@ -40,8 +41,8 @@ trzeba wpisać w `json4win/.env.local` (wzór: `.env.example`).
 - **Prędkość OCR** to główne ryzyko. Na laptopie i7 szacujemy 45–75 s na lekką stronę i 90–120 s na gęstą. Odwołanie
   ze skanu w teście MVP czytało 3 strony (znacznik zarzutów nie trafił na stronach 1–2), co dało około 4,5 min na
   jeden dokument.
-- Nie ma jeszcze F1 na prawdziwym OCR dla całego zbioru, bo cache OCR nie jest wypełniony (`dane/skany` ~40 min,
-  całe `dane/` ~5–6 h).
+- F1 na prawdziwym OCR jest zmierzone na `dane/skany` (0.998). Dla `przyklad_*` nie, bo cache OCR całego `dane/`
+  to ~5–6 h. Szczytowe zużycie RAM (11,1 GB) jest blisko limitu laptopa z 16 GB.
 - Ślad nie znajduje źródła dla dat (tekst „10.04.2026 r.” nie jest porównywany z „2026-04-10”).
 - Endpoint LLM to na razie globalny `api.mistral.ai` (taniej). Na oddanie trzeba przełączyć na `api.eu.mistral.ai`
   ([`compliance.md`](compliance.md)).
