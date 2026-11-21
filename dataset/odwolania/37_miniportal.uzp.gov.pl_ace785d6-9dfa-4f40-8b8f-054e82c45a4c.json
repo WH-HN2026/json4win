@@ -1,0 +1,38 @@
+{
+  "OdwolanieKIO": {
+    "data": "2021-07-05",
+    "czynnosc_dzien": "2021-06-25",
+    "czynnosc_powod_id": 11,
+    "czynnosc_opis": "Opis przedmiotu zamówienia (OPZ)",
+    "miejscowosc": "Warszawa"
+  },
+  "Odwolujacy": [
+    {
+      "krs": null,
+      "nazwa": "Creator-Comm Sp. z o.o.",
+      "nip": "5262640795",
+      "regon": null,
+      "przez-pelnomocnika": 0,
+      "pelnomocnik": {
+        "imie_nazwisko": null,
+        "nazwa": null,
+        "mail": null
+      }
+    }
+  ],
+  "Zamawiajacy": [
+    {
+      "krs": null,
+      "nazwa": "Samodzielny Publiczny Zespół Opieki Zdrowotnej nr 1",
+      "nip": "8131501971",
+      "regon": null,
+      "prowadzacy_postepowanie": null
+    }
+  ],
+  "ZamowieniePubliczne": {
+    "numer_bzp": null,
+    "numer_postepowania": "AD.ZP.3810-8/2021/KZ",
+    "numer_ted": "299096-2021",
+    "tytul": "Zakup aparatu Rezonansu Magnetycznego wraz z modernizacją pomieszczeń pracowni"
+  }
+}

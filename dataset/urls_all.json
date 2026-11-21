@@ -1,0 +1,450 @@
+[
+  {
+    "raw": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHlK9S0Gk1ZXqNiIZJw9giiti3QAYlWfHusayN-6kstKD_wlQ5aarsewyhgt3RJOSYW8FPpjgajY8OXIyGDxAaFn_JML67vLnWYLY05adZXueqTqbPT7qdwQaLNwRbcF0MKieQavbgE8W8O8kEY5Ia5Oy0=",
+    "url": "https://orzeczenia.uzp.gov.pl/Home/PdfContent/31562?Kind=KIO",
+    "status": 200,
+    "ctype": "application/pdf",
+    "is_pdf": true,
+    "bytes": 79340
+  },
+  {
+    "raw": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFUcE8rpmvHWe27yRwojV5uPOyVhm8mAi9TAEGI06YJX_NooLZbTyQ3p7c0WtaPmp0Be3nRbk1bvaaC1BZwxSVPZso4SW84sf3idupnVnO6B-ctpk9saw6cshWP0308vVtDIaCATH7wKspbXjeLIWkI02Q=",
+    "url": "https://orzeczenia.uzp.gov.pl/Home/PdfContent/29796?Kind=KIO",
+    "status": 200,
+    "ctype": "application/pdf",
+    "is_pdf": true,
+    "bytes": 43286
+  },
+  {
+    "raw": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHWYVMVyCi9DPh6LOtnW9aiN8lSWubET-YDZfLnGRpQG4rutkash_3w5VtcanG9EJHzq4z52JaFlS41wHiB3F8MKh0fd1l_sOIRPPNUDEhovtFL1_lTKzVulng_Hj_vOWRKqfgUrswnB88OGnFuz7VdWiM=",
+    "url": "https://orzeczenia.uzp.gov.pl/Home/PdfContent/31366?Kind=KIO",
+    "status": 200,
+    "ctype": "application/pdf",
+    "is_pdf": true,
+    "bytes": 51207
+  },
+  {
+    "raw": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEb8LCjoacpdxid076YqbEANqeuMZwCuijOEo6x-I8oiXFC2P37s80ny7eB7UtfYUI38MTONkCjaHhctZ2jyjpNFyJW3jmN9cIyb_9OxvFSznizPR_Se15_bbIFSXaqSdIT6FLy0fKcvw==",
+    "url": "https://www.gov.pl/web/uzp/krajowa-izba-odwolawcza",
+    "status": 200,
+    "ctype": "text/html;charset=UTF-8",
+    "is_pdf": false,
+    "bytes": 22018
+  },
+  {
+    "raw": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEBIBGyLwx2Fnt58sKYA7EB8HxkwVU_R9HfKEmxVsg1noWUlu8aRrTPMKp_XWlDB0EI6wKKxwg8oXNXaCZNaOatRolRXKi4Nd5eYH5O99KaomCzE9NHHrKQDgMlsyOR_LFIQTbf7ORttrmdCmpnX9k2vA1L7vKvWWHqOpvzaVjMP_9S9Mh0B8QLcCA5ekTZ7t3rGHjFhEV-Pseg8hTM3qwKLKLUgMBXY7_VenslvlC0_A==",
+    "url": "https://www.gov.pl/web/uzp/zasady-wnoszenia-odwolan-i-zgloszen-przystapienia-do-krajowej-izby-odwolawczej-od-13-marca-2027",
+    "status": 200,
+    "ctype": "text/html;charset=UTF-8",
+    "is_pdf": false,
+    "bytes": 29718
+  },
+  {
+    "raw": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFo_2G3kRA1gmGo--t70V-Azts3iEW0_A-NIIdOSLV4F24PVHUxJRcgAQYeLZrZRIOl7fCQXr0AwjJoSMBMAO3NzxTBe1JgSyArwFJP6FP12gIeQMoikoNyrBqwSrfB3bn8pknpLu9hvQzcqtuT9AI=",
+    "url": "https://orzeczenia.uzp.gov.pl/Home/Details/25249?Kind=KIO",
+    "status": 200,
+    "ctype": "text/html; charset=utf-8",
+    "is_pdf": false,
+    "bytes": 13128
+  },
+  {
+    "raw": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHb3iRKY73-0kyNYllxNfccQJub56GzDUbtdHnfg_mvrmNoxtGCXUhAsUqHH7sy-kLywJvObeLCimt03qKTzsOTj5U-D2bSJVme2srj71yCDX52ui8Z4EobeB63rjFnxpnImu-GpnSj720urA==",
+    "url": "https://bip.czestochowa.pl/attachments/download/91949",
+    "status": 200,
+    "ctype": "application/pdf",
+    "is_pdf": true,
+    "bytes": 414841
+  },
+  {
+    "raw": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQH7cWjkxgy9SH6IYs7gBK8HUCuCiKVMM_6NIu6Z94ZO7ApraQfoPsEVtB4tSFABhxWAfoemJMa4bzk4FLJuBmVfBCttxfUCJ6Bij5fqrf8qGARhMrtikiDqKnnbDageWDGhCUsAy20qEI_V7P3iJzAUccDQRyCegWH6K6mxDCIL411gzIuH0O9KUWYCovnI5yCxwkXTHq-_7uWZ2EmRxYzY1BkKPmVVXiHZUJo=",
+    "url": "https://www.gov.pl/web/uzp/informacja-prezesa-kio-z-13-marca-2026---zasady-korespondencji-w-postepowaniu-odwolawczym2",
+    "status": 200,
+    "ctype": "text/html;charset=UTF-8",
+    "is_pdf": false,
+    "bytes": 56132
+  },
+  {
+    "raw": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGDhK7JpbbdH9oNaVWqUGtDbp-h5eVm_iDxLSAzSXf7BQLU6pgotdtinJQjIeBYBWpvpI1keI2j6L6vnLFbJPxvydWlFPBwXqzLT6UniZd8f5l-r1eZd4gK7EL86QKPwr2oXyhl-YUEeA60jtPDIOtLwyc=",
+    "url": "https://orzeczenia.uzp.gov.pl/Home/PdfContent/24601?Kind=KIO",
+    "status": 200,
+    "ctype": "application/pdf",
+    "is_pdf": true,
+    "bytes": 40218
+  },
+  {
+    "raw": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQE3zJX2d7-VhgnYf6MtpFKApalSMv70uU7JDke4PoqrawWHPDtZdOsAmDMmO4EEhJ9vLdPCqxV-GpxXjcUTNAsyiEjheHNDgzvvXX-xM20Ql_sFLrlyf3S3KlWMBbZKaJgYa2Xd8KVksA8hADWzQrOo6s5MEXulLJgW8E2KfOHvxTrcZoxhrOOT-PKO1ZDZ",
+    "url": "https://www.portalzp.pl/2024/kio-524-wyrok-warszawa-dnia-25-stycznia-2024-r.--33194.html",
+    "status": 200,
+    "ctype": "text/html; charset=UTF-8",
+    "is_pdf": false,
+    "bytes": 468343
+  },
+  {
+    "raw": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGDiFCz5QFhU05k4RvgKYInSbY_1gSHDWI4C1vk3bl18c6tTYV2EKVCkB41bDjBxDGRf966uRenNBnxi17cmQwUZJ8uneqKmUcmEVvy_wTMtRq2tNG3oC4AJFFlViZzsShm-MKi0x8jwZ6czqOk1PJTTg0=",
+    "url": "https://orzeczenia.uzp.gov.pl/Home/PdfContent/19840?Kind=KIO",
+    "status": 200,
+    "ctype": "application/pdf",
+    "is_pdf": true,
+    "bytes": 121356
+  },
+  {
+    "raw": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQERvBqkO40xT7T-rYFLljQBNAniCIePTs6P8b-kYsegWxNDQC5GT3DrBxyjaP8KI9S3sXnA3WvQI3RDo4THyKw0wxHRIo8-VeJ-f0bwBfwKAW5mpmA6gibvHwjj6wdAvP42NWrJ1aLwgu2-vzaAz3WB8Ir1NvtetBPlTZ8h7ftPXxnZcIFa-PnbUcJypMsftiITAJjVnCW-LmCnyUaz3kx54IUhjs06wKq9Sg==",
+    "url": "https://dzp.us.edu.pl/wp-content/uploads/2025/01/Uniewaznienie-z-powodu-istotnej-zmiany-okolicznosci-KIO-3104-24.pdf",
+    "status": 200,
+    "ctype": "application/pdf",
+    "is_pdf": true,
+    "bytes": 42592
+  },
+  {
+    "raw": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFqxievo1YCxr4XcP5q5HskLu7Fsm8S1PmLQDfl2cmndYJ1HDZCl98IsKFaHEvrjH99V5FJVjH9vPYynnSf0Yvstfl72XiVgoIT4mYq79uHHGNdn2viufbk4ugvXLyW01a97w8Rb3-kIj9hn5bkcYBJUns3ATdpdFFqpTAfmC2hHiFa9LBWM5gwVXJLRjI_8HD0MeE4iHsoKbiRYYGxzSAgHDy84FfkrAMSZduBU0IQbh56yG1zgUiI0dzldhBtpzFHkimYhFZ7f2ZsUcgnfB5JAysj",
+    "url": "https://wsparcie.um.warszawa.pl/documents/67381/80635929/2023_6_22+odwo%C5%82anie+KIO_CUS+Warszawa-1.pdf/f688f26d-e71d-1119-763d-6f390cfe9c6b?t=1687532441521",
+    "status": 200,
+    "ctype": "application/pdf",
+    "is_pdf": true,
+    "bytes": 483594
+  },
+  {
+    "raw": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQExUpw9HFeIcfjXL0U4WgXfS6dQ7h3B6UId2rIyPn1mrKXNEQaQARs1wm65OiEE24T8QCGZfJ4eXf3OliVaEUlY55MkhkzlFQ50bBaCZiOeoBLhBtheGvVUd_nsRiIn6UxVZYHn9TVgVfkrGcNzjCY=",
+    "url": "https://bip.piaseczno.pl/archiwum/public/getFile@id=575968",
+    "status": 200,
+    "ctype": "application/octet-stream",
+    "is_pdf": true,
+    "bytes": 390957
+  },
+  {
+    "raw": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHY_fpxP1s6fpObuTntq5AMkT07ZksWtVLB0FtM69qCaGjik0KR66DGuZiQrPgHP8HRJSedqiME7atCwYdcixMBUx3xg4XItqs6c8DuR3aNl2MUQkTDCkch9b6P2YXH",
+    "url": "https://bip.spmzoz-slupsk.pl/pobierz/2173",
+    "status": 200,
+    "ctype": "application/download",
+    "is_pdf": true,
+    "bytes": 170797
+  },
+  {
+    "raw": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGcXQOHTWn7m8XwZHxxRhwSiEkMxshE7m4JL-T91-AQDOhp3FzM25F5ERlmiBd8CCqvouQuFZAeTPENfyqFgMm_ODXqOHrVMl89oU9brjkk3ESNfuoIHuKR6JYpW2-Qc-IW6eQ0XShcMmrZ0_H4xK20Xr6GVan17zGOhoZrHj3HJGuDFS_aYP5trxqfJPNnqtgtZYM=",
+    "url": "https://wck-wola.pl/wp-content/uploads/2023/04/KIO_odwolanie_teneo_amfiteatr-WCK-1-sig-1-3.pdf",
+    "status": 200,
+    "ctype": "application/pdf",
+    "is_pdf": true,
+    "bytes": 507802
+  },
+  {
+    "raw": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQE8JxOHChQNMb-vdR_AyxocRAtrIFrQTg39cN-Js1vg-4TrqQ6xKGVCHNOjN9sZP6yg8H254bZXXrq8Ke-pXtLC3ThHadL-HmkqRxcYpyYw74ZVRTyxsGQE2KXgrS67P4zQAcgZgMGZOHU8fsby3O9obg==",
+    "url": "https://orzeczenia.uzp.gov.pl/Home/PdfContent/19627?Kind=KIO",
+    "status": 200,
+    "ctype": "application/pdf",
+    "is_pdf": true,
+    "bytes": 91285
+  },
+  {
+    "raw": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHevdx8wcm6V1vdNvcVaOJ5rYNyKFK72vJlzMm1Lrmh2aRNH5Ru53K_TgGxg-O410hMdlrzQ2GTiTsIKNnaQGn29FhBxCFdUSEK-k3uX6RvjnKPo_BUc4ZqFYJ35l0tU0r6pLQqsnSLBnHkWJ0kURp1CA4=",
+    "url": "https://orzeczenia.uzp.gov.pl/Home/PdfContent/18834?Kind=KIO",
+    "status": 200,
+    "ctype": "application/pdf",
+    "is_pdf": true,
+    "bytes": 61001
+  },
+  {
+    "raw": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEv11ZBXLqhNlzTQfI0Tlo53eAVO7zmbv1O97wkY3aP0AI68fsB4va6E6hJkhyVy9nBeujnexJGe7G9s8-IdXKVGGd4w5-6KaS1vCTuj_FmU77z1fhW4ndlPj_fpCpIlx7wp1AdzWg=",
+    "url": "https://orzeczenia.uzp.gov.pl/Home/Details/17651",
+    "status": 200,
+    "ctype": "text/html; charset=utf-8",
+    "is_pdf": false,
+    "bytes": 11567
+  },
+  {
+    "raw": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGPuDnMMUZj6DBOVBIbd3o2ngzGFtGzLTYDyfUeOGbIJRERoP5BH-GOPvoliccffY_89rhKf6hHKgVcVWu3FRNwp3j8Rf-83DDiS_EavrFlQyWzsXT_HP3Y08M_hRFyGVG9XIQ8wgEJ7BuaxS-pDAxBwNo=",
+    "url": "https://orzeczenia.uzp.gov.pl/Home/PdfContent/16393?Kind=KIO",
+    "status": 200,
+    "ctype": "application/pdf",
+    "is_pdf": true,
+    "bytes": 28281
+  },
+  {
+    "raw": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFikgM-GlrgdFjcY0U95oyhPOr-Cj1J0Uj67PNN4LtNbTsD95Fl6W71VpaiVj-k8rrx2DnGJgSwTD-hGfiJ_DT6j9M8ZZ9PXMwUFzbsEXPlVRKX9dbgCEVpBeOfFqVkc7fZN1-uPbAOmvdkVvi1WUjGK5zsiJXVTRsIkeT4EdhM4TRnNH8okh-GAKSFdXB8iIg20iYSUFExlwx3Wx8C75u-EfNY7lrglMDgBHDRGdgxtSQ=",
+    "url": "https://miniportal.uzp.gov.pl/api//Files/Download/50152cea-13af-42c1-8c76-891c529055e2/ace785d6-9dfa-4f40-8b8f-054e82c45a4c",
+    "status": 200,
+    "ctype": "application/octet-stream",
+    "is_pdf": true,
+    "bytes": 805031
+  },
+  {
+    "raw": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHE4slgy8kWId9scunSsVCNUqBPzB7wnTR0umhOrMe-CC2G3pajWE-F0kX0D1TsSOjWctFzaXneISEs1eb-b72tLO-TqkJ3TBjntQbQs1nGEcqgLF-rzgxuWfuHfYkydT-z8VMMjMs18jSy8J1RYe6MVUsRSeSo1CRz87Og",
+    "url": "https://zamowienia.szpitalciechanow.com.pl/procurement/attachment/3248",
+    "status": 200,
+    "ctype": "application/pdf",
+    "is_pdf": true,
+    "bytes": 989046
+  },
+  {
+    "raw": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFwNhfLbF0CtNQ7SmYAZa7alI-gZ8Yl4SuncbNRNgymxTH1nflLlRrFEo-CbEWE6dUu0WPG045kVUGb79NNiiX8uMxPL19gB4HjQ4PaDj-AyhN6V2BCld18YnczY6wEyDyBGXl2nT0=",
+    "url": "https://orzeczenia.uzp.gov.pl/Home/Details/15172",
+    "status": 200,
+    "ctype": "text/html; charset=utf-8",
+    "is_pdf": false,
+    "bytes": 11605
+  },
+  {
+    "raw": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFDGVfra1ZJOe34XoWs5XQLqZk1Yg4HdbCIQklvQAPUuXuGeeJ2XYS7oL3Dz4E01g8YP0dA1ofRkUeh9IOZjBGiJgkmf9Y04-dnMbAhyv46aQQWUalrijbBFdl7agCd0cCvj1PSxZQ=",
+    "url": "https://ted.europa.eu/pl/notice/425427-2021/pdfs",
+    "status": 200,
+    "ctype": "application/pdf",
+    "is_pdf": true,
+    "bytes": 126908
+  },
+  {
+    "raw": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQETgOQ-gok582J652ceZl1uOsZ1ecmFlAzjnr19ftC1kZQn-wvN-3_gJTJ9rNeiPS-6jFoG463SRuAnNIZe4yWXKKv_mpjIIL-d3nSxNyXZhxFX8HPWgKhZJABNI8hPaoP0-0pypBDJ7-eOH1BQJEbD2wMGQ9cZnjc7TeRXXLwo36K7SRFFwoQcFnJlcONUzKxzDt9AVDxFljpAMX2ypYgyLNSGwfDF29gdISaxFmDyEw==",
+    "url": "https://miniportal.uzp.gov.pl/api//Files/Download/dd253782-5ad4-48e5-ab5e-e0206944fa77/93c4eb6e-a1c5-4f17-a357-af52bcf84fed",
+    "status": 200,
+    "ctype": "application/octet-stream",
+    "is_pdf": true,
+    "bytes": 440722
+  },
+  {
+    "raw": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHB3Rf82gebCb7v1B8-hxgBhmC4RqI_6PST49Ebtw3jsODuaHMCx0w32bJl8Rxvn0109QhQWMYlagMTFgFI4CrMGZRVhWWOcgcK5v7cA4hIHhARJOJWQc_SRvqmcZjBobgFMYVcNK0ewqoQA9SW5ybu7w==",
+    "url": "https://orzeczenia.uzp.gov.pl/Home/PdfContent/14055?Kind=KIO",
+    "status": 200,
+    "ctype": "application/pdf",
+    "is_pdf": true,
+    "bytes": 24389
+  },
+  {
+    "raw": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFgkTKAQYdsE9K3S-wCKugJ6QNBI68TTMFOQSfV64eFIA916ghHuGXHIhl5vTs_11NRbStyDOA97qhsGRIgD6TpFoZqdrtWUNJlvZzmt-KIf5IJtIAuUxOhx4LEKiTP7k0vaqitlUsoX1TIRcavi83ulA==",
+    "url": "https://orzeczenia.uzp.gov.pl/Home/PdfContent/12770?Kind=KIO",
+    "status": 200,
+    "ctype": "application/pdf",
+    "is_pdf": true,
+    "bytes": 30668
+  },
+  {
+    "raw": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFSzgYeGdKVzqGOOk1glwtaoGDlc2gcj4jlv4oX2ih6DMQUibnOscwDuN_E130CG0-ehTDKvn_xjmfN6LY3Z1okxC6jagpGPo3KKcRxB9_AAu-fwvSa_MgBGXKY5LZFcJbc3u_RvpDd0KywxL_cD23t5A==",
+    "url": "https://orzeczenia.uzp.gov.pl/Home/PdfContent/14645?Kind=KIO",
+    "status": 200,
+    "ctype": "application/pdf",
+    "is_pdf": true,
+    "bytes": 26795
+  },
+  {
+    "raw": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGEQI3dmgQXQNGYzgscRjj5SbWa_e7XhtNi1jYquVBZZQurigzXtcYQ2QaWgZMiyrwtiE-s3A30i-KUzDI0NxdaPTNOL38An-mxU47So1ype-zTMTD1U_EdgHq7BGpRnSEdq2MXGK3YcI1pBmw8wP-B2P0=",
+    "url": "https://orzeczenia.uzp.gov.pl/Home/PdfContent/10568?Kind=KIO",
+    "status": 200,
+    "ctype": "application/pdf",
+    "is_pdf": true,
+    "bytes": 135543
+  },
+  {
+    "raw": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHTVIqVKZXBWklM60AuG3b0bhRPrahVqCsZzwdfxHzJvCFEDFOvEvKMfar306iwRpP0cbyylBiLUumsxrcOCy2BRljyfI_5FwWkvwIEOUNkEixdGAe3naWR0yYmzZBTMVpg",
+    "url": "https://spzoz.powiatkepno.pl/download/6254.",
+    "status": 200,
+    "ctype": "application/force-download",
+    "is_pdf": true,
+    "bytes": 466982
+  },
+  {
+    "raw": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGUjXGqUs7iXH9SYnFVbIbtKgQtPVVzoNTQGm3nKSj4CR2q-wZ9xE9eIwD4piRutWec1dGXBtDrux0HD9YfSDbdtV8pHwDo822qBQgpenwy2vhcsRNp1eCMjn4aCfk3t-2qX-Bc4ILs",
+    "url": "https://26wog.wp.mil.pl/u/odwoanie_ZP.22.2019.pdf",
+    "status": 200,
+    "ctype": "text/html",
+    "is_pdf": false,
+    "bytes": 212
+  },
+  {
+    "raw": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGHjM5rXOUsc_3vsU_esx0QjjTdfyhus-z-rO674m4GhZD8vb3hc8OYYh_Fi9bXUF1QuOzmNBwiSS6zwajkcFrsy88txh-A45sBK-7GtSCd4ugLWfKyweYzHrZitCBxf16LT3RvB1ycq2zM0rvXXw472vw=",
+    "url": "https://orzeczenia.uzp.gov.pl/Home/PdfContent/10285?Kind=KIO",
+    "status": 200,
+    "ctype": "application/pdf",
+    "is_pdf": true,
+    "bytes": 166898
+  },
+  {
+    "raw": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQG06zxB7efmts9DUosfh03yBjSJ6mSOoPIrOUXsGvWqgHwERFZRGKVdhsRMauEhE7os7UGkoELi7qpOcXIowEOnUHUmR2AInFwJtGm4DJJUMW8KqjMdO30mofhsjVIrjLwkhIeowsFesqgbGDsOOJWrn08=",
+    "url": "https://orzeczenia.uzp.gov.pl/Home/PdfContent/10322?Kind=KIO",
+    "status": 200,
+    "ctype": "application/pdf",
+    "is_pdf": true,
+    "bytes": 45495
+  },
+  {
+    "raw": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQF5CbkXkbqH6GIaAx_8S-KIx3f0KAfQocMf1VsOKR3bz54pQalxKdSNT3eaL9zRijTYTjA5c9IhvHYNWxQxvkA3H2WTI86RYQVlB5gR-c078b03Oy_JMQBUGcAOmJsfPVNkbp5X4NMqhguDtdOobD2dGgPULtIW2LVgf83lZvRTnbHKFyIxjyizaq-1e5GhGnM79b3B3N1ZmhoCFRewFeRK0QkFKRYT9lHfYiXs331Q3MtGILA_SpMU3BFe_wAiwNk6MvzrfQE0E8JCqg==",
+    "url": "https://www.portalzp.pl/komunikaty-uzp/zasady-wnoszenia-odwolan-i-zgloszen-przystapienia-do-krajowej-izby-odwolawczej-od-13-marca-2026-r.-35639.html",
+    "status": 200,
+    "ctype": "text/html; charset=UTF-8",
+    "is_pdf": false,
+    "bytes": 62606
+  },
+  {
+    "raw": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHQDSLJy_1ssQUxQ6KZLqkXAvQoMcaWx_X4xcmz6ice0lxPEvx6BTEbKSG86VD8F3YJB1rcBSzeYOi-TWl8TsKmtKwhnzLmWY8v7FuavxFJN-N0zY8UJDmbOA==",
+    "url": "https://www.gov.pl/web/uzp/kontakt2",
+    "status": 200,
+    "ctype": "text/html;charset=UTF-8",
+    "is_pdf": false,
+    "bytes": 24374
+  },
+  {
+    "raw": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFaVIGfFz6qGKHYiNrysPwWTM1ZI08qrbwmeb-7iMtuRKsJCa-cwLYuJJehc7G5OwFl5WLxJxi90BFdyjOtudef6H3Olsat-OUESrupdQys3xfGCFtVsOnLWSXEx8R1nCEzptcdfrpr5KPNdsLHbYHOV0jYJcAsG4IYh1jp14z7ZaXzOZTXQMlyJjAnZw==",
+    "url": "http://przetargi.propublico.pl/PobieraczDokumentow.aspx?action=doc&id=777310&idP=73070",
+    "status": 200,
+    "ctype": "application/octet-stream",
+    "is_pdf": true,
+    "bytes": 405555
+  },
+  {
+    "raw": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGclNy9pFEhjLw6tVZsN8wTgnS47BWfzDrZBTJGQzEs5IaAOafhrcdg5XocQ2qlMz0fnUdYmGzv35RPE8bXkwbJc0voJrEQHbX8-LefvN8si63CE5-PSuYhn-aBxx7uWzX5Z0ApEksgKuxMvM8YUSbrH2ntauDN4_SDqa4v8FfpcZ3sVQbn2zM9e9d-xd0iUYRU9KE-bWtpEe0touiXl7krAS4OUscIYD8wNV5VapyEutsOxwekXgp425yXnY9O0X-0akfifzoRMLwdZlKZi8kRLz7ElkOAlooY8UojzjTBRA==",
+    "url": "https://www.su.krakow.pl/strefa-kontrahenta/zamowienia-publiczne/archiwum-zamowien-publicznych?task=download.download&file=odwolanie.pdf-d251d03f14786831af56e91df22eacc2",
+    "status": 200,
+    "ctype": "application/pdf",
+    "is_pdf": true,
+    "bytes": 312441
+  },
+  {
+    "raw": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFbezQWQuasIGM2MNiadzQPc6xqfqvIaStPGlLy5deg5zLuDe7_PfRMIqlL96N4IZEqB5o6XN529U-Z0sM6s847qtpn36Ft3BCI1MZiK-9iT-fdIHqYk7ZEH3-3dIcLRGsOzB6q_euCquryCLDpNe1BNzo=",
+    "url": "https://orzeczenia.uzp.gov.pl/Home/PdfContent/31465?Kind=KIO",
+    "status": 200,
+    "ctype": "application/pdf",
+    "is_pdf": true,
+    "bytes": 40745
+  },
+  {
+    "raw": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQE4TTFaA6gFrAWTlLIcF-qQa1Q4U-oN78aaBlHsYQzMrPzcxRSoYuycrZCvg-qmK4Bm_f4k7U5PH3it4OfM6e8jDHdvDDZxUXsfqgqbcANJItLGt0tfJZ-6InsEkKdfoWba8nTlp71fkCq9i1ZogFM=",
+    "url": "https://orzeczenia.uzp.gov.pl/Home/Details/31914?Kind=KIO",
+    "status": 200,
+    "ctype": "text/html; charset=utf-8",
+    "is_pdf": false,
+    "bytes": 12695
+  },
+  {
+    "raw": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGqM5Z6sU1bHjcj6E6f8Gmf7N7iJOCfSvKnc_7cj87a9Ccnp8THmcVM-rNVTy_zmszN4e0d-wEnCigb4e2hS8GJmOsyX1OrloixCozARvZK68lb5vMbrI4dxnhD-QtIsIERV7eyj-tao1ml2tcjCqE=",
+    "url": "https://orzeczenia.uzp.gov.pl/Home/Details/20207?Kind=KIO",
+    "status": 200,
+    "ctype": "text/html; charset=utf-8",
+    "is_pdf": false,
+    "bytes": 11674
+  },
+  {
+    "raw": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEptEYt-mFulWwGiW16rtdPk-uLULvNCFtugVC1-lIUcebA3xhIZmElhuup_mLCY0-H9CpaOIvcwqGbD4VXGvxka2gNESoPJ2G7KxtXG3hyzq-6ePKUxQs5yDBZ77mMLYZwudFDUy0=",
+    "url": "https://orzeczenia.uzp.gov.pl/Home/Details/32548",
+    "status": 200,
+    "ctype": "text/html; charset=utf-8",
+    "is_pdf": false,
+    "bytes": 13565
+  },
+  {
+    "raw": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEpgQKnN3xfhiuxAFRj40-QTZSy2tyslWH3uLHv1rzj17597ELD6h_kjjb6QGRqv49YZqeb7p5AGj3pMh4MJhAHz6s5OkcTBte2sWTc7wtSev8ScAEOEfOvKYadtJlQQqUFuE7L7uvnOGP08SwUBog3pRU=",
+    "url": "https://orzeczenia.uzp.gov.pl/Home/PdfMetrics/31466?Kind=KIO",
+    "status": 200,
+    "ctype": "application/pdf",
+    "is_pdf": true,
+    "bytes": 16467
+  },
+  {
+    "raw": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHeQPKoRjYXgSFAEx1tvp-qOkIQk4c7sNQ3xdC2k5Gqmc3q1j0J30kYuf-KvD_4TmHg7o_3NCDwGl3flwFrAeXd3u7B8P5Q25D2PO4I-nOIY0L5KL-Q3r5niiNohfneUnj1-0w=",
+    "url": "https://przetarghub.pl/kio/36847-kio-4622-26/",
+    "status": 200,
+    "ctype": "text/html; charset=utf-8",
+    "is_pdf": false,
+    "bytes": 225348
+  },
+  {
+    "raw": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHWzhGksUZEJe7XBY_yS5Yzx0TxoHwUYtil4TlQ7Ada0Iv-4RN_-mkAGjrrwXLkMk8BcGQidhQ9IUm6AiXUoa7utGNaQSzvLLgdBM2I2ayy8wwihG4Z-6oqAxKLws51yLPMlYtKskyWDFbNHJsBsiF3Dr2CwdU8sTl5eYNbRNw691HAxA==",
+    "url": "https://zwps.pl/portal/wp-content/uploads/2022/10/ODWO%C5%81ANIE-MAR-FOUR.pdf",
+    "status": 200,
+    "ctype": "application/pdf",
+    "is_pdf": true,
+    "bytes": 1212864
+  },
+  {
+    "raw": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFygPN7sqGlKYg-Z86l-jtO2x4SuZkIxxPPW75yDqTFAfJHfPqINNPDqSApqhOOzq8K3NvKWO0kidZt4srJSr-SJDEXVCPX6QiGulbT7l6AftCB1HZYG02QkuxVPuPpnUmQbQIR1FEw-pvbIS-CE2sw9DBrb3xBFf-2oMV6wBRN3te2Lt9XPjvS",
+    "url": "https://www.gov.pl/web/uzp/3-korespondencja-kierowana-do-krajowej-izby-odwolawczej",
+    "status": 200,
+    "ctype": "text/html;charset=UTF-8",
+    "is_pdf": false,
+    "bytes": 34423
+  },
+  {
+    "raw": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQH4IeP6VtdOrMCUV-zxo8n4SI8XZVdee_8v0oWDFZAXhEhhywoTxZc5xBbot9XrslnAnLHx4jP95S_sbwBnadvNnWfzyD8Kdgk94qXrclF_X3uf8Gt7WNMsIFIjPGA67NercxdX8BG3i3KrOpJsas0v9XY=",
+    "url": "https://orzeczenia.uzp.gov.pl/Home/PdfContent/35053?Kind=KIO",
+    "status": 200,
+    "ctype": "application/pdf",
+    "is_pdf": true,
+    "bytes": 45429
+  },
+  {
+    "raw": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGXHSSCRxYQP3-RFpJfG_RbApxYZOdMkvgKaet8_axWUBISl8RgULMCUlgMCTbt0jbW4Jn4U_wq7Ivk5war0oVhRds8PBl2CZdg2DVzopAVrdfYbDVOuTzoGwhdUPzilNwcK19C5Ozns1Mg9-YBr8Zri64=",
+    "url": "https://orzeczenia.uzp.gov.pl/Home/PdfContent/31243?Kind=KIO",
+    "status": 200,
+    "ctype": "application/pdf",
+    "is_pdf": true,
+    "bytes": 40357
+  },
+  {
+    "raw": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEcWz6tHEVCuy1qARB3Y-D9smNfN62CnqTA7AH2H1LI5SUFb6RyvdYM9lihBQN13kXD7AonFZoSSqA0Q06DmXv0JNz2sTAMlY0YXoroPExRDd7kZO9J7SELXlC7o61HTcdll6-Fwn0JNIAvBraMaKKE3oY=",
+    "url": "https://orzeczenia.uzp.gov.pl/Home/PdfContent/32540?Kind=KIO",
+    "status": 200,
+    "ctype": "application/pdf",
+    "is_pdf": true,
+    "bytes": 100849
+  },
+  {
+    "raw": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQE_bwwIqPtK6I3wyihYchCLtJqDJdbpx3KCynfPdENgu-tEh3q4KVetsC32BbI37fLM5E9aJE3vYSRjz5OcKnp_Y4ZAJ--bUCwM0HMJILcc_gUiYmJ_y1pgcfttUe8VTjMMwQAjT19MA29Cn9fsW-VQwnA=",
+    "url": "https://orzeczenia.uzp.gov.pl/Home/PdfContent/25077?Kind=KIO",
+    "status": 200,
+    "ctype": "application/pdf",
+    "is_pdf": true,
+    "bytes": 35131
+  },
+  {
+    "raw": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGj4_vmdtLTgp3MxlEtuooWX6AE8_J97xP8mDtGPS2ssaw8qrnfj2R3xlG_ONqrvPLhUpi7NxfKBP-lDDDJFRTWtn7-RDEThq1jKRJ2rUyY1dCoIYSlqLXdWcTtOauTrmkzLRJAJjmv9HDiVzd6kQWGQD3DRgbDM51bzR7KKBaNVXXDNn6E",
+    "url": "https://bip.wszzkielce.pl/f,23976,Odpowiedz-na-odwolanie-Kopia-Odwolaniapdf.pdf",
+    "status": 200,
+    "ctype": "application/pdf",
+    "is_pdf": true,
+    "bytes": 11283545
+  },
+  {
+    "raw": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHHUcSRF34IYaQWOInyHbNJDC1ooK4SLuTi7tb2NUUaTKdIZCxoVCCyTkzf1jhCmZnE2bz8xaXNYB6PSSSncrQ4y2x4kmmANBt8W_yGwWhL6VyOwGTjACBjZzVq2MXOCc_aGRPnpQtPH4sTLtOLiNF9pSM=",
+    "url": "https://orzeczenia.uzp.gov.pl/Home/PdfContent/36963?Kind=KIO",
+    "status": 200,
+    "ctype": "application/pdf",
+    "is_pdf": true,
+    "bytes": 42531
+  },
+  {
+    "raw": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHtP0mDZGby7jxxG2plQ-z1ODXyTZTTVG5HwQrHJMKyEFJkJZ5JADgQSmPHGzagkpJCU_V_Dwt6TaPb1ISroxdpBDBradNcCEsfx_t-urEc5kn-eWvcKy300n8F3UDgRoYT4otioJEdtJFVmxXmBEZ78B4RM5rYO-QLg9LA0Kc6EMA3eaO47JmKVg==",
+    "url": "https://wygrajwkio.pl/przeslanie-kopii-odwolania-zamawiajacemu-a-co-z-zalacznikami/",
+    "status": 200,
+    "ctype": "text/html; charset=UTF-8",
+    "is_pdf": false,
+    "bytes": 121894
+  },
+  {
+    "raw": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFPcKcj3FtAfco7w_B-CJAKcyxXK1eq_JrIGOL67m7tIoCRBUZ7yHg65M32op7D-sVqMpEzPc_iB8HCpIDrG4FPysf7JHh9e59Z6WEtIKqfW72NsiNsBF5TOL68-pEQDbtw6h5c",
+    "url": "https://www.gov.pl/web/uzp/5-wpis-od-odwolania",
+    "status": 200,
+    "ctype": "text/html;charset=UTF-8",
+    "is_pdf": false,
+    "bytes": 25527
+  },
+  {
+    "raw": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGW_TD2_pL1kbW092r6XIslGjH-Esu7dNbIVBx5zSw-BGy05NQP-yiA3jQW2wVyPI-OH-76vJ-DsoJhshiekhWkYuKnGC1v76bOsXFEeNK1B8j28rcvwUPs6bCfbT01WYOyDL_FIrT-h_DlMRIZlbtD3d5oRBlVxStSGUjUFD7ZBfCNtcJXtzsf4VenvJw3RU31IIlJWvUTlBRNlAuQ5g==",
+    "url": "https://www.portalzp.pl/nowosci/jak-wniesc-elektroniczne-odwolanie-do-kio-po-13-marca-2026-r.-35625.html",
+    "status": 200,
+    "ctype": "text/html; charset=UTF-8",
+    "is_pdf": false,
+    "bytes": 64807
+  },
+  {
+    "raw": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGv-P6jY5bJfgbVMZ86PAMRvIU3NuT8-XimGHYN_RjeI6lcgR86JLDMVsFnQiagb1qH25X2QUCdUlr3B7RPFQAYo_NsoIDbLyuocf25dCV1bHn4HtmCqSjqWwBzr9kXWuTY4zdQ",
+    "url": "https://www.gov.pl/web/uzp/oplaty-za-odwolanie",
+    "status": 200,
+    "ctype": "text/html;charset=UTF-8",
+    "is_pdf": false,
+    "bytes": 22841
+  },
+  {
+    "raw": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGft-A5qeLtv3-Ci76aX29Up-lN-YIN7lOxd1ZTLiW0rqjVc4tZBl3rqxPwlK_LOKdUaLQxSxtasNLadPYW-xPnXnT_2EywpNj5X7f4LkcG4_0dxu4kbFamwy3tfegzyRknWQ==",
+    "url": "https://atlasprzetargow.pl/kio/poradnik/wpis",
+    "status": 200,
+    "ctype": "text/html; charset=utf-8",
+    "is_pdf": false,
+    "bytes": 188740
+  }
+]

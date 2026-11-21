@@ -1,0 +1,38 @@
+{
+  "OdwolanieKIO": {
+    "data": "2021-02-17",
+    "czynnosc_dzien": "2021-02-10",
+    "czynnosc_powod_id": 1,
+    "czynnosc_opis": "Decyzja o odrzuceniu oferty",
+    "miejscowosc": "Warszawa"
+  },
+  "Odwolujacy": [
+    {
+      "krs": "0000544575",
+      "nazwa": "K&P Medical Group Sp z o.o.",
+      "nip": "7010468872",
+      "regon": "360831340",
+      "przez-pelnomocnika": 0,
+      "pelnomocnik": {
+        "imie_nazwisko": null,
+        "nazwa": null,
+        "mail": null
+      }
+    }
+  ],
+  "Zamawiajacy": [
+    {
+      "krs": null,
+      "nazwa": "Specjalistyczny Szpital Wojewódzki w Ciechanowie",
+      "nip": null,
+      "regon": null,
+      "prowadzacy_postepowanie": null
+    }
+  ],
+  "ZamowieniePubliczne": {
+    "numer_bzp": null,
+    "numer_postepowania": "ZP/2501/111/20",
+    "numer_ted": "610974-2020",
+    "tytul": "Dostawa tomografu komputerowego w ramach realizacji zadania pn. \"Utworzenie Ośrodka Udarowego w Specjalistycznym Szpitalu Wojewódzkim w Ciechanowie\""
+  }
+}

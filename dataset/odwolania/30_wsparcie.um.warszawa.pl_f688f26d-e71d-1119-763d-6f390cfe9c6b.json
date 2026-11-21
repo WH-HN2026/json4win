@@ -1,0 +1,38 @@
+{
+  "OdwolanieKIO": {
+    "data": "2023-06-22",
+    "czynnosc_dzien": "2023-06-12",
+    "czynnosc_powod_id": 4,
+    "czynnosc_opis": "Publikacja specyfikacji warunków zamówienia (SWZ)",
+    "miejscowosc": "Warszawa"
+  },
+  "Odwolujacy": [
+    {
+      "krs": "0000519219",
+      "nazwa": "Sidly Sp. z o.o.",
+      "nip": "7010435677",
+      "regon": "147363415",
+      "przez-pelnomocnika": 0,
+      "pelnomocnik": {
+        "imie_nazwisko": null,
+        "nazwa": null,
+        "mail": null
+      }
+    }
+  ],
+  "Zamawiajacy": [
+    {
+      "krs": null,
+      "nazwa": "Miasto Stołeczne Warszawa",
+      "nip": null,
+      "regon": null,
+      "prowadzacy_postepowanie": 1
+    }
+  ],
+  "ZamowieniePubliczne": {
+    "numer_bzp": null,
+    "numer_postepowania": "CUS/ZP/3/2023",
+    "numer_ted": "347443-2023",
+    "tytul": "Dostarczenie kompleksowej usługi teleopieki wraz z Centrum Teleopieki 24/7 świadczącym teleusługi i teleopiekę dla mieszkańców 11 gmin WOF w ramach wdrożenia Systemu „E-Opieka”"
+  }
+}
