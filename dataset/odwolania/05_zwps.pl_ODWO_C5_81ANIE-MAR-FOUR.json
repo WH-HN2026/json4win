@@ -1,0 +1,38 @@
+{
+  "OdwolanieKIO": {
+    "data": "2022-11-15",
+    "czynnosc_dzien": "2022-11-10",
+    "czynnosc_powod_id": 2,
+    "czynnosc_opis": "Ogłoszenie wyboru oferty",
+    "miejscowosc": "Konstantynów Łódzki"
+  },
+  "Odwolujacy": [
+    {
+      "krs": null,
+      "nazwa": "MAR-FOUR MARIAN SIEKIERSKI",
+      "nip": null,
+      "regon": null,
+      "przez-pelnomocnika": 1,
+      "pelnomocnik": {
+        "imie_nazwisko": "Robert Kubiak",
+        "nazwa": "Mar-Four Marian Siekierski",
+        "mail": "r.kubiak@marfour.com.pl"
+      }
+    }
+  ],
+  "Zamawiajacy": [
+    {
+      "krs": null,
+      "nazwa": "Zespół Wojewódzkich Przychodni Specjalistycznych w Katowicach",
+      "nip": null,
+      "regon": null,
+      "prowadzacy_postepowanie": null
+    }
+  ],
+  "ZamowieniePubliczne": {
+    "numer_bzp": "2022/BZP00394256/01",
+    "numer_postepowania": "ZP / D / 8 / 22",
+    "numer_ted": null,
+    "tytul": "Zakup 3 mikrotomów saneczkowych oraz 2 łaźni wodnych dla Pracowni Patomorfologii Zespołu Wojewódzkich Przychodni Specjalistycznych w Katowicach"
+  }
+}

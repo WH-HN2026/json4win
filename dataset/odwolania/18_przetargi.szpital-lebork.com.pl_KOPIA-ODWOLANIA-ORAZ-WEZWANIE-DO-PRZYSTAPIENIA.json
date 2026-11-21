@@ -1,0 +1,38 @@
+{
+  "OdwolanieKIO": {
+    "data": "2017-11-29",
+    "czynnosc_dzien": "2017-11-24",
+    "czynnosc_powod_id": 11,
+    "czynnosc_opis": "Opis przedmiotu zamówienia (OPZ)",
+    "miejscowosc": "Mikołów"
+  },
+  "Odwolujacy": [
+    {
+      "krs": null,
+      "nazwa": "Althea Polska sp. z o.o.",
+      "nip": null,
+      "regon": null,
+      "przez-pelnomocnika": 1,
+      "pelnomocnik": {
+        "imie_nazwisko": "Agnieszka Weiner",
+        "nazwa": null,
+        "mail": "agnieszka.weiner@althea-group.com"
+      }
+    }
+  ],
+  "Zamawiajacy": [
+    {
+      "krs": null,
+      "nazwa": "Samodzielny Publiczny Specjalistyczny Zakład Opieki Zdrowotnej w Lęborku",
+      "nip": null,
+      "regon": null,
+      "prowadzacy_postepowanie": null
+    }
+  ],
+  "ZamowieniePubliczne": {
+    "numer_bzp": "621856-N-2017",
+    "numer_postepowania": "ZP-PN/43/17",
+    "numer_ted": null,
+    "tytul": "Usługi serwisu sprzętu medycznego w SPS ZOZ w Lęborku"
+  }
+}

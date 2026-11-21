@@ -1,0 +1,38 @@
+{
+  "OdwolanieKIO": {
+    "data": "2020-01-21",
+    "czynnosc_dzien": "2020-01-16",
+    "czynnosc_powod_id": 4,
+    "czynnosc_opis": "Publikacja specyfikacji warunków zamówienia (SWZ)",
+    "miejscowosc": "Warszawa"
+  },
+  "Odwolujacy": [
+    {
+      "krs": null,
+      "nazwa": "MIRBUD S.A.",
+      "nip": null,
+      "regon": null,
+      "przez-pelnomocnika": 1,
+      "pelnomocnik": {
+        "imie_nazwisko": "Ewelina Toborek",
+        "nazwa": "Kancelaria Radcy Prawnego Dariusz Ziembiński & Partnerzy",
+        "mail": "etoborek@kzp.net.pl"
+      }
+    }
+  ],
+  "Zamawiajacy": [
+    {
+      "krs": null,
+      "nazwa": "Gmina Miasto Częstochowa",
+      "nip": null,
+      "regon": null,
+      "prowadzacy_postepowanie": null
+    }
+  ],
+  "ZamowieniePubliczne": {
+    "numer_bzp": null,
+    "numer_postepowania": "IZ.271.1.2020",
+    "numer_ted": null,
+    "tytul": "Zaprojektowanie i wykonanie robót budowlanych dotyczących zadania pn.: „Centrum Piłki Nożnej w Częstochowie – przebudowa i rozbudowa obiektu sportowego przy ul. Bolesława Limanowskiego 83”"
+  }
+}
