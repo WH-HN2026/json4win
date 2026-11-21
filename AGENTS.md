@@ -55,9 +55,11 @@ through Orca orchestration, each in its own child worktree branched from `dev`, 
 branch and squash-merges it into `dev`. Working solo is also allowed: follow the worker steps, then the
 verification checklist, then merge yourself.
 
-**Models:** mix models to get independent eyes. Spawn workers on the Antigravity agent with either Claude Opus 5.5
-(`--agent antigravity --model claude-opus-5-5-high`) or Gemini 4 Neon (`--agent antigravity --model gemini-4-neon-high`);
-`agy models` lists the ids. (`--agent claude --model claude-opus-5-5` also works.)
+**Models:** mix models to get independent eyes (`agy models` lists the Antigravity ids):
+- Claude Opus 5.5, split about half and half between `--agent claude --model claude-opus-5-5` and
+  `--agent antigravity --model claude-opus-5-5-high`;
+- Gemini 4 Neon: `--agent antigravity --model gemini-4-neon-high`;
+- very simple tasks (mechanical edits, small docs): Gemini 4 Hydrogen, `--agent antigravity --model gemini-4-hydrogen-high`.
 Put critical-path or hard-debugging tasks on the one that has proven itself in this repo; when a task is
 verified, prefer a different model than the one that wrote it for any follow-up fix or review.
 
