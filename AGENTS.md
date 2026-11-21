@@ -8,6 +8,7 @@ an empty `{}`. Scored by F1 on a hidden test set.
 Read before working:
 - [`docs/architecture.md`](docs/architecture.md): scoring facts, settled decisions D1–D13, pipeline, open decisions.
 - [`docs/roadmap.md`](docs/roadmap.md): tasks, dependencies, status.
+- [`docs/status.md`](docs/status.md): what works now, measured results, prioritised next steps (Polish).
 - The brief: root [`README.md`](README.md) (Polish); `task.pdf` is our PDF copy of it.
 - Target shapes: the training JSONs `dane/przyklad_NN/{odwolanie,pelnomocnictwo,przelew}.json` (canonical) and
   `oczekiwane-json/` (JSONC with field-by-field rules, incl. `czynnosc_powod_id_dict.md`).

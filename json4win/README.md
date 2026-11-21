@@ -4,7 +4,8 @@ Rozwiązanie wyzwania UZP (HackNation 2026): zamienia dokumenty sprawy odwoławc
 pełnomocnictwo, potwierdzenie przelewu) z PDF na JSON w formacie z `../oczekiwane-json`.
 Dokumenty, które nie należą do żadnej z tych klas, dają pusty JSON `{}`.
 
-Plan prac: [`../docs/roadmap.md`](../docs/roadmap.md).
+Status: działające MVP (lokalny OCR + LLM, wszystkie trzy klasy, GUI, ślad ekstrakcji). Co działa, wyniki i co dalej:
+[`../docs/status.md`](../docs/status.md). Plan prac: [`../docs/roadmap.md`](../docs/roadmap.md).
 
 ## Jak to działa
 
