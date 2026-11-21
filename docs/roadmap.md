@@ -32,6 +32,7 @@ track. `orca orchestration worker-list` is the claim list, not this file.
 - [ ] **V1** F1 report in `docs/quality.md` (per class and per field, from `make eval V=1`), rerun after every T task. deps: T1, T2, T3
 - [ ] **M1** Model comparison on the EU endpoint: GLM-5.3-Flash vs smaller GA open-weight models (e.g. ministral-8b/14b, mistral-small), F1 and size (O6). deps: V1
 - [x] **V0** Eval on real scans: `make eval-skany` (`scripts/eval_skany.py` with JSON→YAML GT conversion, per-kind + total F1, `--self-test`). deps: I1
+- [x] **V2** Ideal-OCR eval mode (dev-only upper bound) + negatives check. deps: C1
 
 ## X: extensibility and transparency (stage 2 scoring)
 - [x] **X1** Demo: add a new document class purely through `json4win/config/`, documented step by step in docs/. deps: C1

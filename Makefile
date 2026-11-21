@@ -22,8 +22,8 @@ test:
 run:              ## json4win/input -> json4win/output (ARGS=... passes extra flags)
 	cd json4win && $(PY) -m json4win $(ARGS)
 
-eval:             ## F1 on training cases (CASES=przyklad_01,przyklad_02 for a subset)
-	$(PY) scripts/eval_training.py $(if $(CASES),--cases $(CASES)) $(if $(V),-v)
+eval:             ## F1 on training cases (CASES=..., V=1, IDEAL=1, NEG=1, JOBS=4)
+	$(PY) scripts/eval_training.py $(if $(CASES),--cases $(CASES)) $(if $(V),-v) $(if $(IDEAL),--ideal-ocr) $(if $(NEG),--negatives) $(if $(JOBS),--jobs $(JOBS))
 
 eval-skany:       ## F1 on real scans in dane/skany (CASES=..., KINDS=..., IDS=..., V=1)
 	$(PY) scripts/eval_skany.py $(if $(CASES),--cases $(CASES)) $(if $(KINDS),--kinds $(KINDS)) $(if $(IDS),--ids $(IDS)) $(if $(V),-v)

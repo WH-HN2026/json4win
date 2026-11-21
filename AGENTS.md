@@ -198,6 +198,7 @@ make run          # json4win/input -> json4win/output   (ARGS="--input X --outpu
 make ocr-cache    # fill the shared OCR cache for dane/ (coordinator only, one process; task P1)
 OCR_CACHE_ONLY=1 make eval    # F1 on dane/przyklad_01..39 with ewaluacja/evaluate.py, cached OCR only
 OCR_CACHE_ONLY=1 make eval CASES=przyklad_01,przyklad_37 V=1   # subset, list every wrong field
+make eval IDEAL=1 NEG=1       # dev-only upper bound using PDF text layer (--ideal-ocr, --negatives, JOBS=4)
 OCR_CACHE_ONLY=1 make eval-skany   # F1 on real scans in dane/skany/ (KINDS=..., IDS=..., CASES=..., V=1)
 .venv/bin/python ewaluacja/evaluate.py        # evaluator self-test on the reference JSONs (F1=1.000)
 cd json4win && pip install -r requirements.txt && ./start.sh   # what the jury runs (start.bat on Windows)
