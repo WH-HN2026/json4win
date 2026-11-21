@@ -5,6 +5,7 @@ The format and the rules enforced here are fixed in json4win/config/README.md. E
 class means adding a file.
 """
 
+import os
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -242,8 +243,36 @@ def load_class(path: Path) -> DocClass:
     )
 
 
+def _extra_config_dirs() -> list[Path]:
+    raw = env.get("JSON4WIN_CONFIG_DIRS")
+    if not raw:
+        return []
+    dirs: list[Path] = []
+    for entry in raw.split(os.pathsep):
+        entry = entry.strip()
+        if not entry:
+            continue
+        p = Path(entry)
+        if not p.is_absolute() and not p.is_dir():
+            alt = env.APP_ROOT / p
+            if alt.is_dir():
+                p = alt
+        if not p.is_dir():
+            raise ConfigError(f"JSON4WIN_CONFIG_DIRS: directory not found: {entry!r}")
+        dirs.append(p)
+    return dirs
+
+
 def load_classes(config_dir: Path | None = None) -> dict[str, DocClass]:
-    """Every class in the config dir, by id (sorted by file name)."""
-    config_dir = config_dir or CONFIG_DIR
-    files = sorted(p for p in config_dir.iterdir() if p.suffix.lower() in (".yaml", ".yml"))
-    return {c.id: c for c in map(load_class, files)}
+    """Every class in the config dir (plus JSON4WIN_CONFIG_DIRS when default), by id."""
+    dirs = [config_dir] if config_dir is not None else [CONFIG_DIR, *_extra_config_dirs()]
+    classes: dict[str, DocClass] = {}
+    for d in dirs:
+        files = sorted(p for p in d.iterdir() if p.suffix.lower() in (".yaml", ".yml"))
+        for c in map(load_class, files):
+            if c.id in classes:
+                raise ConfigError(
+                    f"{c.source}: duplicate class id {c.id!r} (already in {classes[c.id].source})"
+                )
+            classes[c.id] = c
+    return classes

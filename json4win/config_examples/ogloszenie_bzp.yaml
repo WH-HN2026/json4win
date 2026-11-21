@@ -1,0 +1,181 @@
+id: ogloszenie_bzp
+nazwa: Ogłoszenie o zamówieniu (BZP)
+
+opis: >-
+  Ogłoszenie o zamówieniu publicznym opublikowane w Biuletynie Zamówień Publicznych (BZP)
+  na platformie eZamówienia (eZamowienia.gov.pl), oznaczone numerem w formacie RRRR/BZP NNNNNNNN
+  i podzielone na numerowane sekcje („SEKCJA I - ZAMAWIAJĄCY”, „SEKCJA II – INFORMACJE
+  PODSTAWOWE”, „SEKCJA III”, „SEKCJA IV – PRZEDMIOT ZAMÓWIENIA” itd.). Zawiera dane
+  zamawiającego, tytuł i rodzaj zamówienia, datę publikacji, numer referencyjny oraz główny kod CPV.
+
+cechy:
+  - "nagłówek lub pole „2.5.) Numer ogłoszenia” z numerem BZP w formacie RRRR/BZP NNNNNNNN (np. „Ogłoszenie nr 2029/BZP 00412345 z dnia 2029-06-18”) oraz tytuł „Ogłoszenie o zamówieniu”"
+  - "stopka zawierająca datę i nazwę „Biuletyn Zamówień Publicznych”"
+  - "numerowane sekcje formularza BZP: „SEKCJA I - ZAMAWIAJĄCY” (1.1.), 1.2.) Nazwa zamawiającego, 1.4) Krajowy Numer Identyfikacyjny, 1.5) Adres zamawiającego) oraz „SEKCJA II – INFORMACJE PODSTAWOWE” (2.3.) Nazwa zamówienia, 2.5.) Numer ogłoszenia, 2.6.) Wersja ogłoszenia, 2.7.) Data ogłoszenia)"
+  - "„SEKCJA IV – PRZEDMIOT ZAMÓWIENIA” z polami „4.1.2.) Numer referencyjny”, „4.1.3.) Rodzaj zamówienia” i „4.2.6.) Główny kod CPV”"
+
+nie_mylic_z:
+  - "odwołanie do Krajowej Izby Odwoławczej (KIO), nawet jeśli w treści przywołuje numer ogłoszenia BZP, tytuł zamówienia lub dane zamawiającego"
+  - "pełnomocnictwo ani potwierdzenie przelewu bankowego"
+  - "ogłoszenie z Dziennika Urzędowego Unii Europejskiej (TED / OJ S, np. „OJ S 112/2025”, „See the notice on TED website”)"
+  - "specyfikacja warunków zamówienia (SWZ), postanowienie lub wyrok KIO, decyzja administracyjna ani informacja z otwarcia ofert"
+
+czytanie:
+  max_stron: 3
+  znacznik: '(?i)SEKCJA\s+IV\b'
+  stron_po_znaczniku: 0
+
+szablon:
+  ogloszenie_bzp:
+    numer_bzp: null
+    wersja: null
+    data_publikacji: null
+    tytul: null
+    rodzaj_zamowienia: null
+    numer_referencyjny: null
+    glowny_kod_cpv: null
+    zamawiajacy:
+      nazwa: null
+      regon: null
+      miejscowosc: null
+      kod_pocztowy: null
+      email: null
+
+pola:
+  ogloszenie_bzp.numer_bzp:
+    opis: >-
+      Numer ogłoszenia w Biuletynie Zamówień Publicznych w formacie RRRR/BZP NNNNNNNN
+      (4-cyfrowy rok, „/BZP ”, 8 cyfr), bez daty publikacji i bez końcówki wersji (np. „/01”).
+      Szukaj w polu „2.5.) Numer ogłoszenia” lub w nagłówku na górze strony („Ogłoszenie nr ...”).
+      Nie myl z numerem planu postępowań w BZP (pole 2.9., zakończone „/P”). Zwróć null, jeśli
+      brak numeru ogłoszenia BZP.
+    typ: str
+    normalizacja: text
+    format: '^\d{4}/BZP \d{8}$'
+    przyklady: ["2029/BZP 00412345"]
+    poprawki_ocr: >-
+      W roku i 8-cyfrowym numerze poprawiaj typowe literówki OCR (O→0, l/I→1, S→5, B→8)
+      i zachowaj dokładnie jedną spację między „BZP” a 8-cyfrowym numerem.
+
+  ogloszenie_bzp.wersja:
+    opis: >-
+      Numer wersji ogłoszenia jako liczba całkowita (np. „01” → 1, „02” → 2). Szukaj w polu
+      „2.6.) Wersja ogłoszenia”. Zwróć null, jeśli wersja ogłoszenia nie została podana.
+    typ: int
+    normalizacja: int
+    przyklady: [1, 2]
+
+  ogloszenie_bzp.data_publikacji:
+    opis: >-
+      Data publikacji ogłoszenia w BZP w formacie RRRR-MM-DD (YYYY-MM-DD). Szukaj w polu
+      „2.7.) Data ogłoszenia”, w nagłówku („z dnia ...”) lub w stopce przy nazwie „Biuletyn
+      Zamówień Publicznych”. Nie bierz terminu składania ofert, otwarcia ofert ani okresu
+      realizacji zamówienia. Zwróć null, jeśli brak daty publikacji.
+    typ: str
+    normalizacja: date
+    format: '^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$'
+    przyklady: ["2029-06-18"]
+    poprawki_ocr: >-
+      W cyfrach daty poprawiaj typowe literówki OCR (O→0, l/I→1, S→5, B→8).
+
+  ogloszenie_bzp.tytul:
+    opis: >-
+      Pełna nazwa (tytuł) zamówienia albo umowy ramowej przepisana wiernie, bez skracania.
+      Szukaj w polu „2.3.) Nazwa zamówienia albo umowy ramowej” lub bezpośrednio pod rodzajem
+      zamówienia na górze pierwszej strony. Połącz zawinięte wiersze pojedynczą spacją. Zwróć
+      null, jeśli w dokumencie brak nazwy zamówienia.
+    typ: str
+    normalizacja: text
+    przyklady:
+      - "Dostawa sprzętu komputerowego dla Urzędu Gminy w Przykładowie"
+
+  ogloszenie_bzp.rodzaj_zamowienia:
+    opis: >-
+      Rodzaj zamówienia publicznego wskazany pod tytułem „Ogłoszenie o zamówieniu” na pierwszej
+      stronie oraz w polu „4.1.3.) Rodzaj zamówienia”.
+    typ: str
+    normalizacja: text
+    wartosci:
+      uslugi: "Usługi"
+      dostawy: "Dostawy"
+      roboty_budowlane: "Roboty budowlane"
+
+  ogloszenie_bzp.numer_referencyjny:
+    opis: >-
+      Numer referencyjny postępowania nadany przez zamawiającego, z pola „4.1.2.) Numer
+      referencyjny” w SEKCJI IV. Zwróć null, jeśli pole jest nieobecne lub puste. Nie myl z
+      identyfikatorem postępowania OCDS (pole 2.4.) ani z numerem ogłoszenia BZP.
+    typ: str
+    normalizacja: text
+    przyklady: ["ZP.271.14.2029", "BZP/12/2029"]
+
+  ogloszenie_bzp.glowny_kod_cpv:
+    opis: >-
+      Główny kod CPV zamówienia w formacie NNNNNNNN-N (8 cyfr, myślnik, 1 cyfra kontrolna),
+      bez opisowej nazwy kategorii po myślniku. Szukaj w polu „4.2.6.) Główny kod CPV” w SEKCJI
+      IV. Zwróć null, jeśli w odczytanych stronach brak kodu CPV.
+    typ: str
+    normalizacja: regex_sub
+    parametry:
+      pattern: '^\s*(\d{8}-\d)\b.*$'
+      repl: '\1'
+    format: '^\d{8}-\d$'
+    przyklady: ["30200000-1"]
+    poprawki_ocr: >-
+      Kod CPV ma zawsze 8 cyfr, myślnik i 1 cyfrę; w cyfrach poprawiaj O→0, l/I→1, S→5, B→8.
+
+  ogloszenie_bzp.zamawiajacy.nazwa:
+    opis: >-
+      Pełna nazwa zamawiającego z pola „1.2.) Nazwa zamawiającego” w SEKCJI I, bez adresu
+      i bez numeru REGON/NIP. Zwróć null, jeśli brak nazwy zamawiającego.
+    typ: str
+    normalizacja: text
+    przyklady: ["Gmina Przykładowo", "Szpital Powiatowy w Przykładowie"]
+
+  ogloszenie_bzp.zamawiajacy.regon:
+    opis: >-
+      9- lub 14-cyfrowy numer REGON zamawiającego z pola „1.4) Krajowy Numer Identyfikacyjny”,
+      zapisany jako ciąg samych cyfr (bez słowa „REGON” i bez spacji). Zwróć null, jeśli w polu
+      1.4 podano inny identyfikator (np. NIP) albo brak numeru.
+    typ: str
+    normalizacja: digits
+    format: '^(\d{9}|\d{14})$'
+    przyklady: ["123456789"]
+    poprawki_ocr: >-
+      REGON ma 9 lub 14 cyfr; usuń słowo REGON i spacje, w cyfrach poprawiaj O→0, l/I→1, S→5, B→8.
+
+  ogloszenie_bzp.zamawiajacy.miejscowosc:
+    opis: >-
+      Miejscowość z adresu zamawiającego w polu „1.5.2.) Miejscowość” (SEKCJA I), bez kodu
+      pocztowego, ulicy i województwa. Zwróć null, jeśli brak miejscowości.
+    typ: str
+    normalizacja: text
+    przyklady: ["Przykładowo"]
+
+  ogloszenie_bzp.zamawiajacy.kod_pocztowy:
+    opis: >-
+      Polski kod pocztowy zamawiającego w formacie NN-NNN z pola „1.5.3.) Kod pocztowy”
+      (SEKCJA I). Zwróć null, jeśli brak kodu pocztowego.
+    typ: str
+    normalizacja: text
+    format: '^\d{2}-\d{3}$'
+    przyklady: ["00-950"]
+    poprawki_ocr: >-
+      W cyfrach kodu pocztowego poprawiaj typowe błędy OCR (O→0, l/I→1, S→5, B→8).
+
+  ogloszenie_bzp.zamawiajacy.email:
+    opis: >-
+      Adres poczty elektronicznej zamawiającego z pola „1.5.9.) Adres poczty elektronicznej”
+      (SEKCJA I). Zwróć null, jeśli brak adresu e-mail.
+    typ: str
+    normalizacja: text
+    format: '^[^@\s]+@[^@\s]+\.[^@\s]+$'
+    przyklady: ["zamowienia@przykladowo.example.pl"]
+
+instrukcje: >-
+  Pobieraj dane wyłącznie z odpowiadających im numerowanych pól formularza BZP (SEKCJA I, II i IV).
+  Dla pola numer_bzp zawsze wybieraj pole „2.5.) Numer ogłoszenia” (a nie „2.9.) Numer planu
+  postępowań w BZP”). Dla glowny_kod_cpv podaj wyłącznie sam kod (np. „30200000-1”) bez opisu
+  słownego. Dla rodzaj_zamowienia zmapuj etykietę dokumentu („Usługi” → „uslugi”, „Dostawy” →
+  „dostawy”, „Roboty budowlane” → „roboty_budowlane”). Pola nieobecne na odczytanych stronach
+  ustawiaj na null.

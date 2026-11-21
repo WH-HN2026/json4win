@@ -34,7 +34,7 @@ track. `orca orchestration worker-list` is the claim list, not this file.
 - [x] **V0** Eval on real scans: `make eval-skany` (`scripts/eval_skany.py` with JSON→YAML GT conversion, per-kind + total F1, `--self-test`). deps: I1
 
 ## X: extensibility and transparency (stage 2 scoring)
-- [ ] **X1** Demo: add a new document class purely through `json4win/config/`, documented step by step in docs/. deps: C1
+- [x] **X1** Demo: add a new document class purely through `json4win/config/`, documented step by step in docs/. deps: C1
 - [ ] **X2** Extraction trace (per field: page, source snippet, method, retries) written **outside** `output/`. deps: C1
 
 ## D: delivery

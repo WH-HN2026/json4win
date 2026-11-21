@@ -20,8 +20,9 @@ Dla każdego PDF-a (niezależnie, błąd jednego pliku daje `{}` i przetwarzanie
    modelu (`prompt_poprawka.md`, najwyżej 2 razy); pole wciąż błędne → `null`.
 
 Nowa klasa dokumentu = nowy plik `config/<id>.yaml` (format: [`config/README.md`](config/README.md)), bez zmian
-w kodzie. Model językowy: API zgodne z OpenAI w UE (Mistral La Plateforme), ustawienia w `.env.local`
-(wzór: `.env.example`).
+w kodzie. Instrukcję krok po kroku oraz gotowy przykład nowej klasy (`config_examples/ogloszenie_bzp.yaml`,
+aktywowany zmienną `JSON4WIN_CONFIG_DIRS`) zawiera [`../docs/nowa-klasa.md`](../docs/nowa-klasa.md). Model
+językowy: API zgodne z OpenAI w UE (Mistral La Plateforme), ustawienia w `.env.local` (wzór: `.env.example`).
 
 ## Uruchomienie
 
