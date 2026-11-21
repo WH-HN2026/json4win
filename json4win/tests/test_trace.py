@@ -86,6 +86,7 @@ def test_traces_written_outside_output(app, tmp_path) -> None:
     assert t["status"] == "ok" and t["class"] == "faktura"
     assert t["decision"]["class"] == "faktura" and t["decision_llm_calls"] == 1
     assert [p["page"] for p in t["ocr_pages"]] == [1, 2]
+    assert [p["backend"] for p in t["ocr_pages"]] == ["local", "local"]
     assert set(t["steps_s"]) == {"ocr", "decyzja", "czytanie", "ekstrakcja", "pochodzenie"}
     ex = t["extraction"]
     assert (ex["llm_calls"], ex["retries"], ex["nulled"]) == (3, 2, ["Faktura.numer"])
@@ -219,3 +220,14 @@ def test_snippet_is_bounded() -> None:
     got = trace.locate("1234567890", [page], True)
     assert got["snippet"].startswith("…") and got["snippet"].endswith("…")
     assert len(got["snippet"]) <= 10 + 2 * trace.SNIPPET + 2
+
+
+def test_trace_records_ocr_backend(app, tmp_path, monkeypatch) -> None:
+    inp, out = app
+    tdir = tmp_path / "traces_tess"
+    monkeypatch.setenv("OCR_BACKEND", "tesseract")
+    main(["--input", str(inp), "--output", str(out), "--trace", str(tdir)])
+    t = _load(tdir, "faktura")
+    assert [p["backend"] for p in t["ocr_pages"]] == ["tesseract", "tesseract"]
+    md = (tdir / "sprawa 1" / "faktura.trace.md").read_text(encoding="utf-8")
+    assert "tesseract" in md

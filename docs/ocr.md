@@ -1,9 +1,64 @@
-# OCR engine: Unlimited-OCR-2 on CPU (task P1)
+# OCR engine: Unlimited-OCR-2 on CPU (task P1) and Tesseract backend (task P4)
 
-Code: [`json4win/json4win/ocr.py`](../json4win/json4win/ocr.py) (contract, rendering, cache, text cleaning),
-[`ocr_engine.py`](../json4win/json4win/ocr_engine.py) (model load + inference),
-[`ocr_fast.py`](../json4win/json4win/ocr_fast.py) (opt-in faster decode). Dev tools:
+Code: [`json4win/json4win/ocr.py`](../json4win/json4win/ocr.py) (contract, backend dispatcher, rendering,
+shared cache, local text cleaning), [`ocr_engine.py`](../json4win/json4win/ocr_engine.py) (Unlimited-OCR-2
+model load + inference), [`ocr_fast.py`](../json4win/json4win/ocr_fast.py) (opt-in faster decode),
+[`ocr_tesseract.py`](../json4win/json4win/ocr_tesseract.py) (Tesseract CLI backend via `subprocess`). Dev tools:
 [`scripts/ocr_cache.py`](../scripts/ocr_cache.py) (`make ocr-cache`), [`scripts/ocr_probe.py`](../scripts/ocr_probe.py) (gate bench + quality probe).
+
+## Backendy OCR
+
+Wybór backendu odbywa się zmienną środowiskową `OCR_BACKEND` (w `.env.local` lub w środowisku):
+
+- **`OCR_BACKEND=local` (domyślny):** `baidu/Unlimited-OCR-2` (MIT) uruchamiany lokalnie na CPU
+  przez `json4win.ocr_engine`. Najwyższa jakość rozpoznawania na skanach (szczególnie tabele i układ),
+  ale ok. 9–11 GB RAM i ~45–90 s/stronę.
+- **`OCR_BACKEND=tesseract`:** Tesseract OCR (licencja **Apache 2.0**, w pełni open source) wywoływany
+  bezpośrednio z biblioteki standardowej Pythona (`subprocess.run` z listą argumentów, bez shella,
+  bez dodatkowych pakietów Pythona) przez `json4win.ocr_tesseract`. Strony są renderowane przez
+  `pypdfium2` (domyślnie 300 dpi) i przekazywane na `stdin` jako PNG. Bardzo szybki (~1 s/stronę,
+  niski RAM), ale wrażliwszy na układ dwukolumnowy/tabele i drobne skazy skanów (porównanie w
+  [`docs/quality.md`](quality.md)).
+- Nieznana wartość `OCR_BACKEND` podnosi `ValueError`.
+
+### Zmienne dla `OCR_BACKEND=tesseract`
+
+| Zmienna | Domyślnie | Opis |
+|---|---|---|
+| `OCR_BACKEND` | `local` | `local` \| `tesseract` |
+| `OCR_TESSERACT_CMD` | `tesseract` | Nazwa lub pełna ścieżka pliku wykonywalnego Tesseract |
+| `OCR_TESSERACT_LANG` | `pol` | Język(i) przekazane przez `-l` (np. `pol` lub `pol+eng`) |
+| `OCR_TESSERACT_DPI` | `300` | Rozdzielczość renderowania `pypdfium2` oraz flaga `--dpi` |
+| `OCR_TESSERACT_PSM` | *(puste = domyślne, PSM 3)* | Tryb segmentacji strony `--psm` (0–13) |
+| `OCR_TESSDATA_DIR` | `<cache_dir>/tessdata` | Katalog z plikami `<lang>.traineddata` przekazywany przez `--tessdata-dir` |
+
+### Instalacja Tesseracta i danych `pol.traineddata`
+
+- **Linux:** zainstaluj pakiet systemowy `tesseract-ocr` (lub `tesseract`). Jeżeli brakuje pakietu
+  językowego `tesseract-ocr-pol` (lub brak uprawnień roota), pobierz oficjalny model
+  [`pol.traineddata` z `tesseract-ocr/tessdata_best`](https://github.com/tesseract-ocr/tessdata_best/raw/main/pol.traineddata)
+  (Apache 2.0, ~12 MB) do `~/.cache/json4win/tessdata/pol.traineddata` (pliki `.traineddata` nie są
+  commitowane do repozytorium). Można też użyć lżejszego `tessdata_fast` (~4,6 MB) w osobnym katalogu
+  i wskazać go przez `OCR_TESSDATA_DIR`.
+- **Windows:** pobierz instalator **UB Mannheim** (`https://github.com/UB-Mannheim/tesseract/wiki`,
+  Tesseract na licencji Apache 2.0). Podczas instalacji zaznacz dodatkowy pakiet językowy **Polish**
+  (`pol`), albo pobierz `pol.traineddata` z `tesseract-ocr/tessdata_best` do
+  `%LOCALAPPDATA%\json4win\tessdata\pol.traineddata`. Jeżeli `tesseract.exe` nie jest w `PATH`, ustaw
+  `OCR_TESSERACT_CMD=C:\Program Files\Tesseract-OCR\tesseract.exe`; jeśli chcesz użyć katalogu z
+  instalatora zamiast cache, ustaw `OCR_TESSDATA_DIR=C:\Program Files\Tesseract-OCR\tessdata`.
+
+### Separacja cache między backendami
+
+Każdy backend zapisuje surowe wyniki w `json4win.env.cache_dir()/ocr/<settings_id>/<sha256>/<page>.json`
+wraz z plikiem `settings.json`:
+
+- Dla `local` format klucza (`settings_id`) pozostał **identyczny** z dotychczasowym (`0fe4b22967e4791d`
+  dla ustawień domyślnych), więc istniejący cache Unlimited-OCR-2 jest w pełni zachowany.
+- Dla `tesseract` klucz obejmuje `backend: "tesseract"`, linię wersji z `tesseract --version`, `lang`,
+  `dpi`, `psm`, `format` oraz skrót sha256 użytych plików `<lang>.traineddata` (`tessdata_sha256`).
+  Dzięki temu wyniki `local` i `tesseract` — a także różne wersje Tesseracta, `tessdata_best` vs
+  `tessdata_fast`, różne `dpi`/`psm`/`lang` — nigdy się nie mieszają.
+- Ślad ekstrakcji (`trace.py`) zapisuje pole `backend` przy każdej przeczytanej stronie w `ocr_pages`.
 
 ## How it works
 

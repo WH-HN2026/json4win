@@ -15,11 +15,15 @@ import io
 import logging
 import threading
 import time
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 
 from json4win import env, ocr_fast
 
 log = logging.getLogger(__name__)
+
+BACKEND = "local"
+RENDER_DPI = 200  # the model resizes to 640px tiles / a 1024px view; 200 dpi A4 is above both
+CACHE_FORMAT = 1  # bump when the cached raw output would change for the same settings
 
 MODEL_ID = "baidu/Unlimited-OCR-2"
 MODEL_REVISION = "cb16b920ec2249c4b280f3aa67942e00b5099122"  # HF commit of 2026-11-16
@@ -40,6 +44,31 @@ class InferSettings:
     fast_decode: int = (
         0  # 0 = model code as is; 1 = single-token MoE; 2 = + dense decode (ocr_fast)
     )
+
+
+def settings_from_env() -> InferSettings:
+    """Inference settings from env (OCR_MODE, OCR_MAX_TOKENS, OCR_DTYPE, OCR_FAST_DECODE)."""
+    d = InferSettings()
+    return InferSettings(
+        mode=env.get("OCR_MODE", d.mode),
+        max_tokens=int(env.get("OCR_MAX_TOKENS", str(d.max_tokens))),
+        dtype=env.get("OCR_DTYPE", d.dtype),
+        fast_decode=int(env.get("OCR_FAST_DECODE", str(d.fast_decode))),
+        ngram=d.ngram,
+        ngram_window=d.ngram_window,
+    )
+
+
+def cache_key(s: InferSettings, dpi: int = RENDER_DPI) -> dict:
+    """Cache key dict for the local model (format frozen so existing caches remain valid)."""
+    return {
+        "model": MODEL_ID,
+        "revision": MODEL_REVISION,
+        "prompt": PROMPT,
+        "dpi": dpi,
+        "format": CACHE_FORMAT,
+        **asdict(s),
+    }
 
 
 _lock = threading.Lock()

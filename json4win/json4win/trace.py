@@ -99,13 +99,14 @@ def step(name: str) -> Iterator[None]:
 
 
 def ocr_page(pdf: Path, index: int) -> str:
-    """ocr.ocr_page(), with the page's size and time recorded."""
+    """ocr.ocr_page(), with the page's backend, size and time recorded."""
     t0 = time.perf_counter()
     text = ocr.ocr_page(pdf, index)
     add(
         "ocr_pages",
         {
             "page": index + 1,
+            "backend": ocr.backend_name(),
             "chars": len(text),
             "seconds": round(time.perf_counter() - t0, 3),
         },
@@ -397,7 +398,12 @@ def markdown(d: dict) -> str:
         )
     pages = d.get("ocr_pages") or []
     if pages:
-        shown = ", ".join(f"{p['page']} ({p['chars']} zn., {p['seconds']} s)" for p in pages)
+        shown = ", ".join(
+            f"{p['page']} ({p['chars']} zn., {p['seconds']} s"
+            + (f", {p['backend']}" if p.get("backend") else "")
+            + ")"
+            for p in pages
+        )
         lines.append(f"- Strony OCR: {shown}")
     reading = d.get("reading") or {}
     if reading.get("marker_after_pages"):

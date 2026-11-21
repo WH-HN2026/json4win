@@ -111,3 +111,84 @@ changed. LLM time and tokens summed over the 30 documents (decision + extraction
 
 Identical scores (the same single disputed miss, `pelnomocnictwa_0010` `mocodawca[0].data.nazwa`); `low` is about 2×
 faster than the model default and uses about 5× fewer completion tokens, so it stays the default.
+
+---
+
+## Real scans: Tesseract vs Unlimited-OCR-2 (2026-11-21, task P4)
+
+`OCR_BACKEND=tesseract make eval-skany V=1` on all 30 scans in `dane/skany/` (Ryzen 9 7900X, CPU only, single
+process, cold Tesseract OCR cache), same LLM setup (`zai-glm-5-3-flash`, `LLM_REASONING_EFFORT=low`, global
+Mistral endpoint), compared against the `Unlimited-OCR-2` (`OCR_BACKEND=local`) run above.
+
+### Side-by-side summary
+
+| Backend / config | `odwolania` (10) | `pelnomocnictwa` (10) | `potwierdzenia` (10) | **Total TP/FP/FN** | **Total F1** | OCR s/page (min / med / max) | Wall time (30 docs) | Peak RSS | Retries |
+|---|---:|---:|---:|---|---:|---|---|---:|---:|
+| `local` Unlimited-OCR-2 (200 dpi) | 138/0/0 (**1.000**) | 74/1/0 (**0.993**) | 54/0/0 (**1.000**) | **266 / 1 / 0** *(43/1)* | **0.998** | 24.6 / **55.9** / 102 s | 30:54¹ | **11.1 GB** | 0 |
+| `tesseract` 5.5.4 `tessdata_best` (300 dpi, `pol`, default PSM 3) | 138/0/0 (**1.000**) | 74/1/0 (**0.993**) | 54/0/0 (**1.000**) | **266 / 1 / 0** *(43/1)* | **0.998** | 0.55 / **1.00** / 2.27 s² | **2:10** | **0.15 GB** | 0 |
+| `tesseract` 5.5.4 `tessdata_fast` (300 dpi, `pol`, default PSM 3) | 138/0/0 (**1.000**) | 74/1/0 (**0.993**) | 54/0/0 (**1.000**) | **266 / 1 / 0** *(43/1)* | **0.998**³ | 0.51 / **0.90** / 2.01 s² | **2:19** | **0.15 GB** | 2 |
+| `tesseract` 5.5.4 `tessdata_best` (300 dpi, `pol`, `PSM=6`) | 138/0/0 (**1.000**) | 74/1/0 (**0.993**) | 52/2/2 (**0.963**) | **264 / 3 / 2** *(43/1)* | **0.991** | 0.51 / **0.95** / 2.11 s² | **2:25** | **0.15 GB** | 1 |
+
+*(Parentheses in Total TP/FP/FN: `null ok / null wrong`.)*
+¹ A few pages were already cached in the local run; cold 37-page run would be ~35 min.
+² Pure Tesseract subprocess time (35 pages total: odwolania 1p×5, 2p×5, 3p×0). Including `pypdfium2` 300 dpi PNG
+render: `tessdata_best` PSM 3 is 0.70 / 1.58 / 3.07 s/page (56.9 s OCR+render + 72.4 s LLM = 2:10 wall).
+³ Same `evaluate.py` F1, but `tessdata_fast` introduced 3 silent digit/code errors masked by `SequenceMatcher >= 0.55`
+(see below).
+
+### Wrong fields (`evaluate.py -v`)
+
+- **`tessdata_best` (default PSM 3):** 1 miss — `pelnomocnictwa_0010` `mocodawca[0].data.nazwa` (GT `None`,
+  predicted `'Paweł Brzozowski Asterion Usługi Techniczne'`), identical to `Unlimited-OCR-2` (sole-trader GT
+  ambiguity).
+- **`tessdata_fast` (default PSM 3):** same 1 miss (`'Paweł Brzózowski Asterion Usługi Techniczne'`, with an
+  extra `o→ó` diacritic error).
+- **`tessdata_best` (`PSM=6`):** 3 misses — the same `pelnomocnictwa_0010` miss plus `potwierdzenia_0010`
+  `z_rachunku` and `na_rachunek` swapped (2 FP, 2 FN, `potwierdzenia` F1 0.963).
+
+### Where Tesseract loses (raw OCR quality & error analysis)
+
+With a strong reasoning extractor (`zai-glm-5-3-flash`) and `evaluate.py`'s fuzzy string threshold
+(`SequenceMatcher >= 0.55`), `tessdata_best` matches Unlimited-OCR-2 on headline F1 (**0.998**) while running
+**~56× faster per page** (median 1.00 s vs 55.9 s; 14× faster end-to-end wall time) and using **~74× less RAM**
+(0.15 GB vs 11.1 GB). Inspecting the raw OCR output (`scripts/ocr_probe.py quality` and exact field-level diffs
+against ground truth) reveals where Tesseract is noticeably weaker and relies on the LLM to repair errors:
+
+1. **Special symbols & e-mail `@` (`odwolania`):** Tesseract corrupted `@` in **every** appeal e-mail
+   (`0/5` verbatim on `ocr_probe`, vs `6/6` for Unlimited-OCR-2) — e.g. `a.rybakGrybak-kancelaria.example`,
+   `s.sikora(olszewski-kancelaria.example`, `d.kubiak()kubiak-kancelaria.example`,
+   `r.malinowski(a cieslak-kancelaria.example`, `kjodlowskiDjodlowski-kancelaria.example` (where the LLM repaired
+   `@` but dropped the missing dot in `k.jodlowski`). Similarly `&` in all-caps became `£`
+   (`OLSZEWSKI £ PARTNERZY SP.K.` → LLM wrote `i`), and `Sp. z o.o.` routinely read as `Sp. z 0.0.`.
+2. **Stamps, noise & low-contrast scans (`odwolania`, `potwierdzenia`):**
+   - `odwolania_0001` `tytul`: over a noisy region Unlimited-OCR-2 read `odpadów kómunalnych z nieruchomości
+     zamieszkłych` (recoverable), whereas Tesseract output `odpadów k munalnych z ypsi zamieszkałych`, causing the
+     LLM to guess `od mieszkańców niezamieszkałych` (opposite meaning; only counted as TP because
+     `SequenceMatcher = 0.842 >= 0.55`).
+   - `potwierdzenia_0008` (low-contrast scan): Tesseract garbled labels (`Rat hunex Ziecenadawcy`,
+     `©.. 17.00 PLN`), dropped dots in the date (`20 04 2026`, raw date probe `9/10` vs `10/10` for local OCR),
+     and mangled the transfer title (`pełnomocnectwa dia adw Rafal Maknowski`).
+   - `potwierdzenia_0009` `tytul`: `DA.ZP.242.13.2026` → `DA.ZP:242.13.2026`; `odwolania_0005` picked up a
+     spurious `4` from a logo before the law firm name.
+3. **Diacritics & letter confusions:** `odwolania_0003` `Żaneta` → `Zaneta` (`Ż→Z`), `odwolania_0004`
+   `Brzozowcu` → `Brzozewcu` (`o→e`); `tessdata_fast` also hallucinated `Brzózowski`. Overall `ocr_probe`
+   loose-name recall was **91.2%** (62/68) for `tessdata_best` vs **100.0%** (73/73) for Unlimited-OCR-2.
+4. **Digits & identifiers (`tessdata_best` vs `tessdata_fast`):**
+   - `tessdata_best` had **0 digit errors** across all 30 scans (100% exact NIP, REGON, KRS, PESEL, 26-digit
+     IBAN/NRB, amounts, dates; `ocr_probe` loose ID recall **100.0%**, 70/70).
+   - `tessdata_fast` (only ~0.1 s/page faster) introduced **3 silent digit/code corruptions** that still passed
+     `evaluate.py`'s `0.55` string threshold (`potwierdzenia_0003` `na_rachunek` `...100081...` → `...10081...0`,
+     `potwierdzenia_0007` `z_rachunku` `661090...` → `681090...`, `odwolania_0010` `numer_postepowania`
+     `ZP/107/2026` → `2P/107/2026`) and triggered 2 validation retries. **`tessdata_fast` is not recommended**
+     for financial/legal IDs.
+5. **Tables & two-column layouts (`potwierdzenia`):** Unlimited-OCR-2 emits explicit pipe-separated table rows
+   (`Z rachunku | 02 1090 ...`, `Na rachunek | 19 1030 ...`). Tesseract's default `PSM=3` preserved row labels well
+   enough for 10/10 bank confirmations, though `tessdata_fast` dropped 2-digit prefixes on `potwierdzenia_0006`
+   (caught by validation retry). Forcing `PSM=6` (single text block) dropped the left-column labels `Z rachunku`
+   and `Na rachunek` on `potwierdzenia_0010`, causing the LLM to swap sender and recipient accounts (**F1 0.963**
+   on `potwierdzenia`).
+
+**Takeaway:** `OCR_BACKEND=tesseract` with `tessdata_best` (300 dpi, `pol`, default PSM 3) is a viable
+high-speed, low-RAM alternative (1 s/page, 150 MB RAM, F1 0.998 with GLM-5.3-Flash), though its raw text has
+materially more symbol/noise errors than Unlimited-OCR-2 — a risk if paired with a smaller extraction LLM (M1)
+or stricter exact-match scoring on hidden tests. Default remains `OCR_BACKEND=local`.

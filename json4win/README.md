@@ -82,8 +82,16 @@ na CPU, bez GPU (warstwa tekstowa PDF nie jest używana). Szczegóły i pomiary:
 - **Cache:** wynik OCR każdej strony jest zapisywany (klucz: sha256 PDF + strona + ustawienia) w
   `~/.cache/json4win/ocr` (Windows: `%LOCALAPPDATA%\json4win\ocr`; zmiana: `JSON4WIN_CACHE_DIR`), więc
   ponowne przetworzenie tych samych plików jest natychmiastowe.
-- **Zmienne** (`.env.example`): `OCR_THREADS` (domyślnie liczba rdzeni fizycznych), `OCR_MODE`,
-  `OCR_MAX_TOKENS`, `OCR_DTYPE`, `OCR_FAST_DECODE`, `OCR_CACHE_ONLY`.
+- **Zmienne** (`.env.example`): `OCR_BACKEND` (`local` domyślnie | `tesseract`), `OCR_THREADS`
+  (domyślnie liczba rdzeni fizycznych), `OCR_MODE`, `OCR_MAX_TOKENS`, `OCR_DTYPE`, `OCR_FAST_DECODE`,
+  `OCR_CACHE_ONLY`.
+- **Alternatywny backend Tesseract (`OCR_BACKEND=tesseract`):** zamiast ciężkiego modelu VLM można
+  użyć lokalnego Tesseract OCR (Apache 2.0, kilkadziesiąt razy szybszy i ok. 0,2 GB RAM, kosztem
+  niższej dokładności na trudnych skanach/tabelach). Wymaga zainstalowanego programu `tesseract` oraz
+  pliku `pol.traineddata` w `~/.cache/json4win/tessdata` (Windows: `%LOCALAPPDATA%\json4win\tessdata`
+  lub wskazanie katalogu przez `OCR_TESSDATA_DIR`). Wyniki trafiają do osobnego katalogu cache.
+  Szczegóły instalacji i porównanie jakości: [`../docs/ocr.md`](../docs/ocr.md) oraz
+  [`../docs/quality.md`](../docs/quality.md).
 
 ## Struktura
 

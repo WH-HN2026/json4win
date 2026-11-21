@@ -37,7 +37,19 @@ def pdf(tmp_path) -> Path:
 @pytest.fixture
 def cache(tmp_path, monkeypatch) -> Path:
     monkeypatch.setenv("JSON4WIN_CACHE_DIR", str(tmp_path / "cache"))
-    for var in ("OCR_CACHE_ONLY", "OCR_MODE", "OCR_MAX_TOKENS", "OCR_DTYPE", "OCR_FAST_DECODE"):
+    for var in (
+        "OCR_BACKEND",
+        "OCR_CACHE_ONLY",
+        "OCR_MODE",
+        "OCR_MAX_TOKENS",
+        "OCR_DTYPE",
+        "OCR_FAST_DECODE",
+        "OCR_TESSERACT_CMD",
+        "OCR_TESSERACT_DPI",
+        "OCR_TESSERACT_LANG",
+        "OCR_TESSERACT_PSM",
+        "OCR_TESSDATA_DIR",
+    ):
         monkeypatch.delenv(var, raising=False)
     return tmp_path / "cache"
 
@@ -86,6 +98,7 @@ def test_ocr_page_runs_model_once_then_hits_cache(pdf, cache, fake_model):
 
 def test_cache_key_depends_on_content_page_and_settings(pdf, tmp_path, cache):
     s = ocr_engine.InferSettings()
+    assert ocr.settings_id(s) == "0fe4b22967e4791d"  # frozen local default cache key
     base = ocr.cache_path(pdf, 0, s)
     assert ocr.cache_path(pdf, 1, s) != base
     assert ocr.cache_path(pdf, 0, ocr_engine.InferSettings(mode="base")) != base
