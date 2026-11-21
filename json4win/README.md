@@ -66,7 +66,8 @@ Domyślnie serwer wybiera wolny port na `127.0.0.1` i automatycznie otwiera prze
 W interfejsie można:
 - przeglądać drzewo spraw z katalogu wejściowego i wgrywać pliki PDF (przeciągnij i upuść lub wybór z dysku) do nowej albo istniejącej sprawy,
 - uruchamiać przetwarzanie dla wybranej sprawy, pojedynczego pliku lub wszystkich spraw („Przetwórz”) z podglądem statusu każdego pliku na żywo,
-- oglądać podgląd PDF obok sformatowanego wyniku JSON (z wyszarzonymi polami `null` oraz oznaczeniem „nie rozpoznano (pusty JSON)” dla pustych wyników `{}`) i pobierać wynikowy plik JSON.
+- oglądać podgląd PDF obok sformatowanego wyniku JSON (z wyszarzonymi polami `null` oraz oznaczeniem „nie rozpoznano (pusty JSON)” dla pustych wyników `{}`) i pobierać wynikowy plik JSON,
+- tworzyć nowe klasy dokumentów bez pisania kodu w trzyetapowym kreatorze **Nowa klasa** (`/wizard`: przykładowe PDF-y + OCR → edytor kształtu JSON → edytor YAML z walidacją na żywo, testem potoku i zapisem).
 
 ## OCR (lokalnie, CPU)
 

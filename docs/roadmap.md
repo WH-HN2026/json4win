@@ -46,3 +46,4 @@ track. `orca orchestration worker-list` is the claim list, not this file.
 - [ ] **D2** Submission docs: project title, LLM used and its size, own quality results. deps: V1
 - [x] **G1** Optional GUI: upload PDFs, show the JSON results (O5). deps: I1
 - [x] **D3** LLM API compliance check (`docs/compliance.md`). deps: I1
+- [x] **G2** GUI config wizard: example PDFs → proposed JSON shape (editor) → proposed class YAML (live editor, test, save). deps: G1, X1

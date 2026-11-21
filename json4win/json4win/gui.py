@@ -12,7 +12,7 @@ from pathlib import Path, PurePosixPath
 from typing import Any
 from urllib.parse import parse_qs, quote, unquote, urlparse
 
-from json4win import cli, env
+from json4win import cli, env, gui_wizard
 
 log = logging.getLogger("json4win.gui")
 
@@ -20,8 +20,12 @@ STATIC_DIR = Path(__file__).resolve().parent / "gui_static"
 STATIC_FILES: dict[str, tuple[str, str]] = {
     "/": ("index.html", "text/html; charset=utf-8"),
     "/index.html": ("index.html", "text/html; charset=utf-8"),
+    "/wizard": ("wizard.html", "text/html; charset=utf-8"),
+    "/wizard.html": ("wizard.html", "text/html; charset=utf-8"),
     "/static/style.css": ("style.css", "text/css; charset=utf-8"),
     "/static/app.js": ("app.js", "application/javascript; charset=utf-8"),
+    "/static/wizard.css": ("wizard.css", "text/css; charset=utf-8"),
+    "/static/wizard.js": ("wizard.js", "application/javascript; charset=utf-8"),
 }
 
 MAX_UPLOAD_BYTES = 200 * 1024 * 1024  # 200 MiB
@@ -155,10 +159,18 @@ class GuiState:
         input_dir: Path,
         output_dir: Path,
         trace_dir: Path | None = None,
+        *,
+        wizard_dir: Path | None = None,
+        config_dir: Path | None = None,
     ) -> None:
         self.input_dir = input_dir.resolve()
         self.output_dir = output_dir.resolve()
         self.trace_dir = trace_dir.resolve() if trace_dir is not None else None
+        self.wizard = gui_wizard.WizardState(
+            wizard_dir=wizard_dir,
+            config_dir=config_dir,
+            forbidden_dirs=(self.output_dir, self.input_dir),
+        )
         self._lock = threading.Lock()
         self._job_seq = 0
         self._job: dict[str, Any] = {
@@ -447,6 +459,12 @@ class GuiServer(ThreadingHTTPServer):
         host, port = self.server_address[:2]
         return f"http://{host}:{port}"
 
+    def server_close(self) -> None:
+        try:
+            self.state.wizard.close()
+        finally:
+            super().server_close()
+
 
 class GuiRequestHandler(BaseHTTPRequestHandler):
     """HTTP request handler for the local json4win GUI."""
@@ -511,6 +529,10 @@ class GuiRequestHandler(BaseHTTPRequestHandler):
                 filename, content_type = STATIC_FILES[route]
                 data = (STATIC_DIR / filename).read_bytes()
                 self._send_bytes(HTTPStatus.OK, data, content_type)
+                return
+
+            if route == "/api/wizard/state":
+                self._send_json(HTTPStatus.OK, self.server.state.wizard.snapshot())
                 return
 
             if route == "/api/cases":
@@ -600,7 +622,87 @@ class GuiRequestHandler(BaseHTTPRequestHandler):
                 self._send_json(status, result)
                 return
 
+            if route == "/api/wizard/upload":
+                filename_raw = params.get("filename", [""])[0]
+                if not filename_raw and self.headers.get("X-Filename"):
+                    filename_raw = unquote(self.headers.get("X-Filename", ""))
+                data = self._read_body(MAX_UPLOAD_BYTES)
+                result = self.server.state.wizard.add_upload(filename_raw, data)
+                self._send_json(HTTPStatus.CREATED, result)
+                return
+
+            if route.startswith("/api/wizard/"):
+                raw = self._read_body(MAX_JSON_BODY_BYTES, allow_missing_length=True)
+                payload = json.loads(raw.decode("utf-8")) if raw else {}
+                if not isinstance(payload, dict):
+                    raise ValueError("Oczekiwano obiektu JSON.")
+                wiz = self.server.state.wizard
+                if route == "/api/wizard/reset":
+                    self._send_json(HTTPStatus.OK, wiz.reset())
+                    return
+                if route == "/api/wizard/remove":
+                    self._send_json(
+                        HTTPStatus.OK, wiz.remove_file(str(payload.get("doc_id") or ""))
+                    )
+                    return
+                if route == "/api/wizard/ocr":
+                    doc_id = payload.get("doc_id")
+                    max_pages = payload.get("max_pages", gui_wizard.DEFAULT_MAX_PAGES)
+                    result = wiz.run_ocr(
+                        doc_id=doc_id if isinstance(doc_id, str) and doc_id else None,
+                        max_pages=max_pages,
+                    )
+                    self._send_json(HTTPStatus.OK, result)
+                    return
+                if route == "/api/wizard/propose-szablon":
+                    result = wiz.propose_szablon(hint=str(payload.get("hint") or ""))
+                    self._send_json(HTTPStatus.OK, result)
+                    return
+                if route == "/api/wizard/preview":
+                    result = wiz.refresh_preview(payload.get("szablon"), payload.get("typy"))
+                    self._send_json(HTTPStatus.OK, result)
+                    return
+                if route == "/api/wizard/propose-yaml":
+                    result = wiz.propose_yaml(
+                        payload.get("szablon"),
+                        payload.get("typy"),
+                        hint=str(payload.get("hint") or ""),
+                    )
+                    self._send_json(HTTPStatus.OK, result)
+                    return
+                if route == "/api/wizard/validate":
+                    result = wiz.validate_yaml(
+                        payload.get("yaml_text", ""),
+                        save_draft=bool(payload.get("save_draft", True)),
+                    )
+                    self._send_json(HTTPStatus.OK, result)
+                    return
+                if route == "/api/wizard/test":
+                    result = wiz.test_draft(payload.get("yaml_text", ""))
+                    self._send_json(HTTPStatus.OK, result)
+                    return
+                if route == "/api/wizard/save":
+                    result = wiz.save_yaml(
+                        payload.get("yaml_text", ""),
+                        overwrite=bool(payload.get("overwrite", False)),
+                    )
+                    self._send_json(HTTPStatus.CREATED, result)
+                    return
+
             self._send_json(HTTPStatus.NOT_FOUND, {"error": "Nie znaleziono zasobu."})
+        except gui_wizard.WizardConflictError as exc:
+            self._send_json(
+                HTTPStatus.CONFLICT,
+                {
+                    "error": str(exc),
+                    "exists": True,
+                    "filename": exc.path.name,
+                    "path": str(exc.path),
+                    "target_dir": str(exc.target_dir),
+                },
+            )
+        except gui_wizard.WizardLlmError as exc:
+            self._send_json(HTTPStatus.BAD_GATEWAY, {"error": str(exc)})
         except OverflowError as exc:
             self._send_json(HTTPStatus.REQUEST_ENTITY_TOO_LARGE, {"error": str(exc)})
         except (ValueError, json.JSONDecodeError) as exc:
@@ -618,9 +720,17 @@ def create_server(
     *,
     port: int = 0,
     trace_dir: Path | None = None,
+    wizard_dir: Path | None = None,
+    config_dir: Path | None = None,
 ) -> GuiServer:
     """Create a configured localhost-only GUI HTTP server."""
-    state = GuiState(input_dir=input_dir, output_dir=output_dir, trace_dir=trace_dir)
+    state = GuiState(
+        input_dir=input_dir,
+        output_dir=output_dir,
+        trace_dir=trace_dir,
+        wizard_dir=wizard_dir,
+        config_dir=config_dir,
+    )
     return GuiServer(state=state, port=port)
 
 
