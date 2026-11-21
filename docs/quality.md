@@ -220,3 +220,31 @@ Per-class F1 and the misses:
 
 Takeaways: ministral-8b is the best small model (−0.004 F1 vs GLM on Unlimited-OCR-2, −0.006 on Tesseract) at 36×
 fewer total parameters; its misses and ministral-14b's KRS problem look fixable with config hints (tuning tasks).
+
+## Real scans: both OCR readings at once (experiment, 2026-11-21)
+
+Question: does the LLM do better when every page comes with **both** readings, Unlimited-OCR-2 (A) and Tesseract
+(B)? Experiment only, no app code: a scratch `sitecustomize` hook replaced `json4win.ocr.ocr_page` with
+"one line of instructions + `--- odczyt OCR A ---` + A + `--- odczyt OCR B ---` + B", both from the OCR cache
+(`OCR_CACHE_ONLY=1`). The instruction says the differences are OCR errors and asks the model to pick the reading
+that fits the field's format and context. The pipeline, prompts and configs are unchanged (after 62fa6d5). Every
+combination was **run twice** to see run-to-run noise. Models and efforts as in the model × OCR table above.
+
+| model | A only (run 1 / run 2) | B only | **A + B** | A + B misses in both runs |
+|---|---|---|---|---|
+| zai-glm-5-3-flash | 0.998 / 0.998 | 0.998 / 0.998 | 0.998 / 0.998 | the disputed `pelnomocnictwa_0010` `nazwa` only |
+| mistral-small-2603 | 0.989 / 0.996 | 0.987 / 0.987 | **0.996 / 0.996** | + `odwolania_0005` KRS (predicted where GT is null) |
+| ministral-14b-2512 | 0.985 / 0.992 | 0.987 / 0.987 | **0.994 / 0.996** | disputed one only (KRS `0000000000` on 0002 in 1 of 2 runs) |
+| ministral-8b-2512 | 0.994 / 0.994 | 0.992 / 0.996 | 0.991 / 0.991 | + `numer_ted` and a KRS returned as null, 2 account numbers |
+| ministral-3b-2512 | 0.975 / 0.975 | 0.943 / 0.948 | **0.981 / 0.979** | `miejscowosc` from the letterhead ×4, 1 account |
+
+- A + B helps the models that are weakest on one OCR: mistral-small +0.004–0.009, ministral-14b +0.007 (its KRS
+  `0000000000` mostly disappears), ministral-3b +0.005 vs A and +0.035 vs B. GLM is already at its ceiling (the
+  only miss is the disputed ground truth). ministral-8b gets slightly worse (−0.003): it returns null for
+  `numer_ted` and one KRS when the two readings disagree, and keeps both account misses.
+- Run-to-run noise is up to ±0.007 on A for ministral-14b and mistral-small, so differences of 1–2 fields are within
+  noise. The A + B gains for mistral-small and ministral-14b hold in both runs.
+- Cost: +17% prompt tokens (GLM: 281k vs 241k for 30 documents); OCR time +~1 s per page for Tesseract next to
+  ~56 s for Unlimited-OCR-2; LLM time about the same.
+- If we adopt it: a real `OCR_BACKEND=local+tesseract` mode (both backends, merged page text, one line in
+  `prompt_ekstrakcja.md` about two readings) is a small worker task.
