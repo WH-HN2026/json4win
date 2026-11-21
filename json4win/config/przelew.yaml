@@ -79,7 +79,6 @@ pola:
     typ: str
     normalizacja: digits
     format: '^(?:PL)?\d{26}$'
-    przyklady: ["12345678901234567890123456"]
     poprawki_ocr: >-
       Polski numer rachunku NRB ma dokładnie 26 cyfr (po ewentualnym prefiksie PL i usunięciu
       spacji); w cyfrach poprawiaj błędy OCR (O→0, l/I→1, Z→2, S→5, B→8).
@@ -129,7 +128,6 @@ pola:
     typ: str
     normalizacja: digits
     format: '^(?:PL)?\d{26}$'
-    przyklady: ["98765432109876543210987654"]
     poprawki_ocr: >-
       Polski numer rachunku NRB ma dokładnie 26 cyfr (po ewentualnym prefiksie PL i usunięciu
       spacji); w cyfrach poprawiaj błędy OCR (O→0, l/I→1, Z→2, S→5, B→8).

@@ -145,7 +145,6 @@ pola:
       zerami wiodącymi. Brak → null.
     normalizacja: digits
     format: '^\d{10}$'
-    przyklady: ["0000123456"]
     poprawki_ocr: "W cyfrach O→0, l/I→1, S→5, B→8."
 
   Odwolujacy[].nazwa:
@@ -160,7 +159,6 @@ pola:
       NIP Odwołującego (przy konsorcjum: Lidera konsorcjum), 10 cyfr bez kresek i spacji. Brak → null.
     normalizacja: digits
     format: '^\d{10}$'
-    przyklady: ["7811234560"]
     poprawki_ocr: "W cyfrach O→0, l/I→1, S→5, B→8."
 
   Odwolujacy[].regon:
@@ -168,7 +166,6 @@ pola:
       REGON Odwołującego (przy konsorcjum: Lidera konsorcjum), 9 lub 14 cyfr. Brak → null.
     normalizacja: digits
     format: '^(\d{9}|\d{14})$'
-    przyklady: ["300123456"]
     poprawki_ocr: "W cyfrach O→0, l/I→1, S→5, B→8."
 
   Odwolujacy[].przez-pelnomocnika:
@@ -214,7 +211,6 @@ pola:
       KRS tego Zamawiającego, tylko jeśli podany przy nim w bloku 'Zamawiający'. 10 cyfr. Brak → null.
     normalizacja: digits
     format: '^\d{10}$'
-    przyklady: ["0000654321"]
     poprawki_ocr: "W cyfrach O→0, l/I→1, S→5, B→8."
 
   Zamawiajacy[].nazwa:
@@ -228,14 +224,12 @@ pola:
     opis: "NIP tego Zamawiającego, tylko jeśli podany przy nim; 10 cyfr bez kresek. Brak → null."
     normalizacja: digits
     format: '^\d{10}$'
-    przyklady: ["8521234567"]
     poprawki_ocr: "W cyfrach O→0, l/I→1, S→5, B→8."
 
   Zamawiajacy[].regon:
     opis: "REGON tego Zamawiającego, tylko jeśli podany przy nim; 9 lub 14 cyfr. Brak → null."
     normalizacja: digits
     format: '^(\d{9}|\d{14})$'
-    przyklady: ["811234567"]
     poprawki_ocr: "W cyfrach O→0, l/I→1, S→5, B→8."
 
   Zamawiajacy[].prowadzacy_postepowanie:

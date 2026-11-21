@@ -69,8 +69,6 @@ pola:
     typ: str
     normalizacja: digits
     format: '^\d{10}$'
-    przyklady:
-      - "0000123456"
     poprawki_ocr: >-
       W cyfrach poprawiaj typowe błędy OCR: O/o→0, l/I/|→1, S→5, B→8, Z→2, G→6. Usuń
       spacje i myślniki; zachowaj wiodące zera (KRS ma zawsze 10 cyfr).
@@ -99,8 +97,6 @@ pola:
     typ: str
     normalizacja: digits
     format: '^\d{10}$'
-    przyklady:
-      - "5210001234"
     poprawki_ocr: >-
       W cyfrach poprawiaj typowe błędy OCR: O/o→0, l/I/|→1, S→5, B→8, Z→2, G→6. Usuń
       prefiks PL, myślniki i spacje (NIP ma zawsze 10 cyfr). Nie odrzucaj numeru z powodu
@@ -159,8 +155,6 @@ pola:
     typ: str
     normalizacja: digits
     format: '^\d{11}$'
-    przyklady:
-      - "81051401234"
     poprawki_ocr: >-
       W cyfrach poprawiaj typowe błędy OCR: O/o→0, l/I/|→1, S→5, B→8, Z→2, G→6. Usuń
       spacje i myślniki; zachowaj wiodące zera (PESEL ma zawsze 11 cyfr).
