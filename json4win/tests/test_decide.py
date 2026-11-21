@@ -1,10 +1,10 @@
 from pathlib import Path
 
 import pytest
-from tests.fakes import FakeLlm
 
 from json4win import decide, llm, ocr, pipeline
 from json4win.config import Reading
+from tests.fakes import FakeLlm
 
 
 class FakeOcr:
@@ -117,9 +117,8 @@ def test_pipeline_inne_after_one_page(monkeypatch, fake_ocr, pipeline_classes) -
 
 
 def test_pipeline_end_to_end(monkeypatch, fake_ocr, pipeline_classes) -> None:
-    from tests.fakes import fake_normalize
-
     from json4win import normalize
+    from tests.fakes import fake_normalize
 
     monkeypatch.setattr(normalize, "normalize", fake_normalize)
     f = fake_ocr(PAGES)

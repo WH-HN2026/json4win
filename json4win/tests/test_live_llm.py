@@ -8,9 +8,9 @@ import json
 import os
 
 import pytest
-from tests.fakes import fake_normalize
 
 from json4win import decide, env, extract, llm, normalize
+from tests.fakes import fake_normalize
 
 pytestmark = pytest.mark.skipif(os.environ.get("LLM_LIVE") != "1", reason="set LLM_LIVE=1")
 

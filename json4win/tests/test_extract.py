@@ -1,7 +1,7 @@
 import pytest
-from tests.fakes import FakeLlm, fail, fake_normalize
 
 from json4win import extract, llm, normalize
+from tests.fakes import FakeLlm, fail, fake_normalize
 
 GOOD = {
     "Faktura": {"numer": "FV/12/2031", "data": "17.04.2031", "kwota": "100,00", "pozycje": 1},

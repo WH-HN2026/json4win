@@ -1,9 +1,8 @@
 import json
 from pathlib import Path
 
-from json4win.cli import main
-
 from json4win import cli
+from json4win.cli import main
 
 
 def test_mirrors_input_tree(tmp_path: Path, monkeypatch) -> None:

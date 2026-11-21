@@ -1,7 +1,7 @@
 import pytest
-from tests.fakes import fake_normalize
 
 from json4win import normalize, validate
+from tests.fakes import fake_normalize
 
 
 @pytest.fixture(autouse=True)

@@ -2,9 +2,9 @@ from pathlib import Path
 
 import pytest
 import yaml
-from tests.conftest import FAKTURA_YAML
 
 from json4win import config
+from tests.conftest import FAKTURA_YAML
 
 
 def test_loads_fixture(config_dir: Path) -> None:

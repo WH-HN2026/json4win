@@ -6,6 +6,7 @@ import datetime
 from decimal import Decimal
 
 import pytest
+
 from json4win.normalize import KINDS, normalize
 
 

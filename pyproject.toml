@@ -3,6 +3,8 @@
 [tool.ruff]
 target-version = "py313"
 line-length = 100
+# json4win/ is the app root: its json4win/ (code) and tests/ packages are first-party everywhere.
+src = [".", "json4win"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]
