@@ -14,7 +14,7 @@
       "regon": null, // REGON Odwołującego lub Lidera konsorcjum podmiotów Odwołujących (jeśli występuje).
       "przez-pelnomocnika": 1, //1- tak, 0- nie
       "pelnomocnik": {
-        "imie_nazwisko": "Marcel Kielce", //imię i nazwisko jeśli występuje pełnomocnik odwołującego
+        "imie_nazwisko": "Marcel Kielce", //imię i nazwisko w mianowniku jeśli występuje pełnomocnik odwołującego
         "nazwa": "Kancelaria Radców Prawnych" //nazwa podmiotu zatrudniającego pełnomocnika
         "mail": "info@prawnik.xy" // adres email kontaktowy do pełnomocnika
       }

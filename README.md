@@ -155,7 +155,7 @@ Wyniki wygenerowane przez rozwiązanie zostaną porównane z zestawem danych ref
 Podstawową miarą jakości będzie [wskaźnik F1](https://en.wikipedia.org/wiki/F-score).
 
 ## Parametry maszyny na której będą testowane rozwiązania
-Będzie to laptop biurowy - 16GB RAM i Intel i7. Bez GPU. To oznacza, że dostarczone rozwiązanie, jeśli korzysta z LLM to powinno korzystać z API i być dostarczone z kluczem API. Obiecujemy nie wykorzystywać w innym celu niż proces testowy. API musi być świadczone przez firmę i z serwerów znajdujących się w EU/EOG.
+Będzie to laptop biurowy - 16GB RAM i Intel i7. Bez GPU. To oznacza, że dostarczone rozwiązanie, jeśli korzysta z LLM to powinno korzystać z API i być dostarczone z kluczem API. Obiecujemy nie wykorzystywać w innym celu niż proces testowy. API musi być świadczone przez firmę która posiada określony zakres i miejsce przetwarzania danych w swojej Polityce Prywatności, i z serwerów znajdujących się w EU/EOG.
 
 # 7. Kryteria oceny
 
