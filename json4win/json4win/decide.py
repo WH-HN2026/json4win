@@ -16,7 +16,7 @@ def _ask(system: str, text: str) -> dict:
         {"role": "user", "content": f"Tekst dokumentu (OCR):\n\n{text}"},
     ]
     trace.count("decision_llm_calls")
-    return llm.chat_json(llm.model("decision"), messages)
+    return llm.chat_json(llm.model("decision"), messages, role="decision")
 
 
 def classify(text: str, classes: dict[str, DocClass]) -> str | None:

@@ -41,7 +41,7 @@ def extract(c: DocClass, pages: list[str]) -> Extraction:
         {"role": "user", "content": f"Tekst dokumentu (OCR):\n\n{prompts.document_text(pages)}"},
     ]
     calls = 1
-    answer = llm.chat_json(model, messages)
+    answer = llm.chat_json(model, messages, role="extract")
     out, errors = validate.check(c, answer)
     raw = validate.coerce(c.szablon, answer)
     rounds = [validate.error_lines(errors)]
@@ -56,7 +56,7 @@ def extract(c: DocClass, pages: list[str]) -> Extraction:
             {"role": "user", "content": prompts.correction_prompt(validate.error_lines(errors))},
         ]
         try:
-            answer = llm.chat_json(model, messages)
+            answer = llm.chat_json(model, messages, role="extract")
         except llm.LlmError as e:
             log.warning("%s: retry %d failed: %s", c.id, retries, e)
             break

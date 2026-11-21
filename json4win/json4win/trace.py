@@ -1,10 +1,11 @@
 """Extraction trace (transparency): how every output value of one PDF was obtained.
 
 For each processed PDF, `<trace_dir>/<case>/<name>.trace.json` (machine-readable) and
-`<name>.trace.md` (a Polish table for people) record the PDF hash, the OCR pages read, the decision,
-the reading loop, the extraction rounds and, per output field, the final value, the raw LLM value,
-the normaliser and the value's provenance: the page and a snippet of the OCR text where the raw
-value was found by a deterministic fuzzy search (difflib), or "not found in text".
+`<name>.trace.md` (a Polish table for people) record the PDF hash, the OCR pages read, every LLM
+call (attempts, finish reasons, token usage, time), the decision, the reading loop, the extraction
+rounds and, per output field, the final value, the raw LLM value, the normaliser and the value's
+provenance: the page and a snippet of the OCR text where the raw value was found by a
+deterministic fuzzy search (difflib), or "not found in text".
 
 The recorder lives in a contextvar set by `document()`; the hooks below are no-ops without one, so
 the pipeline runs unchanged when tracing is off. Traces never go into output/ (architecture D3) and
@@ -325,6 +326,15 @@ def document(pdf: Path, path: Path | None, name: str | None = None) -> Iterator[
     finally:
         _active.reset(token)
         t.data["total_s"] = round(time.perf_counter() - t0, 3)
+        calls = t.data.get("llm") or []
+        t.data["llm_s"] = round(sum(c["seconds"] for c in calls), 3)
+        log.info(
+            "%s: LLM %d calls, %d attempts, %.1f s",
+            t.data["pdf"],
+            len(calls),
+            sum(len(c["attempts"]) for c in calls),
+            t.data["llm_s"],
+        )
         try:
             write(t, path)
         except (OSError, TypeError, ValueError) as e:
@@ -408,7 +418,16 @@ def markdown(d: dict) -> str:
             if errs:
                 lines.append(f"  - runda {i}: " + "; ".join(_cell(e) for e in errs))
     calls = (d.get("decision_llm_calls") or 0) + (ex["llm_calls"] if ex else 0)
-    lines.append(f"- Wywołań LLM łącznie: {calls}")
+    lines.append(f"- Wywołań LLM łącznie: {calls} ({d.get('llm_s')} s)")
+    for c in d.get("llm") or []:
+        if len(c["attempts"]) > 1 or c.get("error"):
+            tries = "; ".join(
+                f"{a['outcome']} (max_tokens {a['max_tokens']}, "
+                f"reasoning_effort {a['reasoning_effort'] or 'domyślny'})"
+                for a in c["attempts"]
+            )
+            end = f" → błąd: {_cell(c['error'])}" if c.get("error") else ""
+            lines.append(f"  - ponowienia `{c['model']}`: {tries}{end}")
     steps = ", ".join(f"{k} {v} s" for k, v in (d.get("steps_s") or {}).items())
     lines.append(f"- Czasy: {steps or '-'} (razem {d.get('total_s')} s)")
     fields = d.get("fields")

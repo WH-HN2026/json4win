@@ -156,6 +156,21 @@ def test_failure_trace_has_no_api_key(tmp_path, monkeypatch) -> None:
     assert json.loads(body)["error"]["step"] == "ekstrakcja"
 
 
+def test_extraction_failure_is_traced(app, tmp_path, monkeypatch) -> None:
+    """The first extraction call failing (after the LLM retries) gives {} and a trace saying why."""
+    inp, out = app
+    reason = llm.LlmError("m: finish_reason='length' after 3 attempts (max_tokens 1/1/2)")
+    fake = FakeLlm({"klasa": "faktura"}, reason, {"klasa": "inne"}, fail())
+    monkeypatch.setattr(llm, "chat_json", fake)
+    tdir = tmp_path / "ślady"
+    main(["--input", str(inp), "--output", str(out), "--trace", str(tdir)])
+    assert json.loads((out / "sprawa 1" / "faktura.json").read_text("utf-8")) == {}
+    t = _load(tdir, "faktura")
+    assert t["status"] == "error" and t["class"] == "faktura"
+    assert t["error"] == {"type": "LlmError", "message": str(reason), "step": "ekstrakcja"}
+    assert not fake.answers
+
+
 def test_hooks_are_noops_without_a_trace(tmp_path) -> None:
     trace.put("x", 1)
     trace.add("y", 2)

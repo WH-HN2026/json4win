@@ -36,6 +36,7 @@ def test_valid_first_time(monkeypatch, faktura) -> None:
     system, user = fake.calls[0][1]
     assert "=== strona 2 ===\nDo zapłaty 100,00 zł" in user["content"]
     assert "`Faktura.numer`" in system["content"]
+    assert fake.kwargs == [{"role": "extract"}]
 
 
 def test_invalid_then_valid(monkeypatch, faktura) -> None:

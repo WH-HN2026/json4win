@@ -100,6 +100,7 @@ def test_classify(monkeypatch, config_dir, answer, want) -> None:
     assert decide.classify("Faktura VAT nr FV/1/2031", classes) == want
     system = fake.calls[0][1][0]["content"]
     assert "`faktura`: Faktura VAT." in system and '"faktura", "inne"' in system
+    assert fake.kwargs == [{"role": "decision"}]
 
 
 @pytest.fixture

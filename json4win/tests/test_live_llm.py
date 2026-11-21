@@ -6,6 +6,7 @@ invented snippet, so no training data leaves the machine.
 
 import json
 import os
+from pathlib import Path
 
 import pytest
 
@@ -44,3 +45,19 @@ def test_live_extraction(faktura) -> None:
     print(json.dumps(r.data, ensure_ascii=False, indent=2))
     assert r.data["Faktura"]["numer"] == "FV/7/2031"
     assert r.data["Nabywcy"][0]["nip"] == "1112223344"
+
+
+def test_live_length_retry(monkeypatch, tmp_path) -> None:
+    """A budget too small for default reasoning forces finish_reason=length; the low-effort retry
+    (and random_seed) must be accepted by the API and give an answer."""
+    from json4win import trace
+
+    monkeypatch.setenv("LLM_MAX_TOKENS", "50")
+    monkeypatch.setenv("LLM_ANSWER_RETRIES", "3")
+    monkeypatch.setenv("LLM_MAX_TOKENS_CAP", "400")
+    messages = [{"role": "user", "content": 'Zwróć JSON {"wynik": <2+2>}'}]
+    with trace.document(Path(__file__), tmp_path / "r1.trace.json") as t:
+        got = llm.chat_json(llm.model("extract"), messages)
+    for a in t.data["llm"][0]["attempts"]:
+        print({k: a[k] for k in ("max_tokens", "reasoning_effort", "outcome", "reasoning_tokens")})
+    assert got == {"wynik": 4}

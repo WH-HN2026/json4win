@@ -30,9 +30,11 @@ class FakeLlm:
     def __init__(self, *answers: Any) -> None:
         self.answers = list(answers)
         self.calls: list[tuple[str, list[dict]]] = []
+        self.kwargs: list[dict] = []
 
-    def __call__(self, model: str, messages: list[dict], **_: Any) -> dict:
+    def __call__(self, model: str, messages: list[dict], **kwargs: Any) -> dict:
         self.calls.append((model, [dict(m) for m in messages]))
+        self.kwargs.append(kwargs)
         a = self.answers.pop(0)
         if isinstance(a, Exception):
             raise a
