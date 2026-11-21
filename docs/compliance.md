@@ -101,3 +101,14 @@ Because our pipeline sends scanned KIO appeals, powers of attorney, and bank-tra
 - **API provider & EU/EEA jurisdiction:** We use **Mistral La Plateforme** operated by **Mistral AI** (Paris, France), governed by GDPR with a published [Privacy Policy](https://legal.mistral.ai/terms/privacy-policy) and [DPA](https://legal.mistral.ai/terms/data-processing-addendum).
 - **EU endpoint & data controls:** Requests are routed to Mistral's EU regional inference endpoint (`https://api.eu.mistral.ai/v1`, EU/EFTA data centers), with API model training disabled (opted out) in the organization's Privacy settings (and ZDR requested for stateless `/v1/chat/completions` calls; otherwise 30-day rolling abuse-monitoring retention applies, and Mistral notes control-plane operational metadata may be handled outside the inference region).
 - **Model & open-weight licence:** **`zai-glm-5-3-flash`** (Z.ai GLM-5.3-Flash, **MIT** open-weight licence, **320B total / 18B active** MoE parameters), hosted directly on Mistral's infrastructure (not routed to Z.ai). `deepseek-v4-1-flash-1017` was excluded because its Public Preview status prohibits training opt-out and ZDR.
+
+---
+
+## Coordinator follow-up (2026-11-21)
+
+- Verified with the dev key: `GET https://api.eu.mistral.ai/v1/models` lists `zai-glm-5-3-flash` (and
+  `deepseek-v4-1-flash-1017`), and a JSON-mode chat completion with `zai-glm-5-3-flash` on the EU endpoint returns
+  `finish_reason: stop`. The app now defaults to `https://api.eu.mistral.ai/v1` (`LLM_BASE_URL`).
+- DeepSeek V4.1 Flash is dropped from the comparison (Public Preview: no opt-out, no ZDR).
+- Before delivery (task D1, user action): in the Mistral admin panel opt out of training (*Privacy → Data usage
+  for improving our services*), consider requesting ZDR, and create the separate jury key on that organisation.

@@ -51,10 +51,12 @@ Ours: [`ewaluacja/`](../ewaluacja), an approximation of the organizers' F1 metri
   run. Results are cached by (PDF sha256, page, model revision, render settings) in a per-user cache dir shared
   by all worktrees (`JSON4WIN_CACHE_DIR` overrides). `OCR_CACHE_ONLY=1` turns a cache miss into an error (dev/eval).
   Contract: `json4win/json4win/ocr.py`.
-- **D11 LLM:** Mistral La Plateforme (Mistral AI, France), OpenAI-compatible chat completions,
-  `https://api.mistral.ai/v1`. Decision model and extraction model are both `zai-glm-5-3-flash`
+- **D11 LLM:** Mistral La Plateforme (Mistral AI, France), OpenAI-compatible chat completions, **EU regional
+  endpoint** `https://api.eu.mistral.ai/v1` (inference in EU/EFTA data centers; the default `api.mistral.ai`
+  is global with no location commitment, see [`compliance.md`](compliance.md)). Only GA models: Public Preview
+  models (e.g. DeepSeek V4.1 Flash) allow no training opt-out or ZDR. Decision model and extraction model are both `zai-glm-5-3-flash`
   (GLM-5.3-Flash, MIT, 320B MoE / 18B active), set separately in env (`LLM_MODEL_DECISION`, `LLM_MODEL_EXTRACT`)
-  so others (`deepseek-v4-1-flash-1017`, smaller Mistral models) can be compared. GLM is a reasoning model: on
+  so others (smaller GA open-weight models) can be compared. GLM is a reasoning model: on
   this API `message.content` is a list of `thinking` and `text` blocks, and reasoning tokens count against
   `max_tokens`.
 - **D12 Config-driven prompts:** a generic base prompt is filled in from the class config (fields, types, formats,
@@ -105,7 +107,7 @@ Normaliser kinds (contract for configs and `normalize.py`): `text`, `digits`, `d
 - **O3** Jury API key: the dev key lives in `json4win/.env.local`; before delivery the user generates a separate
   key with a spending limit for the jury and we decide how it is handed over (not in git) [D1].
 - **O5** GUI: yes/no and form [G1].
-- **O6** Model size vs. F1: GLM-5.3-Flash (320B total) and DeepSeek V4.1 Flash (552B) score low on the size
+- **O6** Model size vs. F1: GLM-5.3-Flash (320B total, 18B active) scores low on the size
   criterion; compare F1 with smaller open-weight models once the pipeline works end to end [M1].
 - **O7** OCR speed on the jury laptop (CPU only, possibly no AVX-512): measured by P1; reading only the pages a
   class needs is the main lever.
