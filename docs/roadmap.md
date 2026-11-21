@@ -49,6 +49,7 @@ track. `orca orchestration worker-list` is the claim list, not this file.
 ## D: delivery
 - [ ] **D1** Jury path: clean clone → `pip install -r json4win/requirements.txt` → `start.bat` / `start.sh` on Windows and Linux, CPU only, model download, timing on jury-like limits; jury key (O3); switch `LLM_BASE_URL` (default + .env.example) to the EU endpoint `https://api.eu.mistral.ai/v1`. deps: P1, C1
 - [ ] **D2** Submission docs: project title, LLM used and its size, own quality results. deps: V1
+- [ ] **D4** Final presentation (Slides artifact, gov.pl-like style): product, problem, solution + GUI, EU models and diagram, comparisons, results, deployment examples, config-tool flow; placeholders for anything not decided yet. deps: D2, G3
 - [x] **G1** Optional GUI: upload PDFs, show the JSON results (O5). deps: I1
 - [x] **D3** LLM API compliance check (`docs/compliance.md`). deps: I1
 - [x] **G2** GUI config wizard: example PDFs → proposed JSON shape (editor) → proposed class YAML (live editor, test, save). deps: G1, X1
