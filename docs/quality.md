@@ -248,3 +248,106 @@ combination was **run twice** to see run-to-run noise. Models and efforts as in 
   ~56 s for Unlimited-OCR-2; LLM time about the same.
 - If we adopt it: a real `OCR_BACKEND=local+tesseract` mode (both backends, merged page text, one line in
   `prompt_ekstrakcja.md` about two readings) is a small worker task.
+
+## Real scans: LightOnOCR-2-1B (task P5, 2026-11-21)
+
+Question: how does `lightonai/LightOnOCR-2-1B` (Apache 2.0, ~1B params, revision `be7c4131`) compare with
+Unlimited-OCR-2 (A) and Tesseract (B) on the 30 scans in `dane/skany/`, on its own (C) and as a second reading next
+to A or B? LightOnOCR is a **benchmark-only** backend (`OCR_BACKEND=lighton`): it needs transformers 5, so it runs in
+`.venv-lighton` (docs/ocr.md). Settings: 200 dpi, longest side 1540 px, greedy, max 4096 tokens, bf16 (same text as
+fp32 on a test page, 1.5× faster on this CPU, which has AVX512-BF16), 12 threads, no AVX2/RAM caps (like the A and B
+cache fills above).
+
+### OCR speed and RAM (one process, cold cache, Ryzen 9 7900X)
+
+| backend | pages | s/page (min / median / max) | OCR wall time | peak RSS |
+|---|---:|---|---|---:|
+| A Unlimited-OCR-2 (`local`, mixed fp32/bf16) | 37 | 24.6 / **55.9** / 102 | 30:54 (incl. LLM) | 11.1 GB |
+| B Tesseract 5.5.4 `tessdata_best` | 35 | 0.55 / **1.00** / 2.27 | 2:10 (incl. LLM) | 0.15 GB |
+| **C LightOnOCR-2-1B (`lighton`, bf16)** | 37 | 41.5 / **61.8** / 131 | **43:38**¹ (incl. LLM) | **3.2 GB** |
+
+¹ 36 pages in the eval run + 1 page (`potwierdzenia/0001`, 59 s) cached by a smoke test just before; the per-page OCR
+times of all 37 pages add up to 43:05.
+
+Speed is set by decode: ~2150 prompt tokens per page (≈11 s prefill), then ~12–13 tok/s; output 445–1532
+tokens/page (median 737). No page hit the token limit (all `finish=stop`). fp32 is 1.5× slower (91–95 s vs 59–61 s on
+`potwierdzenia/0001`) and needs 6.3 GB. On a CPU without AVX512-BF16 bf16 may lose that edge (not measured). C reads 2
+more pages than B: on `odwolania_0001` it wrote `ząrzucam` instead of `zarzucam`, so the odwolanie marker
+(`zarzuca\w*`) did not match on page 1 and the pipeline read pages 2–3.
+
+### F1 per model (30 scans, OCR from the cache, `OCR_CACHE_ONLY=1`, each combination run twice)
+
+Same models/efforts and the same two-readings hook as in the sections above (instruction line + `--- odczyt OCR A ---` /
+`--- odczyt OCR B ---`; for A+C the first reading is A, for B+C it is B; the second is C). A, B and A+B are copied from
+"Real scans: both OCR readings at once". TP/FP/FN are given for run 1 / run 2.
+
+| model | A | B | A + B | **C** (TP/FP/FN) | **A + C** (TP/FP/FN) | **B + C** (TP/FP/FN) |
+|---|---|---|---|---|---|---|
+| zai-glm-5-3-flash (low) | 0.998 / 0.998 | 0.998 / 0.998 | 0.998 / 0.998 | 0.994 / **0.998** (265/2/1, 266/1/0) | 0.991 / **0.998** (264/3/2, 266/1/0) | **0.998 / 0.998** (266/1/0 ×2) |
+| mistral-small-2603 | 0.989 / 0.996 | 0.987 / 0.987 | 0.996 / 0.996 | **0.996 / 0.996** (266/2/0 ×2) | **0.996 / 0.996** (266/2/0 ×2) | **0.996 / 0.996** (266/2/0 ×2) |
+| ministral-14b-2512 | 0.985 / 0.992 | 0.987 / 0.987 | 0.994 / 0.996 | 0.992 / 0.996 (264/2/2, 265/1/1) | 0.996 / 0.996 (265/1/1 ×2) | **0.998 / 0.998** (266/1/0 ×2) |
+| ministral-8b-2512 | 0.994 / 0.994 | 0.992 / 0.996 | 0.991 / 0.991 | 0.987 / 0.994 (260/1/6, 264/1/2) | 0.983 / 0.987 (261/4/5, 262/3/4) | 0.991 / 0.991 (263/2/3 ×2) |
+| ministral-3b-2512 | 0.975 / 0.975 | 0.943 / 0.948 | 0.981 / 0.979 | 0.975 / 0.977 (258/5/8, 260/6/6) | 0.977 / 0.974 (260/6/6, 259/7/7) | **0.983 / 0.983** (261/4/5 ×2) |
+
+The cache-filling run (C, GLM, OCR running at the same time) gave 0.994 (265/2/1), the same as C run 1.
+LLM wall time per 30 scans: 70–150 s, about the same for C, A+C and B+C (ministral-14b slowest).
+
+Misses common to both runs (every model also misses the disputed `pelnomocnictwa_0010` `mocodawca.nazwa`, sole
+trader, GT null; not repeated below):
+- **C:** GLM none (run 1 also `odwolania_0006` `czynnosc_powod_id` 8 vs 7); mistral-small `odwolania_0005` KRS predicted
+  where GT is null (same in A, A+B); ministral-14b `potwierdzenia_0006` `z_rachunku` null; ministral-8b
+  `potwierdzenia_0005` `na_rachunek` and `potwierdzenia_0006` `z_rachunku` null (run 1 also NIP/KRS on
+  `odwolania_0009`); ministral-3b `miejscowosc` from the letterhead ×5, `potwierdzenia_0005` `na_rachunek` null.
+- **A + C:** GLM none (run 1: `odwolania_0005` `czynnosc_opis`/`czynnosc_powod_id`); mistral-small the `odwolania_0005`
+  KRS; ministral-14b `potwierdzenia_0008` `z_rachunku` null; ministral-8b KRS as `0000000039`/`0000000038` on
+  `pelnomocnictwa_0004/0005` and null on `odwolania_0009`, `potwierdzenia_0006` `z_rachunku`; ministral-3b
+  `miejscowosc` ×5, `potwierdzenia_0005` `na_rachunek`.
+- **B + C:** GLM and ministral-14b none; mistral-small the `odwolania_0005` KRS; ministral-8b KRS on `odwolania_0009`
+  (null) and `pelnomocnictwa_0005` (`0000000038`); ministral-3b `miejscowosc` ×4, `potwierdzenia_0005` `na_rachunek`.
+
+In every case checked (`odwolania_0009` NIP/KRS, the `potwierdzenia_0003/0005/0006` accounts) the value is correct in
+the C text: these are model-side nulls, not OCR errors.
+
+### What LightOnOCR reads well and badly
+
+Raw OCR probe (`OCR_CACHE_ONLY=1 scripts/ocr_probe.py quality --pages 1`, first page of each scan, share of ground-truth
+values found in the text):
+
+| group | A Unlimited-OCR-2 | B Tesseract | **C LightOnOCR** |
+|---|---|---|---|
+| names, verbatim (loose = no diacritics) | 84/91 (90/91) | 83/91 (84/91) | **90/91 (90/91)** |
+| ids (NIP/REGON/KRS/PESEL/accounts), loose | 84/84 | 84/84 | 84/84 |
+| e-mails (`pelnomocnik.mail`) | 9/9 | 0/9 | **9/9** |
+| dates | 27/30 | 26/30 | 26/30 |
+| free text (titles, transfer titles) | 24/39 | 16/39 | 21/39 |
+| all "gate" fields, verbatim (loose) | 151/175 (174/175) | 150/175 (168/175) | **157/175 (174/175)** |
+
+- **Digits and ids:** no digit error found on any NIP, REGON, KRS, PESEL, IBAN/NRB, amount or transaction id.
+- **E-mails and `@`, `&`:** read correctly (9/9 e-mails; `OLSZEWSKI & PARTNERZY` kept), Tesseract's main weakness.
+- **Names:** the best of the three verbatim; `Brzozowcu` → `Brzozewcu` (same slip as Tesseract), `Malinowski` →
+  `Malnowski` once.
+- **Diacritics:** mostly right, but errors go both ways: dropped (`oplata`, `Usluga`) and **invented**
+  (`ząrzucam`, `Powiątowych`, `kanałizacyjnej`, `PEŁNOMOCNIĆTWA`, `Pułbcznych`). The invented `ą` in `ząrzucam` is
+  what made the pipeline read 2 extra pages of one appeal.
+- **Punctuation:** small dots get lost (`ZP 271.59.2026` for `ZP.271.59.2026`, `20 04 2026` on the low-contrast
+  `potwierdzenia_0008`, also wrong in Tesseract).
+- **Tables and layout:** tables come out as HTML `<table>` (6 of 37 pages, all bank confirmations; no markdown
+  pipe tables seen), cleaned to `Z rachunku | 68 1090 …`, `Na rachunek | 60 1010 …`, so labels stay next to values;
+  no sender/recipient swaps. It also invents CSS
+  `<div style=…>` blocks for logos and stamps (dropped by `clean_text`) and fills empty fields with `*(blank)*`
+  (dropped). One bank logo became LaTeX (`$\mathbf{B}$ Bank Bałtycki`), which `clean_text` keeps (harmless
+  here; the only markup left over in the 37 cleaned pages).
+
+**Takeaways:**
+- With GLM, C alone reaches A's ceiling in one of two runs (0.994 / 0.998; the only extra miss is
+  `czynnosc_powod_id` 8 instead of 7).
+- With mistral-small, C alone is as good as A + B (0.996 both runs).
+- B + C (Tesseract 1 s/page + LightOnOCR) is the best of the two-reading pairs (A+B, A+C, B+C) for every model:
+  GLM and ministral-14b 0.998 in both runs, ministral-3b 0.983 (the best for the smallest model so far). The
+  exception versus single readings is ministral-8b: B + C (0.991) is below A alone (0.994).
+- A + C adds nothing over C, and for ministral-8b it is worse.
+- ministral-8b on C alone: 0.987 / 0.994 vs 0.994 on A, i.e. within the run-to-run noise in one of two runs; its
+  misses are nulls for account numbers that are correct in the text.
+- Cost: C is no faster than A here (median 61.8 vs 55.9 s/page, mostly decode at ~12–13 tok/s), but it needs 3.2 GB
+  instead of 11.1 GB of RAM.
+- Delivering it would need transformers 5 (see docs/ocr.md), so it stays a benchmark.

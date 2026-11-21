@@ -1,0 +1,18 @@
+# Dev/benchmark only (task P5, docs/ocr.md): venv `.venv-lighton` for OCR_BACKEND=lighton.
+# LightOnOCR-2-1B needs transformers>=5, json4win/requirements.txt pins transformers 4.52.1 for
+# Unlimited-OCR-2, so the two cannot share a venv. Not part of the delivery.
+PyYAML==6.0.3
+
+# torch CPU-only wheels, same index and versions as json4win/requirements.txt
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.13.0+cpu
+torchvision==0.28.0+cpu
+
+# OCR: lightonai/LightOnOCR-2-1B (Apache 2.0) with transformers 5
+transformers==5.24.0
+tokenizers==0.23.3
+huggingface-hub==2.4.0
+safetensors==0.8.0
+numpy==2.5.5
+pillow==13.0.0
+pypdfium2==5.15.2

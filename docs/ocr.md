@@ -1,9 +1,10 @@
-# OCR engine: Unlimited-OCR-2 on CPU (task P1) and Tesseract backend (task P4)
+# OCR engine: Unlimited-OCR-2 on CPU (task P1), Tesseract backend (task P4), LightOnOCR-2-1B benchmark backend (task P5)
 
 Code: [`json4win/json4win/ocr.py`](../json4win/json4win/ocr.py) (contract, backend dispatcher, rendering,
 shared cache, local text cleaning), [`ocr_engine.py`](../json4win/json4win/ocr_engine.py) (Unlimited-OCR-2
 model load + inference), [`ocr_fast.py`](../json4win/json4win/ocr_fast.py) (opt-in faster decode),
-[`ocr_tesseract.py`](../json4win/json4win/ocr_tesseract.py) (Tesseract CLI backend via `subprocess`). Dev tools:
+[`ocr_tesseract.py`](../json4win/json4win/ocr_tesseract.py) (Tesseract CLI backend via `subprocess`),
+[`ocr_lighton.py`](../json4win/json4win/ocr_lighton.py) (LightOnOCR-2-1B, benchmark-only). Dev tools:
 [`scripts/ocr_cache.py`](../scripts/ocr_cache.py) (`make ocr-cache`), [`scripts/ocr_probe.py`](../scripts/ocr_probe.py) (gate bench + quality probe).
 
 ## Backendy OCR
@@ -19,13 +20,16 @@ Wybór backendu odbywa się zmienną środowiskową `OCR_BACKEND` (w `.env.local
   `pypdfium2` (domyślnie 300 dpi) i przekazywane na `stdin` jako PNG. Bardzo szybki (~1 s/stronę,
   niski RAM), ale wrażliwszy na układ dwukolumnowy/tabele i drobne skazy skanów (porównanie w
   [`docs/quality.md`](quality.md)).
+- **`OCR_BACKEND=lighton` (tylko benchmark):** `lightonai/LightOnOCR-2-1B` (Apache 2.0, ~1B parametrów) na CPU
+  przez `json4win.ocr_lighton`. Wymaga transformers 5, więc działa tylko w osobnym venv `.venv-lighton`
+  (sekcja niżej); nie jest częścią dostawy.
 - Nieznana wartość `OCR_BACKEND` podnosi `ValueError`.
 
 ### Zmienne dla `OCR_BACKEND=tesseract`
 
 | Zmienna | Domyślnie | Opis |
 |---|---|---|
-| `OCR_BACKEND` | `local` | `local` \| `tesseract` |
+| `OCR_BACKEND` | `local` | `local` \| `tesseract` \| `lighton` |
 | `OCR_TESSERACT_CMD` | `tesseract` | Nazwa lub pełna ścieżka pliku wykonywalnego Tesseract |
 | `OCR_TESSERACT_LANG` | `pol` | Język(i) przekazane przez `-l` (np. `pol` lub `pol+eng`) |
 | `OCR_TESSERACT_DPI` | `300` | Rozdzielczość renderowania `pypdfium2` oraz flaga `--dpi` |
@@ -58,7 +62,52 @@ wraz z plikiem `settings.json`:
   `dpi`, `psm`, `format` oraz skrót sha256 użytych plików `<lang>.traineddata` (`tessdata_sha256`).
   Dzięki temu wyniki `local` i `tesseract` — a także różne wersje Tesseracta, `tessdata_best` vs
   `tessdata_fast`, różne `dpi`/`psm`/`lang` — nigdy się nie mieszają.
+- Dla `lighton` klucz to same stałe i ustawienia (`backend`, `model`, `revision`, `dpi`, `longest_side`, `resize`,
+  `decoding`, `max_tokens`, `dtype`, `format`), bez wersji torch/transformers, więc główny `.venv` (transformers
+  4.52.1) czyta cache LightOnOCR z `OCR_CACHE_ONLY=1`. Domyślny `settings_id`: `13f6697c5daa30bf`.
 - Ślad ekstrakcji (`trace.py`) zapisuje pole `backend` przy każdej przeczytanej stronie w `ocr_pages`.
+
+### `OCR_BACKEND=lighton`: LightOnOCR-2-1B (tylko benchmark, task P5)
+
+**Dlaczego tylko benchmark:** model jest w transformers dopiero od wersji 5 (`LightOnOcrForConditionalGeneration`,
+`LightOnOcrProcessor`, `model_type` mistral3), a `json4win/requirements.txt` przypina `transformers==4.52.1` dla
+zdalnego kodu Unlimited-OCR-2 (`trust_remote_code`; tę wersję przypina karta modelu, na transformers 5 nie był
+testowany). Dlatego oba modele nie dzielą jednego venv. Na transformers < 5 `ocr_lighton` podnosi `RuntimeError("LightOnOCR needs transformers>=5 …: use
+.venv-lighton, see docs/ocr.md")`, zanim cokolwiek zaimportuje.
+
+**Venv (3 polecenia, z katalogu głównego repo):**
+
+```bash
+uv venv --python 3.13 .venv-lighton
+uv pip install --index-strategy unsafe-best-match --python .venv-lighton/bin/python -r requirements-lighton.txt
+OCR_BACKEND=lighton .venv-lighton/bin/python scripts/eval_skany.py -v   # wypełnia cache (jeden proces OCR)
+```
+
+`requirements-lighton.txt` (dev): te same torch/torchvision CPU co aplikacja, `transformers==5.24.0`,
+`tokenizers==0.23.3`, `huggingface-hub==2.4.0`, plus PyYAML/pypdfium2/pillow/numpy. Pierwsze uruchomienie pobiera
+~2 GB wag (bf16 safetensors) z rewizji `be7c41313c30e940fe5571de59e5fabc779e00c8`. Potem porównania LLM idą z
+głównego `.venv` z `OCR_BACKEND=lighton OCR_CACHE_ONLY=1`.
+
+**Jak działa:** strona renderowana przez pypdfium2 w 200 dpi i zmniejszana (LANCZOS, proporcje zachowane) do
+dłuższego boku 1540 px (zalecenia z karty modelu); jedno wywołanie `generate()` na stronę, **greedy**
+(`do_sample=False`; `generation_config.json` modelu losuje z temperaturą 0.2), maks. `OCR_LIGHTON_MAX_TOKENS`
+(domyślnie 4096) tokenów. Prompt to sam obraz (szablon czatu modelu nie ma tekstu polecenia), ~2150 tokenów
+wejścia na stronę A4. Wyjście to markdown (nagłówki `#`, `**pogrubienia**`, tabele markdown lub HTML,
+`![obraz](…)`); w cache zapisywany jest surowy markdown, a `ocr_lighton.clean_text()` robi z niego tekst
+(tabele: komórki rozdzielone ` | `, obrazki i linie `---` usunięte, etykiety linków zostają, wypełniacz
+`*(blank)*` usunięty, `\-` → `-`).
+
+| Zmienna | Domyślnie | Opis |
+|---|---|---|
+| `OCR_LIGHTON_DTYPE` | `bf16` | `bf16` \| `fp32`. Na stronie testowej (`potwierdzenia/0001`, 675 tokenów) tekst identyczny; bf16 59–61 s vs fp32 91–95 s, RSS 2,9 vs 6,3 GB. Ten CPU (Ryzen 9 7900X) ma AVX512-BF16; bez niego bf16 może być wolniejszy niż fp32 (jak przy Unlimited-OCR-2) |
+| `OCR_LIGHTON_MAX_TOKENS` | `4096` | Limit tokenów wyjścia na stronę (wartość z karty modelu) |
+| `OCR_THREADS` | rdzenie fizyczne | Wspólne z `local`; 8 vs 12 wątków: bez różnicy w czasie |
+
+**Co trzeba by zrobić, żeby go dostarczyć:** (a) przejść całą aplikację na transformers 5 i porzucić
+Unlimited-OCR-2 albo przenieść jego zdalny kod na transformers 5 (nietestowane, czy działa bez zmian), albo (b) uruchamiać LightOnOCR jako osobny
+proces z własnym venv (dwa zestawy zależności w dostawie, `start.bat` musiałby tworzyć drugi venv). Do tego pomiar
+na laptopie AVX2 bez AVX512-BF16 (wybór `fp32` vs `bf16`) i ochrona przed pętlami dekodowania greedy (np.
+`no_repeat_ngram_size` jak w `local`). Wyniki: [`quality.md`](quality.md), sekcja "Real scans: LightOnOCR-2-1B".
 
 ## How it works
 

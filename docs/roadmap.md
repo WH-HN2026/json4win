@@ -13,6 +13,7 @@ track. `orca orchestration worker-list` is the claim list, not this file.
 - [x] **P1** Local OCR engine: Unlimited-OCR-2 on CPU behind `json4win.ocr` (page rendering, pinned revision, shared cache, `OCR_CACHE_ONLY`), `scripts/ocr_cache.py` + `make ocr-cache`, speed/RAM/quality gate in `docs/ocr.md`. deps: I1
 - [ ] **P2** Fill the training OCR cache (coordinator runs `make ocr-cache` once, one process). deps: P1
 - [x] **P4** OCR backend switch (`OCR_BACKEND=local|tesseract`) + Tesseract comparison on real scans. deps: P1
+- [x] **P5** LightOnOCR-2-1B backend (`OCR_BACKEND=lighton`, benchmark-only: needs transformers 5) + comparison on real scans. deps: P4
 
 ## C: core engine
 - [x] **C1** Config-driven engine: config loader/validator, base + decision prompts, LLM client (Mistral API), decision step, read-until-complete loop, extraction with validation/retry, wiring in `pipeline.py`. deps: I1

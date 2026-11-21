@@ -3,7 +3,9 @@
 The pipeline never uses the PDF text layer: every page it reads comes from here. Pages are rendered
 with pypdfium2 and passed to the backend selected by `OCR_BACKEND`:
 - `local` (default): Unlimited-OCR-2 on CPU (`json4win.ocr_engine`);
-- `tesseract`: Tesseract CLI via subprocess (`json4win.ocr_tesseract`).
+- `tesseract`: Tesseract CLI via subprocess (`json4win.ocr_tesseract`);
+- `lighton`: LightOnOCR-2-1B on CPU (`json4win.ocr_lighton`), benchmark-only: needs transformers 5
+  (`.venv-lighton`); its cache can be read from any venv with OCR_CACHE_ONLY=1.
 
 The raw backend output is cached in `json4win.env.cache_dir()/ocr/<settings_id>/<sha256>/`
 and cleaned to plain text on read. With `OCR_CACHE_ONLY=1` a cache miss raises `OcrCacheMiss`.
@@ -20,17 +22,18 @@ import tempfile
 from dataclasses import replace
 from pathlib import Path
 
-from json4win import env, ocr_engine, ocr_tesseract
+from json4win import env, ocr_engine, ocr_lighton, ocr_tesseract
 from json4win.ocr_engine import InferSettings
+from json4win.ocr_lighton import LightOnSettings
 from json4win.ocr_tesseract import TesseractSettings
 
 log = logging.getLogger(__name__)
 
 RENDER_DPI = ocr_engine.RENDER_DPI
 CACHE_FORMAT = ocr_engine.CACHE_FORMAT
-BACKENDS = (ocr_engine.BACKEND, ocr_tesseract.BACKEND)
+BACKENDS = (ocr_engine.BACKEND, ocr_tesseract.BACKEND, ocr_lighton.BACKEND)
 
-OcrSettings = InferSettings | TesseractSettings
+OcrSettings = InferSettings | TesseractSettings | LightOnSettings
 
 
 class OcrCacheMiss(RuntimeError):
@@ -38,7 +41,7 @@ class OcrCacheMiss(RuntimeError):
 
 
 def backend_name() -> str:
-    """Active OCR backend from OCR_BACKEND ('local' default, or 'tesseract')."""
+    """Active OCR backend from OCR_BACKEND ('local' default, 'tesseract' or 'lighton')."""
     name = env.get("OCR_BACKEND", ocr_engine.BACKEND).strip().lower()
     if name not in BACKENDS:
         raise ValueError(f"unknown OCR_BACKEND {name!r}; expected one of: {', '.join(BACKENDS)}")
@@ -62,6 +65,8 @@ def ocr_page(pdf: Path, index: int) -> str:
     raw = ocr_page_entry(pdf, index, s)["raw"]
     if isinstance(s, TesseractSettings):
         return ocr_tesseract.clean_text(raw)
+    if isinstance(s, LightOnSettings):
+        return ocr_lighton.clean_text(raw)
     return clean_text(raw)
 
 
@@ -75,14 +80,19 @@ def infer_settings() -> InferSettings:
 
 def active_settings() -> OcrSettings:
     """Settings for the active OCR_BACKEND."""
-    if backend_name() == ocr_tesseract.BACKEND:
+    name = backend_name()
+    if name == ocr_tesseract.BACKEND:
         return ocr_tesseract.settings_from_env()
+    if name == ocr_lighton.BACKEND:
+        return ocr_lighton.settings_from_env()
     return ocr_engine.settings_from_env()
 
 
 def _render_dpi(s: OcrSettings) -> int:
     if isinstance(s, TesseractSettings):
         return s.dpi
+    if isinstance(s, LightOnSettings):
+        return ocr_lighton.RENDER_DPI
     return RENDER_DPI
 
 
@@ -94,6 +104,8 @@ def settings_key(s: OcrSettings | None = None, dpi: int | None = None) -> dict:
         if dpi is not None and dpi != s.dpi:
             s = replace(s, dpi=dpi)
         return ocr_tesseract.cache_key(s)
+    if isinstance(s, LightOnSettings):
+        return ocr_lighton.cache_key(s)
     raise TypeError(f"unsupported OCR settings type: {type(s).__name__}")
 
 
@@ -181,9 +193,11 @@ def ocr_page_entry(pdf: Path, index: int, s: OcrSettings | None = None) -> dict:
             len(result["raw"]),
         )
     else:
-        log.info("OCR %s page %d ...", pdf.name, index + 1)
+        engine = ocr_lighton if isinstance(s, LightOnSettings) else ocr_engine
+        tag = f"OCR [{ocr_lighton.BACKEND}]" if engine is ocr_lighton else "OCR"
+        log.info("%s %s page %d ...", tag, pdf.name, index + 1)
         try:
-            result = ocr_engine.run(image, s)
+            result = engine.run(image, s)
         except Exception as e:
             raise RuntimeError(f"OCR {pdf.name} page {index + 1}: {e}") from e
         if result["finish"] != "stop":
@@ -191,7 +205,8 @@ def ocr_page_entry(pdf: Path, index: int, s: OcrSettings | None = None) -> dict:
                 "OCR %s page %d: output cut at %d tokens", pdf.name, index + 1, s.max_tokens
             )
         log.info(
-            "OCR %s page %d: %.1fs, %d tokens",
+            "%s %s page %d: %.1fs, %d tokens",
+            tag,
             pdf.name,
             index + 1,
             result["seconds"],

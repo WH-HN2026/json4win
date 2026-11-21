@@ -92,6 +92,7 @@ na CPU, bez GPU (warstwa tekstowa PDF nie jest używana). Szczegóły i pomiary:
   lub wskazanie katalogu przez `OCR_TESSDATA_DIR`). Wyniki trafiają do osobnego katalogu cache.
   Szczegóły instalacji i porównanie jakości: [`../docs/ocr.md`](../docs/ocr.md) oraz
   [`../docs/quality.md`](../docs/quality.md).
+- `OCR_BACKEND=lighton` (LightOnOCR-2-1B) służy tylko do porównań w repozytorium deweloperskim (wymaga transformers 5, osobny venv): [`../docs/ocr.md`](../docs/ocr.md).
 
 ## Struktura
 
