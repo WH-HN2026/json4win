@@ -97,3 +97,17 @@ zai-glm-5-3-flash with `LLM_REASONING_EFFORT=low`, global Mistral endpoint.
 - Pages OCR'd per odwolanie: 1 page ×4, 2 pages ×5, 3 pages ×1. OCR time per page: min 24.6 s, median 55.9 s, max
   102 s. Wall time 30:54 for 30 documents (a few pages were already cached). Peak RSS 11.1 GB.
 - LLM time per document: 1.5–10.3 s.
+
+## Real scans: GLM reasoning effort (2026-11-21)
+
+Same 30 scans, OCR from the local-OCR cache (`OCR_CACHE_ONLY=1`), zai-glm-5-3-flash, only `LLM_REASONING_EFFORT`
+changed. LLM time and tokens summed over the 30 documents (decision + extraction calls), tokens from the traces.
+
+| effort | TP / FP / FN | F1 | LLM s/doc (median / max) | run wall time | prompt / completion tokens |
+|---|---|---|---|---|---|
+| `low` (default) | 266 / 1 / 0 | 0.998 | 2.8 / 4.2 | 82 s | 240,763 / 8,211 |
+| `high` | 266 / 1 / 0 | 0.998 | 3.3 / 9.8 | 105 s | 244,664 / 14,962 |
+| `off` (model default) | 266 / 1 / 0 | 0.998 | 5.0 / 17.0 | 178 s | 240,763 / 43,393 |
+
+Identical scores (the same single disputed miss, `pelnomocnictwa_0010` `mocodawca[0].data.nazwa`); `low` is about 2×
+faster than the model default and uses about 5× fewer completion tokens, so it stays the default.
