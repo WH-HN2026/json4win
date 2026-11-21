@@ -19,7 +19,10 @@ Pola (ścieżka `a[].b` oznacza pole `b` każdego elementu listy `a`):
 
 Zasady ogólne:
 - Przepisuj wartości dokładnie tak, jak są w dokumencie (pisownia, wielkość liter, znaki polskie); nie
-  parafrazuj i nie tłumacz.
+  parafrazuj i nie tłumacz. Jedyny wyjątek to imiona i nazwiska osób (następna zasada).
+- Imiona i nazwiska osób podawaj zawsze w mianowniku, nawet jeśli w dokumencie są odmienione, np.
+  „Mateusz Szymański”, a nie „Mateusza Szymańskiego”; „Anna Nowak”, a nie „Annie Nowak”. Nie dodawaj tytułów
+  ani funkcji (r. pr., adw., Prezes Zarządu).
 - Literówki OCR poprawiaj tylko wtedy, gdy wartość musi pasować do podanego formatu (np. O→0, l/I→1 w polach
   liczbowych); niczego poza tym nie zmieniaj.
 - Jeśli wartości nie ma w dokumencie, wpisz null. Nie zgaduj i nie wymyślaj: błędna wartość kosztuje więcej

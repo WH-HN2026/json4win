@@ -35,6 +35,9 @@ Read before working:
 - **F1 is the score.** Expected `null` with a non-empty prediction is a false positive, so return `null` rather than guess.
   A smaller model and config-only document classes earn stage-2 points; see architecture §1.
 - **Classify by content, never by file name.** Unknown documents → `{}`.
+- **Person names in the nominative case** (requirement): every `imie_nazwisko`-type value is output in the
+  nominative ("Mateusz Szymański", not "Mateusza Szymańskiego"), without titles or functions. Everything else is
+  copied as written. The rule lives in the base extraction prompt and in each name field's `opis`.
 - **No overfitting to the training set:** the runtime never reads `dane/`, `ewaluacja/` or ground truth, and
   there are no tables of training values (names, NIPs, case numbers). Patterns and instructions must generalise.
 - **No secrets in git.** The LLM key lives in `json4win/.env.local` (gitignored). Keep `json4win/.env.example`

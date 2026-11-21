@@ -20,6 +20,8 @@ Ours: [`ewaluacja/`](../ewaluacja), an approximation of the organizers' F1 metri
   company in the **EU/EEA**, and the jury gets an API key with the delivery.
 - The training PDFs mostly have a text layer, but the hidden test set and real documents are **scans**
   (user's decision): the text layer is never used.
+- Person names are expected in the **nominative case** ("Mateusz Szymański", not "Mateusza Szymańskiego"),
+  without titles (user requirement; the organizers' `oczekiwane-json` comments say "w mianowniku" too).
 - Training data is synthetic: 74 of 189 NIPs and 39 of 60 account numbers fail their checksums. Validate
   formats (digit counts), never checksums.
 
