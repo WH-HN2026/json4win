@@ -1,0 +1,316 @@
+# Klasa: odwołanie do Prezesa Krajowej Izby Odwoławczej (KIO). Format pliku: README.md w tym katalogu.
+# Kształt wyjścia = dane/przyklad_*/odwolanie.json (D5). Przykłady są wymyślone (D9).
+id: odwolanie
+nazwa: Odwołanie do Krajowej Izby Odwoławczej
+
+opis: >-
+  Odwołanie wnoszone przez wykonawcę (Odwołującego) do Prezesa Krajowej Izby Odwoławczej w postępowaniu
+  o udzielenie zamówienia publicznego (ustawa Prawo zamówień publicznych, Pzp). Pismo strony, a nie
+  orzeczenie: wskazuje Odwołującego i Zamawiającego, postępowanie, którego dotyczy, zaskarżone czynności
+  lub zaniechania Zamawiającego, zarzuty naruszenia przepisów Pzp, żądania (wnoszę o ...) i uzasadnienie.
+
+cechy:
+  - "adresat na pierwszej stronie: 'Prezes Krajowej Izby Odwoławczej' / 'Krajowa Izba Odwoławcza', ul. Postępu 17A, Warszawa"
+  - "bloki stron na początku pisma: 'Odwołujący:' (wykonawca, często konsorcjum, z KRS/NIP/REGON) i 'Zamawiający:'"
+  - "tytuł 'ODWOŁANIE' (czasem 'od czynności i zaniechań Zamawiającego'), linia 'dotyczy: postępowania o udzielenie zamówienia ... pn. ...'"
+  - "nr referencyjny postępowania, numer ogłoszenia w BZP ('2026/BZP 00123456') lub w Dzienniku Urzędowym UE / TED"
+  - "'wnoszę odwołanie wobec ...', 'zarzucam naruszenie art. ... Pzp', 'Zarzut nr 1', 'wnoszę o uwzględnienie odwołania'"
+  - "często 'reprezentowany przez' pełnomocnika (radca prawny, adwokat, kancelaria) i 'Wpis od odwołania: ... zł'"
+  - "na początku często miejscowość i data pisma ('Poznań, dnia ...'), na końcu podpis i lista załączników"
+
+nie_mylic_z:
+  - "wyrok lub postanowienie KIO ('Sygn. akt KIO ...', 'Krajowa Izba Odwoławcza w składzie: Przewodniczący ...', 'Izba orzeka') — to orzeczenie Izby, nie odwołanie"
+  - "pełnomocnictwo do reprezentowania wykonawcy lub do wniesienia odwołania (oświadczenie mocodawcy, że udziela pełnomocnictwa)"
+  - "potwierdzenie przelewu (np. wpisu od odwołania) z banku"
+  - "ogłoszenie o zamówieniu w BZP ('Ogłoszenie nr ... SEKCJA I - ZAMAWIAJĄCY') lub ogłoszenie TED / Dziennika Urzędowego UE"
+  - "przystąpienie do postępowania odwoławczego, odpowiedź Zamawiającego na odwołanie, skarga na orzeczenie KIO do sądu"
+  - "odwołanie od decyzji administracyjnej (KPA) do ministra lub innego organu, decyzje, pisma urzędowe, zarządzenia"
+  - "opracowania, szkolenia, prezentacje i broszury o postępowaniu odwoławczym lub o zamówieniach publicznych"
+
+# Zmierzone na 60 PDF-ach z warstwą tekstu i 10 skanach (raport E3): każda wartość jest na stronie 1,
+# poza pierwszą zaskarżoną czynnością (data/powód), która bywa na stronie 2. Lista zaskarżonych czynności
+# zawsze kończy się przed 'zarzucam naruszenie' / 'Zarzut nr 1', więc wystarczy czytać do tego znacznika.
+czytanie:
+  max_stron: 3
+  znacznik: '(?i)zarzuca\w*|zarzut\w*\s+(nr\.?\s*)?1\b'
+  stron_po_znaczniku: 0
+
+szablon:
+  OdwolanieKIO:
+    data: null
+    czynnosc_dzien: null
+    czynnosc_powod_id: null
+    czynnosc_opis: null
+    miejscowosc: null
+  Odwolujacy:
+    - krs: null
+      nazwa: null
+      nip: null
+      regon: null
+      przez-pelnomocnika: null
+      pelnomocnik:
+        imie_nazwisko: null
+        nazwa: null
+        mail: null
+  Zamawiajacy:
+    - krs: null
+      nazwa: null
+      nip: null
+      regon: null
+      prowadzacy_postepowanie: null
+  ZamowieniePubliczne:
+    numer_bzp: null
+    numer_postepowania: null
+    numer_ted: null
+    tytul: null
+
+pola:
+  OdwolanieKIO.data:
+    opis: >-
+      Data sporządzenia odwołania z nagłówka pierwszej strony, z linii typu 'Miejscowość, dnia DD.MM.RRRR'
+      albo 'Miejscowość DD.MM.RRRR r.' (zwykle nad adresem KIO lub w prawym górnym rogu). Zapisz jako
+      RRRR-MM-DD. Nie bierz dat z pieczęci wpływu ('WPŁYNĘŁO ...'), z treści pisma ani spod podpisu.
+      Brak takiej linii w nagłówku → null.
+    normalizacja: date
+    format: '^\d{4}-\d{2}-\d{2}$'
+    przyklady: ["2027-03-15"]
+    poprawki_ocr: "W cyfrach O→0, l/I→1, S→5, B→8; 'r.' po roku to skrót 'roku', nie cyfra."
+
+  OdwolanieKIO.czynnosc_dzien:
+    opis: >-
+      Data PIERWSZEJ zaskarżonej czynności lub zaniechania Zamawiającego: dzień, w którym Zamawiający jej
+      dokonał, ją opublikował albo o niej poinformował (np. '... o której Zamawiający poinformował w dniu
+      ...', '... opublikowanej w dniu ...', 'Zamawiający w dniu ... unieważnił postępowanie', '... z dnia
+      ...'). Zapisz jako RRRR-MM-DD, także gdy w tekście jest '5 maja 2027 r.' lub '05/05/2027'. Nie bierz
+      daty odwołania, ogłoszenia o zamówieniu (chyba że to ono jest zaskarżone), terminu składania ofert
+      ani dat z dalszych punktów. Brak wiarygodnej daty pierwszej czynności → null.
+    normalizacja: date
+    format: '^\d{4}-\d{2}-\d{2}$'
+    przyklady: ["2027-02-28"]
+    poprawki_ocr: "W cyfrach O→0, l/I→1, S→5, B→8."
+
+  OdwolanieKIO.czynnosc_powod_id:
+    opis: >-
+      Rodzaj PIERWSZEJ zaskarżonej czynności lub zaniechania Zamawiającego jako liczba 1–12 ze słownika
+      (pierwszy punkt wyliczenia po 'wnoszę odwołanie wobec:' / 'czynności i zaniechań ... polegających
+      na:' albo zdanie 'Zamawiający w dniu ... [czynność]' przed zarzutami). Rozstrzyga to, CO zrobił lub
+      czego zaniechał Zamawiający, a nie artykuły Pzp ani treść naruszeń wymienionych w zarzutach.
+    typ: int
+    normalizacja: int
+    wartosci:
+      1: "Decyzja o odrzuceniu oferty — Zamawiający odrzucił ofertę (zwykle ofertę Odwołującego)"
+      2: "Ogłoszenie wyboru oferty — wybór najkorzystniejszej oferty, informacja o wyniku postępowania"
+      3: "Decyzja o wykluczeniu wykonawcy — Zamawiający wykluczył wykonawcę (zwykle Odwołującego lub członka jego konsorcjum)"
+      4: "Publikacja specyfikacji warunków zamówienia (SWZ) — treść SWZ ustalona/opublikowana (wraz z ogłoszeniem), warunki udziału, kryteria oceny ofert"
+      5: "Modyfikacja treści SWZ — zmiana SWZ dokonana przez Zamawiającego po jej publikacji"
+      6: "Odpowiedzi/wyjaśnienia do SWZ — odpowiedzi na pytania wykonawców, wyjaśnienia treści SWZ (także gdy faktycznie zmieniają SWZ)"
+      7: "Zaniechanie odrzucenia oferty — Zamawiający nie odrzucił oferty innego wykonawcy, choć powinien"
+      8: "Zaniechanie wykluczenia wykonawcy — Zamawiający nie wykluczył innego wykonawcy, choć powinien"
+      9: "Decyzja o unieważnieniu postępowania — Zamawiający unieważnił postępowanie"
+      10: "Zaniechanie unieważnienia postępowania — Zamawiający nie unieważnił postępowania, choć powinien"
+      11: "Opis przedmiotu zamówienia (OPZ) — postanowienia OPZ / sposób opisania przedmiotu zamówienia"
+      12: "Projektowane postanowienia umowy — wzór umowy, projektowane postanowienia umowy (PPU)"
+
+  OdwolanieKIO.czynnosc_opis:
+    opis: >-
+      Kanoniczny opis tej samej pierwszej zaskarżonej czynności: dokładnie tekst ze słownika odpowiadający
+      wybranemu czynnosc_powod_id (1:1), bez zmian.
+    normalizacja: text
+    wartosci:
+      "Decyzja o odrzuceniu oferty": "czynnosc_powod_id = 1"
+      "Ogłoszenie wyboru oferty": "czynnosc_powod_id = 2"
+      "Decyzja o wykluczeniu wykonawcy": "czynnosc_powod_id = 3"
+      "Publikacja specyfikacji warunków zamówienia (SWZ)": "czynnosc_powod_id = 4"
+      "Modyfikacja treści SWZ": "czynnosc_powod_id = 5"
+      "Odpowiedzi/wyjaśnienia do SWZ": "czynnosc_powod_id = 6"
+      "Zaniechanie odrzucenia oferty": "czynnosc_powod_id = 7"
+      "Zaniechanie wykluczenia wykonawcy": "czynnosc_powod_id = 8"
+      "Decyzja o unieważnieniu postępowania": "czynnosc_powod_id = 9"
+      "Zaniechanie unieważnienia postępowania": "czynnosc_powod_id = 10"
+      "Opis przedmiotu zamówienia (OPZ)": "czynnosc_powod_id = 11"
+      "Projektowane postanowienia umowy": "czynnosc_powod_id = 12"
+
+  OdwolanieKIO.miejscowosc:
+    opis: >-
+      Miejscowość z tej samej linii nagłówka co data pisma ('Miejscowość, dnia ...'), w mianowniku i z
+      polskimi znakami. Nie bierz miasta z adresu KIO, kancelarii, stron ani z pieczęci. Brak linii z
+      miejscowością i datą → null.
+    normalizacja: text
+    przyklady: ["Opole", "Szczecin"]
+    poprawki_ocr: "Przywróć polskie znaki zniekształcone przez OCR (np. 'Lodz' → 'Łódź')."
+
+  Odwolujacy[].krs:
+    opis: >-
+      Numer KRS Odwołującego (przy konsorcjum: Lidera konsorcjum), z bloku 'Odwołujący'. 10 cyfr, z
+      zerami wiodącymi. Brak → null.
+    normalizacja: digits
+    format: '^\d{10}$'
+    przyklady: ["0000123456"]
+    poprawki_ocr: "W cyfrach O→0, l/I→1, S→5, B→8."
+
+  Odwolujacy[].nazwa:
+    opis: >-
+      Pełna nazwa Odwołującego (wykonawcy wnoszącego odwołanie) z formą prawną, tak jak w bloku
+      'Odwołujący'. Przy konsorcjum: nazwa Lidera konsorcjum (nie 'Konsorcjum ...').
+    normalizacja: text
+    przyklady: ["Przykładowa Firma Budowlana sp. z o.o."]
+
+  Odwolujacy[].nip:
+    opis: >-
+      NIP Odwołującego (przy konsorcjum: Lidera konsorcjum), 10 cyfr bez kresek i spacji. Brak → null.
+    normalizacja: digits
+    format: '^\d{10}$'
+    przyklady: ["7811234560"]
+    poprawki_ocr: "W cyfrach O→0, l/I→1, S→5, B→8."
+
+  Odwolujacy[].regon:
+    opis: >-
+      REGON Odwołującego (przy konsorcjum: Lidera konsorcjum), 9 lub 14 cyfr. Brak → null.
+    normalizacja: digits
+    format: '^(\d{9}|\d{14})$'
+    przyklady: ["300123456"]
+    poprawki_ocr: "W cyfrach O→0, l/I→1, S→5, B→8."
+
+  Odwolujacy[].przez-pelnomocnika:
+    opis: >-
+      1, jeśli Odwołujący działa przez pełnomocnika (np. 'reprezentowany przez: r. pr. ...', adwokat,
+      radca prawny, kancelaria, 'na podstawie pełnomocnictwa'); 0, jeśli podpisuje sam (np. członek
+      zarządu) i nie wskazano pełnomocnika.
+    typ: int
+    normalizacja: int
+    wartosci:
+      1: "odwołanie wnosi pełnomocnik Odwołującego"
+      0: "brak pełnomocnika"
+
+  Odwolujacy[].pelnomocnik.imie_nazwisko:
+    opis: >-
+      Imię i nazwisko PIERWSZEGO wymienionego pełnomocnika Odwołującego, w mianowniku, bez tytułów
+      ('r. pr.', 'radca prawny', 'adw.', 'mec.', 'dr'). Brak pełnomocnika → null.
+    normalizacja: text
+    przyklady: ["Jan Przykładowy"]
+
+  Odwolujacy[].pelnomocnik.nazwa:
+    opis: >-
+      Nazwa kancelarii lub podmiotu, w którym działa pełnomocnik (np. z 'adres do korespondencji:',
+      nagłówka kancelarii lub danych pełnomocnika), w pełnym brzmieniu z formą prawną. Brak → null.
+    normalizacja: text
+    przyklady: ["Kancelaria Radcy Prawnego Jan Przykładowy"]
+
+  Odwolujacy[].pelnomocnik.mail:
+    opis: >-
+      Adres e-mail pełnomocnika lub jego kancelarii z danych pełnomocnika / adresu do korespondencji
+      Odwołującego. Nie bierz e-maili Zamawiającego ani samego Odwołującego, gdy nie ma pełnomocnika.
+      Gdy jest kilka, wybierz adres podany przy pełnomocniku, a nie ogólny adres ze stopki. Brak → null.
+    normalizacja: regex_sub
+    parametry:
+      pattern: '\s+'
+      repl: ''
+    format: '^[^@\s]+@[^@\s]+\.[^@\s]+$'
+    przyklady: ["j.przykladowy@kancelaria-wzor.pl"]
+    poprawki_ocr: "Usuń spacje wstawione przez OCR; '(a', '©' lub '®' w miejscu '@' → '@'; '—' w domenie → '-'."
+
+  Zamawiajacy[].krs:
+    opis: >-
+      KRS tego Zamawiającego, tylko jeśli podany przy nim w bloku 'Zamawiający'. 10 cyfr. Brak → null.
+    normalizacja: digits
+    format: '^\d{10}$'
+    przyklady: ["0000654321"]
+    poprawki_ocr: "W cyfrach O→0, l/I→1, S→5, B→8."
+
+  Zamawiajacy[].nazwa:
+    opis: >-
+      Pełna nazwa Zamawiającego z bloku 'Zamawiający' (jednostka, gmina, spółka, szpital ...), w brzmieniu
+      z dokumentu.
+    normalizacja: text
+    przyklady: ["Gmina Przykładowo", "Szpital Miejski w Przykładowie"]
+
+  Zamawiajacy[].nip:
+    opis: "NIP tego Zamawiającego, tylko jeśli podany przy nim; 10 cyfr bez kresek. Brak → null."
+    normalizacja: digits
+    format: '^\d{10}$'
+    przyklady: ["8521234567"]
+    poprawki_ocr: "W cyfrach O→0, l/I→1, S→5, B→8."
+
+  Zamawiajacy[].regon:
+    opis: "REGON tego Zamawiającego, tylko jeśli podany przy nim; 9 lub 14 cyfr. Brak → null."
+    normalizacja: digits
+    format: '^(\d{9}|\d{14})$'
+    przyklady: ["811234567"]
+    poprawki_ocr: "W cyfrach O→0, l/I→1, S→5, B→8."
+
+  Zamawiajacy[].prowadzacy_postepowanie:
+    opis: >-
+      Tylko gdy zamawiających jest kilku (postępowanie prowadzone wspólnie): 1 dla zamawiającego
+      oznaczonego jako prowadzący postępowanie / lider, 0 dla pozostałych. Gdy zamawiający jest jeden → null.
+    typ: int
+    normalizacja: int
+    wartosci:
+      1: "jeden z kilku zamawiających, oznaczony jako prowadzący postępowanie / lider"
+      0: "jeden z kilku zamawiających, nie prowadzi postępowania (partner)"
+
+  ZamowieniePubliczne.numer_bzp:
+    opis: >-
+      Numer ogłoszenia o zamówieniu w Biuletynie Zamówień Publicznych, z linii 'dotyczy' / danych
+      postępowania: 'RRRR/BZP NNNNNNNN' (8 cyfr), opcjonalnie z '/NN'. Zapisz bez spacji. Nie wpisuj tu
+      numerów TED / Dziennika Urzędowego UE. Brak → null.
+    normalizacja: regex_sub
+    parametry:
+      pattern: '\s+'
+      repl: ''
+    format: '^\d{4}/BZP\d{8}(/\d{2})?$'
+    przyklady: ["2027/BZP00123456", "2027/BZP00654321/02"]
+    poprawki_ocr: "W cyfrach O→0, l/I→1; 'B2P' → 'BZP'."
+
+  ZamowieniePubliczne.numer_postepowania:
+    opis: >-
+      Numer referencyjny / znak sprawy / numer postępowania nadany przez Zamawiającego (po etykiecie 'nr
+      referencyjny', 'znak sprawy', 'nr postępowania'), dokładnie jak w dokumencie, bez etykiety. Nie
+      numer BZP ani TED. Brak → null.
+    normalizacja: text
+    przyklady: ["ZP.271.7.2027", "AB/PN/15/2027"]
+    poprawki_ocr: "W cyfrach O→0, l/I→1; usuń spacje wstawione przez OCR wewnątrz numeru."
+
+  ZamowieniePubliczne.numer_ted:
+    opis: >-
+      Numer ogłoszenia tego postępowania w Dzienniku Urzędowym UE / TED (linia 'dotyczy' lub dane
+      postępowania na początku pisma). W dokumentach bywa 'RRRR/S NNN-NNNNNN' albo 'NNNNNN-RRRR'; zapisz
+      jako 'NNNNNN-RRRR' (numer ogłoszenia, myślnik, rok). Nie bierz numerów ogłoszeń
+      innych postępowań przywołanych w uzasadnieniu. Brak → null.
+    normalizacja: regex_sub
+    parametry:
+      pattern: '^\D*?(?:(\d{4})\s*/\s*S\s*\d{1,3}\s*-\s*(\d{1,8})|(\d{1,8})\s*-\s*(\d{4}))\D*$'
+      repl: '\2\3-\1\4'
+    format: '^\d{1,8}-\d{4}$'
+    przyklady: ["123456-2027"]
+    poprawki_ocr: "W cyfrach O→0, l/I→1; '5' zamiast 'S' przed numerem wydania."
+
+  ZamowieniePubliczne.tytul:
+    opis: >-
+      Nazwa (przedmiot) zamówienia, zwykle w cudzysłowie po 'pn.' / 'pod nazwą' w linii 'dotyczy', bez
+      cudzysłowów. Przenoszenia wyrazów między wierszami połącz. Brak → null.
+    normalizacja: text
+    przyklady: ["Dostawa sprzętu laboratoryjnego dla szpitala powiatowego"]
+
+instrukcje: >-
+  Dane stron i postępowania są w nagłówku pisma (pierwsza strona): bloki 'Odwołujący', 'Zamawiający' i linia
+  'dotyczy'. Nie bierz numerów, nazw ani NIP-ów innych podmiotów i innych postępowań wymienionych dalej w
+  treści (np. w uzasadnieniu).
+
+  CZYNNOŚĆ (czynnosc_dzien, czynnosc_powod_id, czynnosc_opis) ustal WYŁĄCZNIE z pierwszej zaskarżonej
+  czynności lub zaniechania Zamawiającego: pierwszy punkt wyliczenia po 'wnoszę odwołanie wobec:' lub
+  'czynności i zaniechań Zamawiającego, polegających na:', a gdy wyliczenia nie ma — zdanie 'Zamawiający w
+  dniu ... [co zrobił]' przed zarzutami. Kolejne punkty i zarzuty (np. 'zarzucam naruszenie art. ...',
+  'Zarzut nr 1 ...') nie zmieniają wyniku. czynnosc_opis to dokładnie tekst ze słownika dla wybranego
+  czynnosc_powod_id.
+
+  ODWOŁUJĄCY: lista ma zawsze jeden element. Gdy odwołanie wnosi konsorcjum (wykonawcy wspólnie ubiegający
+  się o zamówienie), podaj tylko Lidera konsorcjum: jego nazwę, KRS, NIP i REGON. Pełnomocnik: pierwszy
+  wymieniony; 'przez-pelnomocnika' = 1, gdy jest pełnomocnik, w przeciwnym razie 0 i wszystkie pola obiektu
+  'pelnomocnik' = null (obiekt zostaje).
+
+  ZAMAWIAJĄCY: jeden element na każdego zamawiającego z bloku 'Zamawiający', w kolejności z dokumentu.
+  Przy kilku zamawiających (wspólne prowadzenie postępowania) prowadzacy_postepowanie = 1 dla lidera /
+  prowadzącego, 0 dla pozostałych; przy jednym zamawiającym null.
+
+  Numery KRS, NIP, REGON tylko cyfry. Daty w formacie RRRR-MM-DD. Gdy wartości nie ma w dokumencie lub
+  nie jest pewna, wpisz null zamiast zgadywać.
