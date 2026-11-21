@@ -33,7 +33,22 @@ pip install -r requirements.txt        # Python 3.13+
 # wynik: output/<sprawa>/<nazwa pliku>.json
 ```
 
-Opcje: `python -m json4win --input KATALOG --output KATALOG [-v]`.
+Opcje: `python -m json4win --input KATALOG --output KATALOG [--trace KATALOG | --no-trace] [-v]`.
+
+## Przejrzystość
+
+Dla każdego PDF-a powstaje ślad ekstrakcji, **poza** `output/`: `traces/<sprawa>/<nazwa>.trace.json`
+(do odczytu maszynowego) i `traces/<sprawa>/<nazwa>.trace.md` (tabela dla człowieka). Katalog zmienia
+`--trace KATALOG` albo `JSON4WIN_TRACE_DIR`; `--no-trace` wyłącza ślady.
+
+Ślad zawiera: sha256 pliku, przeczytane strony OCR (liczba znaków, czas), decyzję modelu (klasa),
+przebieg czytania (znacznik, pytania o kompletność), model i liczbę wywołań LLM, poprawki i błędy walidacji
+w każdej rundzie, czasy kroków, a dla błędnego dokumentu typ błędu i krok, w którym wystąpił. Dla każdego
+pola: wartość końcowa, surowa wartość od modelu, normalizacja, metoda (`llm`, `llm+normalizacja`,
+`walidacja→null`) oraz **pochodzenie**: numer strony i fragment tekstu OCR (±60 znaków), w którym
+surowa wartość została znaleziona deterministycznie (dopasowanie przybliżone `difflib`, dla numerów
+porównywane same cyfry), albo „nie znaleziono w tekście”. Pochodzenie nie zależy od modelu językowego,
+więc każdą wartość można sprawdzić w dokumencie. Ślad nie zawiera klucza API.
 
 ## Interfejs graficzny (GUI)
 
@@ -58,9 +73,11 @@ W interfejsie można:
 json4win/
 ├── input/            # wejście: input/<sprawa>/*.pdf
 ├── output/           # wyjście: output/<sprawa>/*.json (te same nazwy co w input)
+├── traces/           # ślady ekstrakcji: traces/<sprawa>/*.trace.json i *.trace.md (poza output/)
 ├── config/           # definicje klas dokumentów (nowa klasa = nowy plik, bez zmian w kodzie)
 ├── json4win/         # kod: cli.py (CLI), gui.py + gui_static/ (GUI), pipeline.py (przebieg),
-│                     #   config.py (klasy), prompts.py, llm.py, decide.py, extract.py, validate.py
+│                     #   config.py (klasy), prompts.py, llm.py, decide.py, extract.py, validate.py,
+│                     #   trace.py (ślad ekstrakcji)
 ├── tests/
 ├── requirements.txt
 ├── start.bat / start.sh

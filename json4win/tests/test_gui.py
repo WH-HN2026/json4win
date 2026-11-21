@@ -406,12 +406,18 @@ def test_cli_gui_flag_delegates_to_serve(tmp_path: Path, monkeypatch: pytest.Mon
     called: dict[str, Any] = {}
 
     def fake_serve(
-        input_dir: Path, output_dir: Path, *, port: int = 0, open_browser: bool = True
+        input_dir: Path,
+        output_dir: Path,
+        *,
+        port: int = 0,
+        open_browser: bool = True,
+        trace_dir: Path | None = None,
     ) -> int:
         called["input_dir"] = input_dir
         called["output_dir"] = output_dir
         called["port"] = port
         called["open_browser"] = open_browser
+        called["trace_dir"] = trace_dir
         return 0
 
     monkeypatch.setattr(gui, "serve", fake_serve)
@@ -433,4 +439,7 @@ def test_cli_gui_flag_delegates_to_serve(tmp_path: Path, monkeypatch: pytest.Mon
         "output_dir": tmp_path / "out",
         "port": 8765,
         "open_browser": False,
+        "trace_dir": tmp_path / "traces",  # JSON4WIN_TRACE_DIR, set by conftest
     }
+    rc = cli.main(["--input", str(tmp_path / "in"), "--gui", "--no-browser", "--no-trace"])
+    assert rc == 0 and called["trace_dir"] is None

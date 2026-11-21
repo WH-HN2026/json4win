@@ -413,7 +413,13 @@ class GuiState:
 
         try:
             self.output_dir.mkdir(parents=True, exist_ok=True)
-            cli.run(self.input_dir, self.output_dir, pdfs=targets, on_progress=on_progress)
+            cli.run(
+                self.input_dir,
+                self.output_dir,
+                pdfs=targets,
+                on_progress=on_progress,
+                trace_dir=self.trace_dir,
+            )
         except Exception:
             log.exception("unexpected error in background processing job %d", job_id)
         finally:
@@ -624,9 +630,13 @@ def serve(
     *,
     port: int = 0,
     open_browser: bool = True,
+    trace_dir: Path | None = None,
 ) -> int:
-    """Start the local GUI server on 127.0.0.1 and block until Ctrl+C."""
-    server = create_server(input_dir, output_dir, port=port)
+    """Start the local GUI server on 127.0.0.1 and block until Ctrl+C.
+
+    trace_dir: where processing writes extraction traces and the GUI reads them; None = no traces.
+    """
+    server = create_server(input_dir, output_dir, port=port, trace_dir=trace_dir)
     url = server.url
     log.info("GUI json4win uruchomione pod adresem: %s", url)
     log.info("Katalog wejściowy: %s", server.state.input_dir)

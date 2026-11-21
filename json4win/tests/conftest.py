@@ -65,6 +65,14 @@ instrukcje: >-
 """
 
 
+@pytest.fixture(autouse=True)
+def _trace_dir(tmp_path: Path, monkeypatch) -> Path:
+    """CLI runs in tests write their traces under tmp_path, never into json4win/traces/."""
+    d = tmp_path / "traces"
+    monkeypatch.setenv("JSON4WIN_TRACE_DIR", str(d))
+    return d
+
+
 @pytest.fixture
 def config_dir(tmp_path: Path) -> Path:
     d = tmp_path / "config"

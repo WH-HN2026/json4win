@@ -35,7 +35,7 @@ track. `orca orchestration worker-list` is the claim list, not this file.
 
 ## X: extensibility and transparency (stage 2 scoring)
 - [x] **X1** Demo: add a new document class purely through `json4win/config/`, documented step by step in docs/. deps: C1
-- [ ] **X2** Extraction trace (per field: page, source snippet, method, retries) written **outside** `output/`. deps: C1
+- [x] **X2** Extraction trace (per field: page, source snippet, method, retries) written **outside** `output/`. deps: C1
 
 ## D: delivery
 - [ ] **D1** Jury path: clean clone → `pip install -r json4win/requirements.txt` → `start.bat` / `start.sh` on Windows and Linux, CPU only, model download, timing on jury-like limits; jury key (O3); switch `LLM_BASE_URL` (default + .env.example) to the EU endpoint `https://api.eu.mistral.ai/v1`. deps: P1, C1
