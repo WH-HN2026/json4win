@@ -18,7 +18,7 @@ track. `orca orchestration worker-list` is the claim list, not this file.
 
 ## E: classes and fields (all driven by the class config)
 - [x] **E1** `przelew.yaml`: first version of the class config (`przelew_bankowy`). deps: I1
-- [ ] **E2** `pelnomocnictwo.yaml`: first version (`mocodawca[]`, `podpisujacy[]`, `pelnomocnicy[]`). deps: I1
+- [x] **E2** `pelnomocnictwo.yaml`: first version (`mocodawca[]`, `podpisujacy[]`, `pelnomocnicy[]`). deps: I1
 - [ ] **E3** `odwolanie.yaml`: first version (`OdwolanieKIO`, `Odwolujacy[]`, `Zamawiajacy[]`, `ZamowieniePubliczne`), incl. `czynnosc_powod_id` from the first charge only. deps: I1
 - [x] **E4** Normalisers in `normalize.py`: text, digits, date → ISO, amount → float, int, regex_sub. deps: I1
 
