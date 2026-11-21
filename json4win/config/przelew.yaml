@@ -1,0 +1,151 @@
+id: przelew
+nazwa: Potwierdzenie przelewu bankowego
+
+opis: >-
+  Bankowe potwierdzenie wykonania lub zlecenia pojedynczego przelewu krajowego (np. przelew
+  zwykły, Elixir, internetowy, opłata skarbowa lub wpis od odwołania do KIO), wygenerowane
+  z systemu bankowości elektronicznej albo wydrukowane jako szczegóły pojedynczej transakcji
+  bankowej. Zawiera dane identyfikujące operację płatniczą: rachunek nadawcy i odbiorcy,
+  kwotę przelewu, datę operacji oraz tytuł przelewu.
+
+cechy:
+  - "nagłówek lub tytuł w rodzaju „Potwierdzenie wykonania przelewu”, „Potwierdzenie transakcji”, „Potwierdzenie przelewu krajowego”, „Potwierdzenie realizacji polecenia przelewu”, „Potwierdzenie operacji bankowej”, „Polecenie przelewu”, „Dowód wykonania przelewu”, „Przelew krajowy”, „Przelew z rachunku”, „Szczegóły transakcji” albo „Transakcja złożona poprzez usługi bankowości elektronicznej”"
+  - "nazwa banku lub systemu bankowości internetowej oraz dwa 26-cyfrowe numery rachunków bankowych (NRB lub IBAN z prefiksem PL): nadawcy/zleceniodawcy/płatnika i odbiorcy/beneficjenta/kontrahenta"
+  - "wyodrębnione pola lub treść pisma bankowego z kwotą przelewu (PLN/zł, czasem ze znakiem minus dla obciążenia), datą operacji/wykonania/realizacji oraz tytułem/opisem przelewu"
+  - "stopka informacyjna o dokumencie wygenerowanym elektronicznie lub komputerowo (często z powołaniem na art. 7 ustawy Prawo bankowe), niewymagającym podpisu ani stempla"
+
+nie_mylic_z:
+  - "odwołanie do Krajowej Izby Odwoławczej (KIO) ani inne pismo procesowe, nawet jeśli zawiera wzmiankę o uiszczeniu wpisu, opłaty skarbowej lub podaje numer rachunku bankowego"
+  - "pełnomocnictwo ani upoważnienie (nawet jeśli wspomina o opłacie skarbowej)"
+  - "ogłoszenie o zamówieniu (BZP, TED / Dziennik Urzędowy UE), SWZ ani informacja z otwarcia ofert"
+  - "faktura VAT, rachunek, nota księgowa, wezwanie do zapłaty ani broszura informacyjna (np. o strukturach JPK)"
+  - "decyzja administracyjna, postanowienie lub wyrok KIO/sądu, pismo urzędowe, zarządzenie ani materiał szkoleniowy"
+
+czytanie:
+  max_stron: 1
+
+szablon:
+  przelew_bankowy:
+    data_operacji: null
+    kwota: null
+    na_rachunek: null
+    numer_transakcji: null
+    tytul: null
+    z_rachunku: null
+
+pola:
+  przelew_bankowy.data_operacji:
+    opis: >-
+      Data operacji / wykonania / realizacji / transakcji przelewu w formacie RRRR-MM-DD
+      (YYYY-MM-DD). Szukaj przy etykietach „Data operacji”, „Data transakcji”, „Data wykonania”,
+      „Data realizacji”, „Zlecona data wykonania” lub w treści pisma bankowego („w dniu ...”).
+      NIE bierz daty wydruku, wygenerowania ani wystawienia dokumentu („Data wydruku”,
+      „Wydrukowano”, „Data wygenerowania”, „wygenerowano”, „Data wystawienia”), daty z pieczątki
+      wpływu („WPŁYNĘŁO”) ani daty podpisu elektronicznego banku. Gdy obok siebie występują „Data
+      operacji” oraz „Data księgowania” lub „Data waluty”, pierwszeństwo ma „Data operacji”.
+      Zwróć null, jeśli w dokumencie nie ma daty operacji.
+    typ: str
+    normalizacja: date
+    format: '^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$'
+    przyklady: ["2029-05-14"]
+    poprawki_ocr: >-
+      W cyfrach daty poprawiaj typowe błędy OCR (O→0, l/I→1, S→5, B→8) oraz kropki lub myślniki
+      rozpoznane jako spacje (np. „14 05 2029” → „2029-05-14”).
+
+  przelew_bankowy.kwota:
+    opis: >-
+      Kwota przelewu jako dodatnia liczba zmiennoprzecinkowa bez symbolu waluty (PLN/zł) i bez
+      znaku minus „-”, nawet gdy bank wyświetla obciążenie rachunku ze znakiem minus (np.
+      „-17,00 PLN” → 17.0, „-10 000,00 PLN” → 10000.0). Szukaj przy etykietach „Kwota”,
+      „Kwota operacji”, „Kwota przelewu”, „Wartość” lub w treści „w kwocie ...”. NIE pobieraj
+      wartości z pól „Opłata”, „Prowizja” ani „Opłata/prowizja” (zwykle 0,00 PLN). Zwróć null,
+      jeśli brak kwoty przelewu.
+    typ: float
+    normalizacja: amount
+    format: '^\d+(\.\d+)?$'
+    przyklady: [150.0, 12500.5]
+    poprawki_ocr: >-
+      W cyfrach kwoty poprawiaj typowe błędy OCR (O→0, l/I→1, S→5, B→8), rozróżniaj spacje
+      rozdzielające tysiące od separatora dziesiętnego (przecinek lub kropka).
+
+  przelew_bankowy.na_rachunek:
+    opis: >-
+      26-cyfrowy numer rachunku bankowego odbiorcy (beneficjenta / kontrahenta) przelewu —
+      rachunku uznawanego, bez spacji i bez prefiksu „PL”. Szukaj przy etykietach „Na rachunek”,
+      „Rachunek odbiorcy”, „Rachunek beneficjenta”, „Rachunek kontrahenta”, „Rachunek uznawany”,
+      w sekcji „Dane odbiorcy” / „Dane kontrahenta” / „Beneficjent” / „Adresat przelewu” (także
+      wewnątrz bloku „Opis”) albo w treści „na rachunek nr ...”. Nie myl z rachunkiem nadawcy
+      (z_rachunku). Zwróć null, jeśli w dokumencie brak numeru rachunku odbiorcy.
+    typ: str
+    normalizacja: digits
+    format: '^(?:PL)?\d{26}$'
+    przyklady: ["12345678901234567890123456"]
+    poprawki_ocr: >-
+      Polski numer rachunku NRB ma dokładnie 26 cyfr (po ewentualnym prefiksie PL i usunięciu
+      spacji); w cyfrach poprawiaj błędy OCR (O→0, l/I→1, Z→2, S→5, B→8).
+
+  przelew_bankowy.numer_transakcji:
+    opis: >-
+      Numer transakcji lub numer referencyjny przelewu nadany przez bank. Szukaj wyłącznie przy
+      wyraźnych etykietach: „Numer transakcji”, „Numer referencyjny”, „Numer referencyjny
+      transakcji”, „Nr ref.”, „Nr ref. operacji”, „Identyfikator operacji”, „Numer transakcji
+      operacji”, „ID transakcji”. Zwróć null, jeśli dokument nie zawiera takiego pola (wiele
+      potwierdzeń bankowych nie podaje numeru transakcji). NIE wpisuj tu: numeru klienta
+      („Numer klienta” / „Nr klienta”), kodu typu transakcji (np. „225”), numeru postępowania z
+      tytułu przelewu, numeru L.dz. z pieczątki wpływu, nazwy pliku wydruku w stopce (np.
+      „*.pdf”) ani numeru KRS/NIP banku.
+    typ: str
+    normalizacja: text
+    przyklady: ["REF2905140012345", "418920"]
+    poprawki_ocr: >-
+      W części cyfrowej identyfikatora poprawiaj oczywiste błędy OCR (O→0, l/I→1) i nie
+      wprowadzaj spacji wewnątrz numeru.
+
+  przelew_bankowy.tytul:
+    opis: >-
+      Dokładna treść tytułu przelewu przepisana wiernie, bez skracania, streszczania i bez
+      usuwania końcowych numerów referencyjnych, jeśli znajdują się wewnątrz pola tytułu. Szukaj
+      przy etykietach „Tytuł”, „Tytuł przelewu”, „Tytułem”, „Szczegóły płatności” albo „Opis”.
+      UWAGA: gdy w układzie tabelarycznym cała kolumna ma nagłówek „Opis” i zawiera rachunki,
+      dane stron oraz podpole „Tytuł: ...”, pobierz wyłącznie treść po „Tytuł:”. Połącz linie
+      zawiniętego tekstu pojedynczą spacją; w potwierdzeniach w formie pisma usuń jedynie
+      zewnętrzne cudzysłowy otaczające tytuł („...”) oraz końcową kropkę zdania. Zwróć null,
+      jeśli w dokumencie brak tytułu przelewu.
+    typ: str
+    normalizacja: text
+    przyklady:
+      - "Wpis od odwołania, postępowanie ZP.123.2029, Szpital Miejski w Przykładowie"
+      - "opłata skarbowa od pełnomocnictwa dla Jan Kowalski w postępowaniu przed KIO w przetargu ZP/45/2029"
+
+  przelew_bankowy.z_rachunku:
+    opis: >-
+      26-cyfrowy numer rachunku bankowego nadawcy (zleceniodawcy / płatnika) przelewu — rachunku
+      obciążanego, bez spacji i bez prefiksu „PL”. Szukaj przy etykietach „Z rachunku”,
+      „Rachunek zleceniodawcy”, „Rachunek nadawcy”, „Rachunek obciążany”, w sekcji „Dane
+      nadawcy” / „Płatnik” / „Zleceniodawca”, jako główny „Numer rachunku” na górze szczegółów
+      transakcji przy danych właściciela rachunku albo w treści „z rachunku nr ...”. Nie myl z
+      rachunkiem odbiorcy (na_rachunek). Zwróć null, jeśli w dokumencie brak numeru rachunku
+      nadawcy.
+    typ: str
+    normalizacja: digits
+    format: '^(?:PL)?\d{26}$'
+    przyklady: ["98765432109876543210987654"]
+    poprawki_ocr: >-
+      Polski numer rachunku NRB ma dokładnie 26 cyfr (po ewentualnym prefiksie PL i usunięciu
+      spacji); w cyfrach poprawiaj błędy OCR (O→0, l/I→1, Z→2, S→5, B→8).
+
+instrukcje: >-
+  Rozróżnienie rachunków: z_rachunku to zawsze rachunek nadawcy / zleceniodawcy / płatnika /
+  właściciela rachunku (rachunek obciążany), natomiast na_rachunek to zawsze rachunek odbiorcy /
+  beneficjenta / kontrahenta (rachunek uznawany). Jeśli u góry dokumentu widnieje ogólny „Numer
+  rachunku” (przy danych właściciela), a w sekcji „Opis” podany jest „Rachunek odbiorcy”, to
+  górny numer jest z_rachunku, a numer w opisie to na_rachunek. Tytuł przelewu (tytul) kopiuj
+  dokładnie tak, jak widnieje w dokumencie (scalając jedynie zawinięte wiersze pojedynczą spacją
+  i zdejmując zewnętrzne cudzysłowy w pismach ciągłych) — nie skracaj go ani nie usuwaj z niego
+  numerów referencyjnych, jeżeli są wpisane w treści tytułu. Kwotę (kwota) podawaj zawsze jako
+  wartość dodatnią bez znaku minus i nie myl jej z opłatą lub prowizją bankową (0,00 PLN). Jako
+  data_operacji wybieraj datę operacji/transakcji/wykonania przelewu (przed datą księgowania i
+  waluty), a nigdy datę wydruku, wygenerowania, pieczątki wpływu ani podpisu elektronicznego.
+  Pole numer_transakcji ustaw na null, jeśli dokument nie podaje wyraźnie oznaczonego numeru
+  transakcji ani numeru referencyjnego — nie podstawiaj numeru klienta, nazwy pliku wydruku,
+  numeru L.dz. ani KRS/NIP banku.
