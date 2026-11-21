@@ -1,0 +1,42 @@
+assert:
+  files[0].objects.OdwolanieKIO[0].data.miejscowosc: null
+  files[0].objects.OdwolanieKIO[0].data.data: null
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_dzien: '2026-09-08'
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_opis: Ogłoszenie wyboru oferty
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_powod_id: 2
+  files[0].objects.Odwolujacy[0].data.nazwa: Galdaris Technologie sp. k.
+  files[0].objects.Odwolujacy[0].data.nip: '9993885533'
+  files[0].objects.Odwolujacy[0].data.regon: '999308916'
+  files[0].objects.Odwolujacy[0].data.krs: '9992842505'
+  files[0].objects.Zamawiajacy[0].data.nazwa: Wexoria Systemy sp. z o.o.
+  files[0].objects.Zamawiajacy[0].data.nip: '9998978660'
+  files[0].objects.Zamawiajacy[0].data.regon: '999331453'
+  files[0].objects.Zamawiajacy[0].data.krs: '9996808116'
+  files[0].objects.ZamowieniePubliczne[0].data.numer_postepowania: ZP.869.2026
+  files[0].objects.ZamowieniePubliczne[0].data.tytul: Modernizacja instalacji wentylacyjnej
+    w obiekcie użyteczności publicznej
+  files[0].objects.ZamowieniePubliczne[0].data.numer_bzp: 2026/BZP00999139
+  files[0].objects.ZamowieniePubliczne[0].data.numer_ted: '999808-2026'
+  files[1].objects.mocodawca[0].data.typ: osoba_prawna
+  files[1].objects.mocodawca[0].data.nazwa: Galdaris Technologie sp. k.
+  files[1].objects.mocodawca[0].data.nip: '9993885533'
+  files[1].objects.mocodawca[0].data.krs: '9992842505'
+  files[1].objects.pelnomocnicy:
+    __contains__:
+    - imie_nazwisko: Marek Jabłoński
+    - imie_nazwisko: Norbert Rutkiewicz
+    __min_count__: 2
+  files[1].objects.mocodawca_podpisujacy:
+    __contains__:
+    - imie_nazwisko: Ignacy Sikorski
+    __min_count__: 1
+  files[2].objects.przelew_bankowy[0].data.data_operacji: '2026-09-09'
+  files[2].objects.przelew_bankowy[0].data.kwota: 17.0
+  files[2].objects.przelew_bankowy[0].data.z_rachunku: '36396491875308085660842948'
+  files[2].objects.przelew_bankowy[0].data.na_rachunek: '38191587886680497037877080'
+  files[2].objects.przelew_bankowy[0].data.tytul: opłata skarbowa od pełnomocnictwa
+    dla Marek Jabłoński i Norbert Rutkiewicz w postępowaniu przed KIO w przetargu
+    ZP.869.2026 CEN2609288695559
+  files[2].objects.przelew_bankowy[0].data.numer_transakcji: CEN2609288695559
+min_similarity: 0.55
+version: '2'

@@ -1,0 +1,42 @@
+assert:
+  files[0].objects.OdwolanieKIO[0].data.miejscowosc: null
+  files[0].objects.OdwolanieKIO[0].data.data: null
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_dzien: '2026-04-17'
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_opis: Opis przedmiotu zamówienia
+    (OPZ)
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_powod_id: 11
+  files[0].objects.Odwolujacy[0].data.nazwa: Uldaris Automatyka S.A.
+  files[0].objects.Odwolujacy[0].data.nip: '9997683341'
+  files[0].objects.Odwolujacy[0].data.regon: '999782776'
+  files[0].objects.Odwolujacy[0].data.krs: '9995264890'
+  files[0].objects.Zamawiajacy[0].data.nazwa: Quentavis Technologie sp. k.
+  files[0].objects.Zamawiajacy[0].data.nip: '9999726630'
+  files[0].objects.Zamawiajacy[0].data.regon: '999835633'
+  files[0].objects.Zamawiajacy[0].data.krs: '9992815321'
+  files[0].objects.ZamowieniePubliczne[0].data.numer_postepowania: ZP.548.2026
+  files[0].objects.ZamowieniePubliczne[0].data.tytul: Odbiór i zagospodarowanie odpadów
+    komunalnych powstałych w obiektach
+  files[0].objects.ZamowieniePubliczne[0].data.numer_bzp: 2026/BZP00999033/03
+  files[0].objects.ZamowieniePubliczne[0].data.numer_ted: '999819-2026'
+  files[1].objects.mocodawca[0].data.typ: osoba_prawna
+  files[1].objects.mocodawca[0].data.nazwa: Uldaris Automatyka S.A.
+  files[1].objects.mocodawca[0].data.nip: '9997683341'
+  files[1].objects.mocodawca[0].data.krs: '9995264890'
+  files[1].objects.pelnomocnicy:
+    __contains__:
+    - imie_nazwisko: Halina Jabłończyk
+    __min_count__: 1
+  files[1].objects.mocodawca_podpisujacy:
+    __contains__:
+    - imie_nazwisko: Weronika Siedlecki
+    - imie_nazwisko: Cezary Lipowczyk
+    __min_count__: 2
+  files[2].objects.przelew_bankowy[0].data.data_operacji: '2026-04-18'
+  files[2].objects.przelew_bankowy[0].data.kwota: 200.0
+  files[2].objects.przelew_bankowy[0].data.z_rachunku: '21098240169258849380864560'
+  files[2].objects.przelew_bankowy[0].data.na_rachunek: '37497545976859306820772856'
+  files[2].objects.przelew_bankowy[0].data.tytul: opłata skarbowa od pełnomocnictwa
+    dla Halina Jabłończyk w postępowaniu przed KIO w przetargu ZP.548.2026 CEN2605065964069
+  files[2].objects.przelew_bankowy[0].data.numer_transakcji: CEN2605065964069
+min_similarity: 0.55
+version: '2'

@@ -1,0 +1,41 @@
+assert:
+  files[0].objects.OdwolanieKIO[0].data.miejscowosc: null
+  files[0].objects.OdwolanieKIO[0].data.data: null
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_dzien: '2026-02-20'
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_opis: Decyzja o unieważnieniu postępowania
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_powod_id: 9
+  files[0].objects.Odwolujacy[0].data.nazwa: Belmoria Technologie sp. j.
+  files[0].objects.Odwolujacy[0].data.nip: '9998805059'
+  files[0].objects.Odwolujacy[0].data.regon: '999647305'
+  files[0].objects.Odwolujacy[0].data.krs: '9994481774'
+  files[0].objects.Zamawiajacy[0].data.nazwa: Corvantis Serwis sp. k.
+  files[0].objects.Zamawiajacy[0].data.nip: '9998984352'
+  files[0].objects.Zamawiajacy[0].data.regon: '999756827'
+  files[0].objects.Zamawiajacy[0].data.krs: '9995815812'
+  files[0].objects.ZamowieniePubliczne[0].data.numer_postepowania: DI.106.2026
+  files[0].objects.ZamowieniePubliczne[0].data.tytul: Dostawa licencji oprogramowania
+    do monitorowania infrastruktury i alarmowej
+  files[0].objects.ZamowieniePubliczne[0].data.numer_bzp: 2026/BZP00999441
+  files[0].objects.ZamowieniePubliczne[0].data.numer_ted: '999032-2026'
+  files[1].objects.mocodawca[0].data.typ: osoba_prawna
+  files[1].objects.mocodawca[0].data.nazwa: Belmoria Technologie sp. j.
+  files[1].objects.mocodawca[0].data.nip: '9998805059'
+  files[1].objects.mocodawca[0].data.krs: '9994481774'
+  files[1].objects.pelnomocnicy:
+    __contains__:
+    - imie_nazwisko: Halina Niedźwiecki
+    __min_count__: 1
+  files[1].objects.mocodawca_podpisujacy:
+    __contains__:
+    - imie_nazwisko: Jolanta Dobrowolski
+    - imie_nazwisko: Ignacy Cieślak
+    __min_count__: 2
+  files[2].objects.przelew_bankowy[0].data.data_operacji: '2026-02-21'
+  files[2].objects.przelew_bankowy[0].data.kwota: 34.0
+  files[2].objects.przelew_bankowy[0].data.z_rachunku: '84576152426782305022174406'
+  files[2].objects.przelew_bankowy[0].data.na_rachunek: '85616619736856673630824436'
+  files[2].objects.przelew_bankowy[0].data.tytul: opłata skarbowa od pełnomocnictwa
+    dla Halina Niedźwiecki w postępowaniu przed KIO w przetargu DI.106.2026 CEN2603088416313
+  files[2].objects.przelew_bankowy[0].data.numer_transakcji: CEN2603088416313
+min_similarity: 0.55
+version: '2'

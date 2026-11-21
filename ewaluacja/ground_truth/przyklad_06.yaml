@@ -1,0 +1,42 @@
+assert:
+  files[0].objects.OdwolanieKIO[0].data.miejscowosc: Bydgoszcz
+  files[0].objects.OdwolanieKIO[0].data.data: '2026-06-27'
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_dzien: '2026-06-03'
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_opis: Publikacja specyfikacji warunków
+    zamówienia (SWZ)
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_powod_id: 4
+  files[0].objects.Odwolujacy[0].data.nazwa: Silvatica Technologie sp. z o.o.
+  files[0].objects.Odwolujacy[0].data.nip: '9998966348'
+  files[0].objects.Odwolujacy[0].data.regon: '999450212'
+  files[0].objects.Odwolujacy[0].data.krs: '9999360925'
+  files[0].objects.Zamawiajacy[0].data.nazwa: Aurelink Sieci sp. k.
+  files[0].objects.Zamawiajacy[0].data.nip: '9993074480'
+  files[0].objects.Zamawiajacy[0].data.regon: '999279238'
+  files[0].objects.Zamawiajacy[0].data.krs: '9995664683'
+  files[0].objects.ZamowieniePubliczne[0].data.numer_postepowania: DI.579.2026
+  files[0].objects.ZamowieniePubliczne[0].data.tytul: Świadczenie usług pocztowych
+    i kurierskich na potrzeby urzędu
+  files[0].objects.ZamowieniePubliczne[0].data.numer_bzp: null
+  files[0].objects.ZamowieniePubliczne[0].data.numer_ted: '999687-2026'
+  files[1].objects.mocodawca[0].data.typ: osoba_prawna
+  files[1].objects.mocodawca[0].data.nazwa: Silvatica Technologie sp. z o.o.
+  files[1].objects.mocodawca[0].data.nip: '9998966348'
+  files[1].objects.mocodawca[0].data.krs: '9999360925'
+  files[1].objects.pelnomocnicy:
+    __contains__:
+    - imie_nazwisko: Jolanta Szulc
+    __min_count__: 1
+  files[1].objects.mocodawca_podpisujacy:
+    __contains__:
+    - imie_nazwisko: Bartosz Zajkowski
+    - imie_nazwisko: Oliwia Gajewski
+    __min_count__: 2
+  files[2].objects.przelew_bankowy[0].data.data_operacji: '2026-06-04'
+  files[2].objects.przelew_bankowy[0].data.kwota: 50.0
+  files[2].objects.przelew_bankowy[0].data.z_rachunku: '83857487285854133752374620'
+  files[2].objects.przelew_bankowy[0].data.na_rachunek: '47138858777839172875872799'
+  files[2].objects.przelew_bankowy[0].data.tytul: opłata skarbowa od pełnomocnictwa
+    dla Jolanta Szulc w postępowaniu przed KIO w przetargu DI.579.2026 CEN2606275613944
+  files[2].objects.przelew_bankowy[0].data.numer_transakcji: CEN2606275613944
+min_similarity: 0.55
+version: '2'

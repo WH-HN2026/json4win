@@ -1,0 +1,41 @@
+assert:
+  files[0].objects.OdwolanieKIO[0].data.miejscowosc: null
+  files[0].objects.OdwolanieKIO[0].data.data: null
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_dzien: '2026-04-04'
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_opis: Modyfikacja treści SWZ
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_powod_id: 5
+  files[0].objects.Odwolujacy[0].data.nazwa: Yldenia Sieci S.A.
+  files[0].objects.Odwolujacy[0].data.nip: '9997550083'
+  files[0].objects.Odwolujacy[0].data.regon: '999670741'
+  files[0].objects.Odwolujacy[0].data.krs: '9997060431'
+  files[0].objects.Zamawiajacy[0].data.nazwa: Uldaris Usługi sp. z o.o.
+  files[0].objects.Zamawiajacy[0].data.nip: '9991994577'
+  files[0].objects.Zamawiajacy[0].data.regon: '999602656'
+  files[0].objects.Zamawiajacy[0].data.krs: '9996208666'
+  files[0].objects.ZamowieniePubliczne[0].data.numer_postepowania: SWZ.668.2026
+  files[0].objects.ZamowieniePubliczne[0].data.tytul: Dostawa wyposażenia pomieszczeń
+    biurowych oraz elementów wyposażenia architektonicznego
+  files[0].objects.ZamowieniePubliczne[0].data.numer_bzp: 2026/BZP00999010
+  files[0].objects.ZamowieniePubliczne[0].data.numer_ted: null
+  files[1].objects.mocodawca[0].data.typ: osoba_prawna
+  files[1].objects.mocodawca[0].data.nazwa: Yldenia Sieci S.A.
+  files[1].objects.mocodawca[0].data.nip: '9997550083'
+  files[1].objects.mocodawca[0].data.krs: '9997060431'
+  files[1].objects.pelnomocnicy:
+    __contains__:
+    - imie_nazwisko: Zbigniew Dobrowolski
+    __min_count__: 1
+  files[1].objects.mocodawca_podpisujacy:
+    __contains__:
+    - imie_nazwisko: Aleksandra Walczak
+    - imie_nazwisko: Weronika Pawlak
+    __min_count__: 2
+  files[2].objects.przelew_bankowy[0].data.data_operacji: '2026-04-05'
+  files[2].objects.przelew_bankowy[0].data.kwota: 17.0
+  files[2].objects.przelew_bankowy[0].data.z_rachunku: '34214818386561206921524195'
+  files[2].objects.przelew_bankowy[0].data.na_rachunek: '02985526938978681496365038'
+  files[2].objects.przelew_bankowy[0].data.tytul: opłata skarbowa od pełnomocnictwa
+    dla Zbigniew Dobrowolski w postępowaniu przed KIO w przetargu SWZ.668.2026 CEN2604265178263
+  files[2].objects.przelew_bankowy[0].data.numer_transakcji: CEN2604265178263
+min_similarity: 0.55
+version: '2'

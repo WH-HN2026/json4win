@@ -1,0 +1,42 @@
+assert:
+  files[0].objects.OdwolanieKIO[0].data.miejscowosc: null
+  files[0].objects.OdwolanieKIO[0].data.data: null
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_dzien: '2026-03-20'
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_opis: Decyzja o unieważnieniu postępowania
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_powod_id: 9
+  files[0].objects.Odwolujacy[0].data.nazwa: Belmoria Rozwiązania S.A.
+  files[0].objects.Odwolujacy[0].data.nip: '9999284065'
+  files[0].objects.Odwolujacy[0].data.regon: '999642785'
+  files[0].objects.Odwolujacy[0].data.krs: '9999405188'
+  files[0].objects.Zamawiajacy[0].data.nazwa: Aurelink Automatyka S.A.
+  files[0].objects.Zamawiajacy[0].data.nip: '9997518659'
+  files[0].objects.Zamawiajacy[0].data.regon: '999184816'
+  files[0].objects.Zamawiajacy[0].data.krs: '9999716254'
+  files[0].objects.ZamowieniePubliczne[0].data.numer_postepowania: ZS.791.2026
+  files[0].objects.ZamowieniePubliczne[0].data.tytul: Zakup i dostawa sprzętu komputerowego
+    wraz z oprogramowaniem oraz usługą wdrożenia
+  files[0].objects.ZamowieniePubliczne[0].data.numer_bzp: 2026/BZP00999778
+  files[0].objects.ZamowieniePubliczne[0].data.numer_ted: '999137-2026'
+  files[1].objects.mocodawca[0].data.typ: osoba_prawna
+  files[1].objects.mocodawca[0].data.nazwa: Belmoria Rozwiązania S.A.
+  files[1].objects.mocodawca[0].data.nip: '9999284065'
+  files[1].objects.mocodawca[0].data.krs: '9999405188'
+  files[1].objects.pelnomocnicy:
+    __contains__:
+    - imie_nazwisko: Aleksandra Marciniak
+    - imie_nazwisko: Jolanta Zajkowski
+    __min_count__: 2
+  files[1].objects.mocodawca_podpisujacy:
+    __contains__:
+    - imie_nazwisko: Oliwia Kaczmarek
+    __min_count__: 1
+  files[2].objects.przelew_bankowy[0].data.data_operacji: '2026-03-21'
+  files[2].objects.przelew_bankowy[0].data.kwota: 200.0
+  files[2].objects.przelew_bankowy[0].data.z_rachunku: '05470680287581539721455024'
+  files[2].objects.przelew_bankowy[0].data.na_rachunek: '68438223049992295262834736'
+  files[2].objects.przelew_bankowy[0].data.tytul: opłata skarbowa od pełnomocnictwa
+    dla Aleksandra Marciniak i Jolanta Zajkowski w postępowaniu przed KIO w przetargu
+    ZS.791.2026 CEN2604016344389
+  files[2].objects.przelew_bankowy[0].data.numer_transakcji: CEN2604016344389
+min_similarity: 0.55
+version: '2'

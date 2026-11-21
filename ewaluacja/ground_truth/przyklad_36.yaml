@@ -1,0 +1,44 @@
+assert:
+  files[0].objects.OdwolanieKIO[0].data.miejscowosc: null
+  files[0].objects.OdwolanieKIO[0].data.data: null
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_dzien: '2026-01-23'
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_opis: Opis przedmiotu zamówienia
+    (OPZ)
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_powod_id: 11
+  files[0].objects.Odwolujacy[0].data.nazwa: Rubiconis Technologie S.A.
+  files[0].objects.Odwolujacy[0].data.nip: '9998174794'
+  files[0].objects.Odwolujacy[0].data.regon: '999481460'
+  files[0].objects.Odwolujacy[0].data.krs: '9995831483'
+  files[0].objects.Zamawiajacy[0].data.nazwa: Rubiconis Technologie sp. z o.o.
+  files[0].objects.Zamawiajacy[0].data.nip: '9997495013'
+  files[0].objects.Zamawiajacy[0].data.regon: '999604307'
+  files[0].objects.Zamawiajacy[0].data.krs: '9991219631'
+  files[0].objects.ZamowieniePubliczne[0].data.numer_postepowania: SWZ.120.2026
+  files[0].objects.ZamowieniePubliczne[0].data.tytul: Dostawa licencji oprogramowania
+    do monitorowania infrastruktury i alarmowej
+  files[0].objects.ZamowieniePubliczne[0].data.numer_bzp: 2026/BZP00999063
+  files[0].objects.ZamowieniePubliczne[0].data.numer_ted: '999477-2026'
+  files[1].objects.mocodawca[0].data.typ: osoba_prawna
+  files[1].objects.mocodawca[0].data.nazwa: Rubiconis Technologie S.A.
+  files[1].objects.mocodawca[0].data.nip: '9998174794'
+  files[1].objects.mocodawca[0].data.krs: '9995831483'
+  files[1].objects.pelnomocnicy:
+    __contains__:
+    - imie_nazwisko: Dorota Siedlecki
+    - imie_nazwisko: Ryszard Jabłończyk
+    __min_count__: 2
+  files[1].objects.mocodawca_podpisujacy:
+    __contains__:
+    - imie_nazwisko: Zbigniew Mazurkiewicz
+    - imie_nazwisko: Patrycja Marciniak
+    __min_count__: 2
+  files[2].objects.przelew_bankowy[0].data.data_operacji: '2026-01-24'
+  files[2].objects.przelew_bankowy[0].data.kwota: 100.0
+  files[2].objects.przelew_bankowy[0].data.z_rachunku: '72391514288643289982152746'
+  files[2].objects.przelew_bankowy[0].data.na_rachunek: '38118266656359421255248248'
+  files[2].objects.przelew_bankowy[0].data.tytul: opłata skarbowa od pełnomocnictwa
+    dla Dorota Siedlecki i Ryszard Jabłończyk w postępowaniu przed KIO w przetargu
+    SWZ.120.2026 CEN2602082113108
+  files[2].objects.przelew_bankowy[0].data.numer_transakcji: CEN2602082113108
+min_similarity: 0.55
+version: '2'

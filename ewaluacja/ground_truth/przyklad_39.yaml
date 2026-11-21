@@ -1,0 +1,43 @@
+assert:
+  files[0].objects.OdwolanieKIO[0].data.miejscowosc: Wrocław
+  files[0].objects.OdwolanieKIO[0].data.data: '2026-01-07'
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_dzien: '2025-12-26'
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_opis: Decyzja o wykluczeniu wykonawcy
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_powod_id: 3
+  files[0].objects.Odwolujacy[0].data.nazwa: Xenonix Technologie S.A.
+  files[0].objects.Odwolujacy[0].data.nip: '9995704079'
+  files[0].objects.Odwolujacy[0].data.regon: '999094645'
+  files[0].objects.Odwolujacy[0].data.krs: '9994387983'
+  files[0].objects.Zamawiajacy[0].data.nazwa: Corvella Systemy sp. z o.o.
+  files[0].objects.Zamawiajacy[0].data.nip: '9999959400'
+  files[0].objects.Zamawiajacy[0].data.regon: '999596559'
+  files[0].objects.Zamawiajacy[0].data.krs: '9998630653'
+  files[0].objects.ZamowieniePubliczne[0].data.numer_postepowania: ZS.550.2026
+  files[0].objects.ZamowieniePubliczne[0].data.tytul: Świadczenie usług sprzątania
+    pomieszczeń biurowych
+  files[0].objects.ZamowieniePubliczne[0].data.numer_bzp: 2026/BZP00999369
+  files[0].objects.ZamowieniePubliczne[0].data.numer_ted: null
+  files[1].objects.mocodawca[0].data.typ: osoba_prawna
+  files[1].objects.mocodawca[0].data.nazwa: Xenonix Technologie S.A.
+  files[1].objects.mocodawca[0].data.nip: '9995704079'
+  files[1].objects.mocodawca[0].data.krs: '9994387983'
+  files[1].objects.pelnomocnicy:
+    __contains__:
+    - imie_nazwisko: Aleksandra Bartoszewicz
+    - imie_nazwisko: Halina Różański
+    __min_count__: 2
+  files[1].objects.mocodawca_podpisujacy:
+    __contains__:
+    - imie_nazwisko: Weronika Sikorski
+    - imie_nazwisko: Grzegorz Borkowski
+    __min_count__: 2
+  files[2].objects.przelew_bankowy[0].data.data_operacji: '2025-12-27'
+  files[2].objects.przelew_bankowy[0].data.kwota: 100.0
+  files[2].objects.przelew_bankowy[0].data.z_rachunku: '39181690323502914558043298'
+  files[2].objects.przelew_bankowy[0].data.na_rachunek: '58656248409487934466157204'
+  files[2].objects.przelew_bankowy[0].data.tytul: opłata skarbowa od pełnomocnictwa
+    dla Aleksandra Bartoszewicz i Halina Różański w postępowaniu przed KIO w przetargu
+    ZS.550.2026 CEN2601077049872
+  files[2].objects.przelew_bankowy[0].data.numer_transakcji: CEN2601077049872
+min_similarity: 0.55
+version: '2'

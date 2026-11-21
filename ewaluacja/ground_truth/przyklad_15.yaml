@@ -1,0 +1,40 @@
+assert:
+  files[0].objects.OdwolanieKIO[0].data.miejscowosc: Poznań
+  files[0].objects.OdwolanieKIO[0].data.data: '2026-01-12'
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_dzien: '2025-12-27'
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_opis: Ogłoszenie wyboru oferty
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_powod_id: 2
+  files[0].objects.Odwolujacy[0].data.nazwa: Belmoria Systemy sp. j.
+  files[0].objects.Odwolujacy[0].data.nip: '9999142626'
+  files[0].objects.Odwolujacy[0].data.regon: '999173770'
+  files[0].objects.Odwolujacy[0].data.krs: '9993682204'
+  files[0].objects.Zamawiajacy[0].data.nazwa: Fjordlight Rozwiązania sp. k.
+  files[0].objects.Zamawiajacy[0].data.nip: '9999463425'
+  files[0].objects.Zamawiajacy[0].data.regon: '999846878'
+  files[0].objects.Zamawiajacy[0].data.krs: '9995419681'
+  files[0].objects.ZamowieniePubliczne[0].data.numer_postepowania: SWZ.622.2026
+  files[0].objects.ZamowieniePubliczne[0].data.tytul: Zakup i dostawa systemów telematycznych
+    do obsługi zgłoszeń obywateli
+  files[0].objects.ZamowieniePubliczne[0].data.numer_bzp: 2026/BZP00999182
+  files[0].objects.ZamowieniePubliczne[0].data.numer_ted: null
+  files[1].objects.mocodawca[0].data.typ: osoba_prawna
+  files[1].objects.mocodawca[0].data.nazwa: Belmoria Systemy sp. j.
+  files[1].objects.mocodawca[0].data.nip: '9999142626'
+  files[1].objects.mocodawca[0].data.krs: '9993682204'
+  files[1].objects.pelnomocnicy:
+    __contains__:
+    - imie_nazwisko: Ryszard Lipowczyk
+    __min_count__: 1
+  files[1].objects.mocodawca_podpisujacy:
+    __contains__:
+    - imie_nazwisko: Marek Nowakowicz
+    __min_count__: 1
+  files[2].objects.przelew_bankowy[0].data.data_operacji: '2025-12-28'
+  files[2].objects.przelew_bankowy[0].data.kwota: 200.0
+  files[2].objects.przelew_bankowy[0].data.z_rachunku: '09570637495036186284664881'
+  files[2].objects.przelew_bankowy[0].data.na_rachunek: '56911076928008532465108080'
+  files[2].objects.przelew_bankowy[0].data.tytul: opłata skarbowa od pełnomocnictwa
+    dla Ryszard Lipowczyk w postępowaniu przed KIO w przetargu SWZ.622.2026 CEN2601124542889
+  files[2].objects.przelew_bankowy[0].data.numer_transakcji: CEN2601124542889
+min_similarity: 0.55
+version: '2'

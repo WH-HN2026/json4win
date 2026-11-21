@@ -1,0 +1,42 @@
+assert:
+  files[0].objects.OdwolanieKIO[0].data.miejscowosc: Warszawa
+  files[0].objects.OdwolanieKIO[0].data.data: '2026-07-15'
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_dzien: '2026-07-03'
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_opis: Publikacja specyfikacji warunków
+    zamówienia (SWZ)
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_powod_id: 4
+  files[0].objects.Odwolujacy[0].data.nazwa: Zarendel Automatyka sp. j.
+  files[0].objects.Odwolujacy[0].data.nip: '9995283985'
+  files[0].objects.Odwolujacy[0].data.regon: '999485311'
+  files[0].objects.Odwolujacy[0].data.krs: '9999063951'
+  files[0].objects.Zamawiajacy[0].data.nazwa: Ilystera Automatyka sp. k.
+  files[0].objects.Zamawiajacy[0].data.nip: '9992131944'
+  files[0].objects.Zamawiajacy[0].data.regon: '999136289'
+  files[0].objects.Zamawiajacy[0].data.krs: '9993983774'
+  files[0].objects.ZamowieniePubliczne[0].data.numer_postepowania: ZP.388.2026
+  files[0].objects.ZamowieniePubliczne[0].data.tytul: Zakup i dostawa systemów telematycznych
+    do obsługi zgłoszeń obywateli
+  files[0].objects.ZamowieniePubliczne[0].data.numer_bzp: 2026/BZP00999042
+  files[0].objects.ZamowieniePubliczne[0].data.numer_ted: null
+  files[1].objects.mocodawca[0].data.typ: osoba_prawna
+  files[1].objects.mocodawca[0].data.nazwa: Zarendel Automatyka sp. j.
+  files[1].objects.mocodawca[0].data.nip: '9995283985'
+  files[1].objects.mocodawca[0].data.krs: '9999063951'
+  files[1].objects.pelnomocnicy:
+    __contains__:
+    - imie_nazwisko: Cezary Walczak
+    __min_count__: 1
+  files[1].objects.mocodawca_podpisujacy:
+    __contains__:
+    - imie_nazwisko: Halina Mazurkiewicz
+    - imie_nazwisko: Sławomir Szulc
+    __min_count__: 2
+  files[2].objects.przelew_bankowy[0].data.data_operacji: '2026-07-04'
+  files[2].objects.przelew_bankowy[0].data.kwota: 50.0
+  files[2].objects.przelew_bankowy[0].data.z_rachunku: '64621719650035158366008774'
+  files[2].objects.przelew_bankowy[0].data.na_rachunek: '95504884425794546508647369'
+  files[2].objects.przelew_bankowy[0].data.tytul: opłata skarbowa od pełnomocnictwa
+    dla Cezary Walczak w postępowaniu przed KIO w przetargu ZP.388.2026 CEN2607152350299
+  files[2].objects.przelew_bankowy[0].data.numer_transakcji: CEN2607152350299
+min_similarity: 0.55
+version: '2'

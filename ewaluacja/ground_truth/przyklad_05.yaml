@@ -1,0 +1,40 @@
+assert:
+  files[0].objects.OdwolanieKIO[0].data.miejscowosc: Lublin
+  files[0].objects.OdwolanieKIO[0].data.data: '2026-11-09'
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_dzien: '2026-10-25'
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_opis: Zaniechanie odrzucenia oferty
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_powod_id: 7
+  files[0].objects.Odwolujacy[0].data.nazwa: Corvantis Wyposażenie sp. z o.o.
+  files[0].objects.Odwolujacy[0].data.nip: '9997553319'
+  files[0].objects.Odwolujacy[0].data.regon: '999630380'
+  files[0].objects.Odwolujacy[0].data.krs: '9999511966'
+  files[0].objects.Zamawiajacy[0].data.nazwa: Belmoria Automatyka S.A.
+  files[0].objects.Zamawiajacy[0].data.nip: '9996379405'
+  files[0].objects.Zamawiajacy[0].data.regon: '999454776'
+  files[0].objects.Zamawiajacy[0].data.krs: '9997034296'
+  files[0].objects.ZamowieniePubliczne[0].data.numer_postepowania: SWZ.780.2026
+  files[0].objects.ZamowieniePubliczne[0].data.tytul: Modernizacja instalacji wentylacyjnej
+    w obiekcie użyteczności publicznej
+  files[0].objects.ZamowieniePubliczne[0].data.numer_bzp: 2026/BZP00999392
+  files[0].objects.ZamowieniePubliczne[0].data.numer_ted: '999475-2026'
+  files[1].objects.mocodawca[0].data.typ: osoba_prawna
+  files[1].objects.mocodawca[0].data.nazwa: Corvantis Wyposażenie sp. z o.o.
+  files[1].objects.mocodawca[0].data.nip: '9997553319'
+  files[1].objects.mocodawca[0].data.krs: '9999511966'
+  files[1].objects.pelnomocnicy:
+    __contains__:
+    - imie_nazwisko: Ignacy Sadowski
+    __min_count__: 1
+  files[1].objects.mocodawca_podpisujacy:
+    __contains__:
+    - imie_nazwisko: Aleksandra Gajewski
+    __min_count__: 1
+  files[2].objects.przelew_bankowy[0].data.data_operacji: '2026-10-26'
+  files[2].objects.przelew_bankowy[0].data.kwota: 17.0
+  files[2].objects.przelew_bankowy[0].data.z_rachunku: '66211180801009882857081733'
+  files[2].objects.przelew_bankowy[0].data.na_rachunek: '10386393618709740848534519'
+  files[2].objects.przelew_bankowy[0].data.tytul: opłata skarbowa od pełnomocnictwa
+    dla Ignacy Sadowski w postępowaniu przed KIO w przetargu SWZ.780.2026 CEN2611091860728
+  files[2].objects.przelew_bankowy[0].data.numer_transakcji: CEN2611091860728
+min_similarity: 0.55
+version: '2'

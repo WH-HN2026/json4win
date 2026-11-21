@@ -1,0 +1,40 @@
+assert:
+  files[0].objects.OdwolanieKIO[0].data.miejscowosc: Łódź
+  files[0].objects.OdwolanieKIO[0].data.data: '2026-06-27'
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_dzien: '2026-06-13'
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_opis: Decyzja o unieważnieniu postępowania
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_powod_id: 9
+  files[0].objects.Odwolujacy[0].data.nazwa: Kadmos Rozwiązania sp. k.
+  files[0].objects.Odwolujacy[0].data.nip: '9991006421'
+  files[0].objects.Odwolujacy[0].data.regon: '999692205'
+  files[0].objects.Odwolujacy[0].data.krs: '9999145542'
+  files[0].objects.Zamawiajacy[0].data.nazwa: Veltra Infrastruktura sp. z o.o.
+  files[0].objects.Zamawiajacy[0].data.nip: '9995031700'
+  files[0].objects.Zamawiajacy[0].data.regon: '999331996'
+  files[0].objects.Zamawiajacy[0].data.krs: '9995127514'
+  files[0].objects.ZamowieniePubliczne[0].data.numer_postepowania: DI.123.2026
+  files[0].objects.ZamowieniePubliczne[0].data.tytul: Świadczenie usług utrzymania
+    infrastruktury sieciowej w budynkach administracyjnych
+  files[0].objects.ZamowieniePubliczne[0].data.numer_bzp: 2026/BZP00999748
+  files[0].objects.ZamowieniePubliczne[0].data.numer_ted: '999486-2026'
+  files[1].objects.mocodawca[0].data.typ: osoba_prawna
+  files[1].objects.mocodawca[0].data.nazwa: Kadmos Rozwiązania sp. k.
+  files[1].objects.mocodawca[0].data.nip: '9991006421'
+  files[1].objects.mocodawca[0].data.krs: '9999145542'
+  files[1].objects.pelnomocnicy:
+    __contains__:
+    - imie_nazwisko: Grzegorz Rutkiewicz
+    __min_count__: 1
+  files[1].objects.mocodawca_podpisujacy:
+    __contains__:
+    - imie_nazwisko: Sławomir Wierzbicki
+    __min_count__: 1
+  files[2].objects.przelew_bankowy[0].data.data_operacji: '2026-06-14'
+  files[2].objects.przelew_bankowy[0].data.kwota: 34.0
+  files[2].objects.przelew_bankowy[0].data.z_rachunku: '40826585774033060612824095'
+  files[2].objects.przelew_bankowy[0].data.na_rachunek: '19546370601574577093699823'
+  files[2].objects.przelew_bankowy[0].data.tytul: opłata skarbowa od pełnomocnictwa
+    dla Grzegorz Rutkiewicz w postępowaniu przed KIO w przetargu DI.123.2026 CEN2606277078899
+  files[2].objects.przelew_bankowy[0].data.numer_transakcji: CEN2606277078899
+min_similarity: 0.55
+version: '2'

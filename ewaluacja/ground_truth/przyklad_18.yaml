@@ -1,0 +1,40 @@
+assert:
+  files[0].objects.OdwolanieKIO[0].data.miejscowosc: Katowice
+  files[0].objects.OdwolanieKIO[0].data.data: '2026-08-28'
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_dzien: '2026-08-11'
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_opis: Decyzja o odrzuceniu oferty
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_powod_id: 1
+  files[0].objects.Odwolujacy[0].data.nazwa: Balttec Infrastruktura S.A.
+  files[0].objects.Odwolujacy[0].data.nip: '9995059584'
+  files[0].objects.Odwolujacy[0].data.regon: '999728771'
+  files[0].objects.Odwolujacy[0].data.krs: '9990428468'
+  files[0].objects.Zamawiajacy[0].data.nazwa: Xenonix Sieci sp. j.
+  files[0].objects.Zamawiajacy[0].data.nip: '9993962707'
+  files[0].objects.Zamawiajacy[0].data.regon: '999024567'
+  files[0].objects.Zamawiajacy[0].data.krs: '9991751879'
+  files[0].objects.ZamowieniePubliczne[0].data.numer_postepowania: DI.908.2026
+  files[0].objects.ZamowieniePubliczne[0].data.tytul: Świadczenie usług pocztowych
+    i kurierskich na potrzeby urzędu
+  files[0].objects.ZamowieniePubliczne[0].data.numer_bzp: 2026/BZP00999497/03
+  files[0].objects.ZamowieniePubliczne[0].data.numer_ted: '999124-2026'
+  files[1].objects.mocodawca[0].data.typ: osoba_prawna
+  files[1].objects.mocodawca[0].data.nazwa: Balttec Infrastruktura S.A.
+  files[1].objects.mocodawca[0].data.nip: '9995059584'
+  files[1].objects.mocodawca[0].data.krs: '9990428468'
+  files[1].objects.pelnomocnicy:
+    __contains__:
+    - imie_nazwisko: Dorota Zawadzki
+    __min_count__: 1
+  files[1].objects.mocodawca_podpisujacy:
+    __contains__:
+    - imie_nazwisko: Grzegorz Bąkiewicz
+    __min_count__: 1
+  files[2].objects.przelew_bankowy[0].data.data_operacji: '2026-08-12'
+  files[2].objects.przelew_bankowy[0].data.kwota: 17.0
+  files[2].objects.przelew_bankowy[0].data.z_rachunku: '37869289508384042119046312'
+  files[2].objects.przelew_bankowy[0].data.na_rachunek: '44450145077517377634608495'
+  files[2].objects.przelew_bankowy[0].data.tytul: opłata skarbowa od pełnomocnictwa
+    dla Dorota Zawadzki w postępowaniu przed KIO w przetargu DI.908.2026 CEN2608281596037
+  files[2].objects.przelew_bankowy[0].data.numer_transakcji: CEN2608281596037
+min_similarity: 0.55
+version: '2'

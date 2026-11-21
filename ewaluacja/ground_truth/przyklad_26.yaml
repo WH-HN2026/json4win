@@ -1,0 +1,42 @@
+assert:
+  files[0].objects.OdwolanieKIO[0].data.miejscowosc: Wrocław
+  files[0].objects.OdwolanieKIO[0].data.data: '2026-06-18'
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_dzien: '2026-06-06'
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_opis: Decyzja o wykluczeniu wykonawcy
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_powod_id: 3
+  files[0].objects.Odwolujacy[0].data.nazwa: Uldaris Wyposażenie sp. j.
+  files[0].objects.Odwolujacy[0].data.nip: '9997688539'
+  files[0].objects.Odwolujacy[0].data.regon: '999200202'
+  files[0].objects.Odwolujacy[0].data.krs: '9999035670'
+  files[0].objects.Zamawiajacy[0].data.nazwa: Orynte Konsulting sp. k.
+  files[0].objects.Zamawiajacy[0].data.nip: '9996050065'
+  files[0].objects.Zamawiajacy[0].data.regon: '999532157'
+  files[0].objects.Zamawiajacy[0].data.krs: '9992686270'
+  files[0].objects.ZamowieniePubliczne[0].data.numer_postepowania: ZP.864.2026
+  files[0].objects.ZamowieniePubliczne[0].data.tytul: Świadczenie usług sprzątania
+    pomieszczeń biurowych
+  files[0].objects.ZamowieniePubliczne[0].data.numer_bzp: null
+  files[0].objects.ZamowieniePubliczne[0].data.numer_ted: '999222-2026'
+  files[1].objects.mocodawca[0].data.typ: osoba_prawna
+  files[1].objects.mocodawca[0].data.nazwa: Uldaris Wyposażenie sp. j.
+  files[1].objects.mocodawca[0].data.nip: '9997688539'
+  files[1].objects.mocodawca[0].data.krs: '9999035670'
+  files[1].objects.pelnomocnicy:
+    __contains__:
+    - imie_nazwisko: Ryszard Mazurkiewicz
+    - imie_nazwisko: Patrycja Głowacz
+    __min_count__: 2
+  files[1].objects.mocodawca_podpisujacy:
+    __contains__:
+    - imie_nazwisko: Ryszard Chalupowicz
+    __min_count__: 1
+  files[2].objects.przelew_bankowy[0].data.data_operacji: '2026-06-07'
+  files[2].objects.przelew_bankowy[0].data.kwota: 34.0
+  files[2].objects.przelew_bankowy[0].data.z_rachunku: '00880509913633331687549357'
+  files[2].objects.przelew_bankowy[0].data.na_rachunek: '70953449300090369058127127'
+  files[2].objects.przelew_bankowy[0].data.tytul: opłata skarbowa od pełnomocnictwa
+    dla Ryszard Mazurkiewicz i Patrycja Głowacz w postępowaniu przed KIO w przetargu
+    ZP.864.2026 CEN2606184449569
+  files[2].objects.przelew_bankowy[0].data.numer_transakcji: CEN2606184449569
+min_similarity: 0.55
+version: '2'

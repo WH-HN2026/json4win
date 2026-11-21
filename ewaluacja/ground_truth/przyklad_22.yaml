@@ -1,0 +1,42 @@
+assert:
+  files[0].objects.OdwolanieKIO[0].data.miejscowosc: null
+  files[0].objects.OdwolanieKIO[0].data.data: null
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_dzien: '2026-01-07'
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_opis: Decyzja o unieważnieniu postępowania
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_powod_id: 9
+  files[0].objects.Odwolujacy[0].data.nazwa: Zorina Systemy sp. z o.o.
+  files[0].objects.Odwolujacy[0].data.nip: '9992726100'
+  files[0].objects.Odwolujacy[0].data.regon: '999205547'
+  files[0].objects.Odwolujacy[0].data.krs: '9994097527'
+  files[0].objects.Zamawiajacy[0].data.nazwa: Quantis Serwis sp. j.
+  files[0].objects.Zamawiajacy[0].data.nip: '9990877668'
+  files[0].objects.Zamawiajacy[0].data.regon: '999132305'
+  files[0].objects.Zamawiajacy[0].data.krs: '9995571982'
+  files[0].objects.ZamowieniePubliczne[0].data.numer_postepowania: ZP.246.2026
+  files[0].objects.ZamowieniePubliczne[0].data.tytul: Dostawa licencji oprogramowania
+    do monitorowania infrastruktury i alarmowej
+  files[0].objects.ZamowieniePubliczne[0].data.numer_bzp: 2026/BZP00999327
+  files[0].objects.ZamowieniePubliczne[0].data.numer_ted: '999985-2026'
+  files[1].objects.mocodawca[0].data.typ: osoba_prawna
+  files[1].objects.mocodawca[0].data.nazwa: Zorina Systemy sp. z o.o.
+  files[1].objects.mocodawca[0].data.nip: '9992726100'
+  files[1].objects.mocodawca[0].data.krs: '9994097527'
+  files[1].objects.pelnomocnicy:
+    __contains__:
+    - imie_nazwisko: Dorota Sikorski
+    - imie_nazwisko: Grzegorz Szulc
+    __min_count__: 2
+  files[1].objects.mocodawca_podpisujacy:
+    __contains__:
+    - imie_nazwisko: Cezary Bartoszewicz
+    __min_count__: 1
+  files[2].objects.przelew_bankowy[0].data.data_operacji: '2026-01-08'
+  files[2].objects.przelew_bankowy[0].data.kwota: 17.0
+  files[2].objects.przelew_bankowy[0].data.z_rachunku: '56702530386174513642995059'
+  files[2].objects.przelew_bankowy[0].data.na_rachunek: '63103194523130599171696203'
+  files[2].objects.przelew_bankowy[0].data.tytul: opłata skarbowa od pełnomocnictwa
+    dla Dorota Sikorski i Grzegorz Szulc w postępowaniu przed KIO w przetargu ZP.246.2026
+    CEN2601189988232
+  files[2].objects.przelew_bankowy[0].data.numer_transakcji: CEN2601189988232
+min_similarity: 0.55
+version: '2'

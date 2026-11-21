@@ -1,0 +1,40 @@
+assert:
+  files[0].objects.OdwolanieKIO[0].data.miejscowosc: Katowice
+  files[0].objects.OdwolanieKIO[0].data.data: '2026-08-26'
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_dzien: '2026-08-02'
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_opis: Zaniechanie unieważnienia postępowania
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_powod_id: 10
+  files[0].objects.Odwolujacy[0].data.nazwa: Quantis Serwis sp. k.
+  files[0].objects.Odwolujacy[0].data.nip: '9992052831'
+  files[0].objects.Odwolujacy[0].data.regon: '999795900'
+  files[0].objects.Odwolujacy[0].data.krs: '9992008329'
+  files[0].objects.Zamawiajacy[0].data.nazwa: Zorina Technologie sp. z o.o.
+  files[0].objects.Zamawiajacy[0].data.nip: '9995791492'
+  files[0].objects.Zamawiajacy[0].data.regon: '999387761'
+  files[0].objects.Zamawiajacy[0].data.krs: '9990078038'
+  files[0].objects.ZamowieniePubliczne[0].data.numer_postepowania: DI.529.2026
+  files[0].objects.ZamowieniePubliczne[0].data.tytul: Dostawa i wdrożenie oprogramowania
+    do obsługi dokumentacji wraz z serwisem wsparcia technicznego
+  files[0].objects.ZamowieniePubliczne[0].data.numer_bzp: null
+  files[0].objects.ZamowieniePubliczne[0].data.numer_ted: '999759-2026'
+  files[1].objects.mocodawca[0].data.typ: osoba_prawna
+  files[1].objects.mocodawca[0].data.nazwa: Quantis Serwis sp. k.
+  files[1].objects.mocodawca[0].data.nip: '9992052831'
+  files[1].objects.mocodawca[0].data.krs: '9992008329'
+  files[1].objects.pelnomocnicy:
+    __contains__:
+    - imie_nazwisko: Cezary Bartoszewicz
+    __min_count__: 1
+  files[1].objects.mocodawca_podpisujacy:
+    __contains__:
+    - imie_nazwisko: Grzegorz Szulc
+    __min_count__: 1
+  files[2].objects.przelew_bankowy[0].data.data_operacji: '2026-08-03'
+  files[2].objects.przelew_bankowy[0].data.kwota: 200.0
+  files[2].objects.przelew_bankowy[0].data.z_rachunku: '55773565366491997400614103'
+  files[2].objects.przelew_bankowy[0].data.na_rachunek: '04669325299404954519396033'
+  files[2].objects.przelew_bankowy[0].data.tytul: opłata skarbowa od pełnomocnictwa
+    dla Cezary Bartoszewicz w postępowaniu przed KIO w przetargu DI.529.2026 CEN2608263063380
+  files[2].objects.przelew_bankowy[0].data.numer_transakcji: CEN2608263063380
+min_similarity: 0.55
+version: '2'

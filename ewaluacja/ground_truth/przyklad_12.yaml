@@ -1,0 +1,40 @@
+assert:
+  files[0].objects.OdwolanieKIO[0].data.miejscowosc: Bydgoszcz
+  files[0].objects.OdwolanieKIO[0].data.data: '2026-07-20'
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_dzien: '2026-07-08'
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_opis: Zaniechanie wykluczenia wykonawcy
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_powod_id: 8
+  files[0].objects.Odwolujacy[0].data.nazwa: Wexford Usługi sp. j.
+  files[0].objects.Odwolujacy[0].data.nip: '9999988004'
+  files[0].objects.Odwolujacy[0].data.regon: '999132498'
+  files[0].objects.Odwolujacy[0].data.krs: '9990299642'
+  files[0].objects.Zamawiajacy[0].data.nazwa: Lunareth Sieci S.A.
+  files[0].objects.Zamawiajacy[0].data.nip: '9997286918'
+  files[0].objects.Zamawiajacy[0].data.regon: '999839460'
+  files[0].objects.Zamawiajacy[0].data.krs: '9992132121'
+  files[0].objects.ZamowieniePubliczne[0].data.numer_postepowania: SWZ.755.2026
+  files[0].objects.ZamowieniePubliczne[0].data.tytul: Modernizacja instalacji wentylacyjnej
+    w obiekcie użyteczności publicznej
+  files[0].objects.ZamowieniePubliczne[0].data.numer_bzp: 2026/BZP00999997
+  files[0].objects.ZamowieniePubliczne[0].data.numer_ted: '999035-2026'
+  files[1].objects.mocodawca[0].data.typ: osoba_prawna
+  files[1].objects.mocodawca[0].data.nazwa: Wexford Usługi sp. j.
+  files[1].objects.mocodawca[0].data.nip: '9999988004'
+  files[1].objects.mocodawca[0].data.krs: '9990299642'
+  files[1].objects.pelnomocnicy:
+    __contains__:
+    - imie_nazwisko: Klaudia Dobrowolski
+    __min_count__: 1
+  files[1].objects.mocodawca_podpisujacy:
+    __contains__:
+    - imie_nazwisko: Cezary Dudziewicz
+    __min_count__: 1
+  files[2].objects.przelew_bankowy[0].data.data_operacji: '2026-07-09'
+  files[2].objects.przelew_bankowy[0].data.kwota: 200.0
+  files[2].objects.przelew_bankowy[0].data.z_rachunku: '55013599139628488106435346'
+  files[2].objects.przelew_bankowy[0].data.na_rachunek: '57421677910972931901050689'
+  files[2].objects.przelew_bankowy[0].data.tytul: opłata skarbowa od pełnomocnictwa
+    dla Klaudia Dobrowolski w postępowaniu przed KIO w przetargu SWZ.755.2026 CEN2607206163458
+  files[2].objects.przelew_bankowy[0].data.numer_transakcji: CEN2607206163458
+min_similarity: 0.55
+version: '2'

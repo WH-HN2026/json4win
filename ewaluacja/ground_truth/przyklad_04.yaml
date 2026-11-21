@@ -1,0 +1,42 @@
+assert:
+  files[0].objects.OdwolanieKIO[0].data.miejscowosc: Katowice
+  files[0].objects.OdwolanieKIO[0].data.data: '2026-08-24'
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_dzien: '2026-08-11'
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_opis: Decyzja o unieważnieniu postępowania
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_powod_id: 9
+  files[0].objects.Odwolujacy[0].data.nazwa: Gildentia Wyposażenie sp. z o.o.
+  files[0].objects.Odwolujacy[0].data.nip: '9995126748'
+  files[0].objects.Odwolujacy[0].data.regon: '999165641'
+  files[0].objects.Odwolujacy[0].data.krs: '9992397370'
+  files[0].objects.Zamawiajacy[0].data.nazwa: Danevia Serwis sp. k.
+  files[0].objects.Zamawiajacy[0].data.nip: '9990342967'
+  files[0].objects.Zamawiajacy[0].data.regon: '999118676'
+  files[0].objects.Zamawiajacy[0].data.krs: '9997812714'
+  files[0].objects.ZamowieniePubliczne[0].data.numer_postepowania: ZP.447.2026
+  files[0].objects.ZamowieniePubliczne[0].data.tytul: Dostawa licencji oprogramowania
+    do monitorowania infrastruktury i alarmowej
+  files[0].objects.ZamowieniePubliczne[0].data.numer_bzp: null
+  files[0].objects.ZamowieniePubliczne[0].data.numer_ted: '999512-2026'
+  files[1].objects.mocodawca[0].data.typ: osoba_prawna
+  files[1].objects.mocodawca[0].data.nazwa: Gildentia Wyposażenie sp. z o.o.
+  files[1].objects.mocodawca[0].data.nip: '9995126748'
+  files[1].objects.mocodawca[0].data.krs: '9992397370'
+  files[1].objects.pelnomocnicy:
+    __contains__:
+    - imie_nazwisko: Patrycja Furman
+    - imie_nazwisko: Sławomir Ostrowczyk
+    __min_count__: 2
+  files[1].objects.mocodawca_podpisujacy:
+    __contains__:
+    - imie_nazwisko: Ewa Szulc
+    __min_count__: 1
+  files[2].objects.przelew_bankowy[0].data.data_operacji: '2026-08-12'
+  files[2].objects.przelew_bankowy[0].data.kwota: 17.0
+  files[2].objects.przelew_bankowy[0].data.z_rachunku: '43046337661291756811869204'
+  files[2].objects.przelew_bankowy[0].data.na_rachunek: '91363778606394934264547691'
+  files[2].objects.przelew_bankowy[0].data.tytul: opłata skarbowa od pełnomocnictwa
+    dla Patrycja Furman i Sławomir Ostrowczyk w postępowaniu przed KIO w przetargu
+    ZP.447.2026 CEN2608246932582
+  files[2].objects.przelew_bankowy[0].data.numer_transakcji: CEN2608246932582
+min_similarity: 0.55
+version: '2'

@@ -1,0 +1,42 @@
+assert:
+  files[0].objects.OdwolanieKIO[0].data.miejscowosc: Kraków
+  files[0].objects.OdwolanieKIO[0].data.data: '2026-03-03'
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_dzien: '2026-02-20'
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_opis: Zaniechanie unieważnienia postępowania
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_powod_id: 10
+  files[0].objects.Odwolujacy[0].data.nazwa: Rubiconis Automatyka sp. k.
+  files[0].objects.Odwolujacy[0].data.nip: '9997232058'
+  files[0].objects.Odwolujacy[0].data.regon: '999347550'
+  files[0].objects.Odwolujacy[0].data.krs: '9995695391'
+  files[0].objects.Zamawiajacy[0].data.nazwa: Iberis Technologie sp. k.
+  files[0].objects.Zamawiajacy[0].data.nip: '9993835096'
+  files[0].objects.Zamawiajacy[0].data.regon: '999419343'
+  files[0].objects.Zamawiajacy[0].data.krs: '9996938193'
+  files[0].objects.ZamowieniePubliczne[0].data.numer_postepowania: ZP.169.2026
+  files[0].objects.ZamowieniePubliczne[0].data.tytul: Modernizacja instalacji wentylacyjnej
+    w obiekcie użyteczności publicznej
+  files[0].objects.ZamowieniePubliczne[0].data.numer_bzp: 2026/BZP00999837
+  files[0].objects.ZamowieniePubliczne[0].data.numer_ted: '999000-2026'
+  files[1].objects.mocodawca[0].data.typ: osoba_prawna
+  files[1].objects.mocodawca[0].data.nazwa: Rubiconis Automatyka sp. k.
+  files[1].objects.mocodawca[0].data.nip: '9997232058'
+  files[1].objects.mocodawca[0].data.krs: '9995695391'
+  files[1].objects.pelnomocnicy:
+    __contains__:
+    - imie_nazwisko: Klaudia Szymanski
+    - imie_nazwisko: Norbert Sadowski
+    __min_count__: 2
+  files[1].objects.mocodawca_podpisujacy:
+    __contains__:
+    - imie_nazwisko: Oliwia Lipowczyk
+    __min_count__: 1
+  files[2].objects.przelew_bankowy[0].data.data_operacji: '2026-02-21'
+  files[2].objects.przelew_bankowy[0].data.kwota: 100.0
+  files[2].objects.przelew_bankowy[0].data.z_rachunku: '97285156811608656469159276'
+  files[2].objects.przelew_bankowy[0].data.na_rachunek: '76778604877565429038327479'
+  files[2].objects.przelew_bankowy[0].data.tytul: opłata skarbowa od pełnomocnictwa
+    dla Klaudia Szymanski i Norbert Sadowski w postępowaniu przed KIO w przetargu
+    ZP.169.2026 CEN2603035366536
+  files[2].objects.przelew_bankowy[0].data.numer_transakcji: CEN2603035366536
+min_similarity: 0.55
+version: '2'

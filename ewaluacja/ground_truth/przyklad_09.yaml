@@ -1,0 +1,43 @@
+assert:
+  files[0].objects.OdwolanieKIO[0].data.miejscowosc: Kraków
+  files[0].objects.OdwolanieKIO[0].data.data: '2026-10-28'
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_dzien: '2026-10-06'
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_opis: Opis przedmiotu zamówienia
+    (OPZ)
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_powod_id: 11
+  files[0].objects.Odwolujacy[0].data.nazwa: Iberis Sieci sp. z o.o.
+  files[0].objects.Odwolujacy[0].data.nip: '9990796243'
+  files[0].objects.Odwolujacy[0].data.regon: '999050100'
+  files[0].objects.Odwolujacy[0].data.krs: '9996772331'
+  files[0].objects.Zamawiajacy[0].data.nazwa: Quantis Sieci sp. j.
+  files[0].objects.Zamawiajacy[0].data.nip: '9997080832'
+  files[0].objects.Zamawiajacy[0].data.regon: '999057839'
+  files[0].objects.Zamawiajacy[0].data.krs: '9992327454'
+  files[0].objects.ZamowieniePubliczne[0].data.numer_postepowania: SWZ.613.2026
+  files[0].objects.ZamowieniePubliczne[0].data.tytul: Dostawa licencji oprogramowania
+    do monitorowania infrastruktury i alarmowej
+  files[0].objects.ZamowieniePubliczne[0].data.numer_bzp: null
+  files[0].objects.ZamowieniePubliczne[0].data.numer_ted: '999923-2026'
+  files[1].objects.mocodawca[0].data.typ: osoba_prawna
+  files[1].objects.mocodawca[0].data.nazwa: Iberis Sieci sp. z o.o.
+  files[1].objects.mocodawca[0].data.nip: '9990796243'
+  files[1].objects.mocodawca[0].data.krs: '9996772331'
+  files[1].objects.pelnomocnicy:
+    __contains__:
+    - imie_nazwisko: Weronika Kaczmarek
+    - imie_nazwisko: Weronika Chmielewski
+    __min_count__: 2
+  files[1].objects.mocodawca_podpisujacy:
+    __contains__:
+    - imie_nazwisko: Dorota Borkowski
+    __min_count__: 1
+  files[2].objects.przelew_bankowy[0].data.data_operacji: '2026-10-07'
+  files[2].objects.przelew_bankowy[0].data.kwota: 100.0
+  files[2].objects.przelew_bankowy[0].data.z_rachunku: '57799324924791372088471594'
+  files[2].objects.przelew_bankowy[0].data.na_rachunek: '12640046358854377576341364'
+  files[2].objects.przelew_bankowy[0].data.tytul: opłata skarbowa od pełnomocnictwa
+    dla Weronika Kaczmarek i Weronika Chmielewski w postępowaniu przed KIO w przetargu
+    SWZ.613.2026 CEN2610289710500
+  files[2].objects.przelew_bankowy[0].data.numer_transakcji: CEN2610289710500
+min_similarity: 0.55
+version: '2'

@@ -1,0 +1,42 @@
+assert:
+  files[0].objects.OdwolanieKIO[0].data.miejscowosc: null
+  files[0].objects.OdwolanieKIO[0].data.data: null
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_dzien: '2026-01-12'
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_opis: Ogłoszenie wyboru oferty
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_powod_id: 2
+  files[0].objects.Odwolujacy[0].data.nazwa: Fenrix Technologie S.A.
+  files[0].objects.Odwolujacy[0].data.nip: '9991582308'
+  files[0].objects.Odwolujacy[0].data.regon: '999759441'
+  files[0].objects.Odwolujacy[0].data.krs: '9998008097'
+  files[0].objects.Zamawiajacy[0].data.nazwa: Centaur Wyposażenie S.A.
+  files[0].objects.Zamawiajacy[0].data.nip: '9998503335'
+  files[0].objects.Zamawiajacy[0].data.regon: '999187460'
+  files[0].objects.Zamawiajacy[0].data.krs: '9994294850'
+  files[0].objects.ZamowieniePubliczne[0].data.numer_postepowania: SWZ.896.2026
+  files[0].objects.ZamowieniePubliczne[0].data.tytul: Dostawa materiałów eksploatacyjnych
+    do urządzeń biurowych
+  files[0].objects.ZamowieniePubliczne[0].data.numer_bzp: 2026/BZP00999596
+  files[0].objects.ZamowieniePubliczne[0].data.numer_ted: '999779-2026'
+  files[1].objects.mocodawca[0].data.typ: osoba_prawna
+  files[1].objects.mocodawca[0].data.nazwa: Fenrix Technologie S.A.
+  files[1].objects.mocodawca[0].data.nip: '9991582308'
+  files[1].objects.mocodawca[0].data.krs: '9998008097'
+  files[1].objects.pelnomocnicy:
+    __contains__:
+    - imie_nazwisko: Cezary Kaczmark
+    - imie_nazwisko: Sławomir Sadowski
+    __min_count__: 2
+  files[1].objects.mocodawca_podpisujacy:
+    __contains__:
+    - imie_nazwisko: Klaudia Bartoszewicz
+    __min_count__: 1
+  files[2].objects.przelew_bankowy[0].data.data_operacji: '2026-01-13'
+  files[2].objects.przelew_bankowy[0].data.kwota: 17.0
+  files[2].objects.przelew_bankowy[0].data.z_rachunku: '34365423499314741170695211'
+  files[2].objects.przelew_bankowy[0].data.na_rachunek: '56241727684947728485013773'
+  files[2].objects.przelew_bankowy[0].data.tytul: opłata skarbowa od pełnomocnictwa
+    dla Cezary Kaczmark i Sławomir Sadowski w postępowaniu przed KIO w przetargu SWZ.896.2026
+    CEN2601247064794
+  files[2].objects.przelew_bankowy[0].data.numer_transakcji: CEN2601247064794
+min_similarity: 0.55
+version: '2'

@@ -1,0 +1,40 @@
+assert:
+  files[0].objects.OdwolanieKIO[0].data.miejscowosc: Kraków
+  files[0].objects.OdwolanieKIO[0].data.data: '2026-04-04'
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_dzien: '2026-03-20'
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_opis: Zaniechanie odrzucenia oferty
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_powod_id: 7
+  files[0].objects.Odwolujacy[0].data.nazwa: Corvella Rozwiązania S.A.
+  files[0].objects.Odwolujacy[0].data.nip: '9990271196'
+  files[0].objects.Odwolujacy[0].data.regon: '999066287'
+  files[0].objects.Odwolujacy[0].data.krs: '9991500432'
+  files[0].objects.Zamawiajacy[0].data.nazwa: Jantara Wyposażenie sp. k.
+  files[0].objects.Zamawiajacy[0].data.nip: '9995897747'
+  files[0].objects.Zamawiajacy[0].data.regon: '999055622'
+  files[0].objects.Zamawiajacy[0].data.krs: '9993301211'
+  files[0].objects.ZamowieniePubliczne[0].data.numer_postepowania: SWZ.429.2026
+  files[0].objects.ZamowieniePubliczne[0].data.tytul: Zakup i dostawa sprzętu komputerowego
+    wraz z oprogramowaniem oraz usługą wdrożenia
+  files[0].objects.ZamowieniePubliczne[0].data.numer_bzp: 2026/BZP00999180
+  files[0].objects.ZamowieniePubliczne[0].data.numer_ted: '999431-2026'
+  files[1].objects.mocodawca[0].data.typ: osoba_prawna
+  files[1].objects.mocodawca[0].data.nazwa: Corvella Rozwiązania S.A.
+  files[1].objects.mocodawca[0].data.nip: '9990271196'
+  files[1].objects.mocodawca[0].data.krs: '9991500432'
+  files[1].objects.pelnomocnicy:
+    __contains__:
+    - imie_nazwisko: Marek Sikorski
+    __min_count__: 1
+  files[1].objects.mocodawca_podpisujacy:
+    __contains__:
+    - imie_nazwisko: Zbigniew Lewandowski
+    __min_count__: 1
+  files[2].objects.przelew_bankowy[0].data.data_operacji: '2026-03-21'
+  files[2].objects.przelew_bankowy[0].data.kwota: 200.0
+  files[2].objects.przelew_bankowy[0].data.z_rachunku: '56413158697642982905405577'
+  files[2].objects.przelew_bankowy[0].data.na_rachunek: '45589965988377790956571871'
+  files[2].objects.przelew_bankowy[0].data.tytul: opłata skarbowa od pełnomocnictwa
+    dla Marek Sikorski w postępowaniu przed KIO w przetargu SWZ.429.2026 CEN2604046784640
+  files[2].objects.przelew_bankowy[0].data.numer_transakcji: CEN2604046784640
+min_similarity: 0.55
+version: '2'

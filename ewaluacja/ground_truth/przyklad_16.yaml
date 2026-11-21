@@ -1,0 +1,43 @@
+assert:
+  files[0].objects.OdwolanieKIO[0].data.miejscowosc: Warszawa
+  files[0].objects.OdwolanieKIO[0].data.data: '2026-08-22'
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_dzien: '2026-08-11'
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_opis: Decyzja o wykluczeniu wykonawcy
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_powod_id: 3
+  files[0].objects.Odwolujacy[0].data.nazwa: Umbria Serwis S.A.
+  files[0].objects.Odwolujacy[0].data.nip: '9994524790'
+  files[0].objects.Odwolujacy[0].data.regon: '999556867'
+  files[0].objects.Odwolujacy[0].data.krs: '9995891101'
+  files[0].objects.Zamawiajacy[0].data.nazwa: Ypsilon Usługi sp. k.
+  files[0].objects.Zamawiajacy[0].data.nip: '9998078300'
+  files[0].objects.Zamawiajacy[0].data.regon: '999191360'
+  files[0].objects.Zamawiajacy[0].data.krs: '9998340863'
+  files[0].objects.ZamowieniePubliczne[0].data.numer_postepowania: DI.906.2026
+  files[0].objects.ZamowieniePubliczne[0].data.tytul: Świadczenie usług pocztowych
+    i kurierskich na potrzeby urzędu
+  files[0].objects.ZamowieniePubliczne[0].data.numer_bzp: null
+  files[0].objects.ZamowieniePubliczne[0].data.numer_ted: '999559-2026'
+  files[1].objects.mocodawca[0].data.typ: osoba_prawna
+  files[1].objects.mocodawca[0].data.nazwa: Umbria Serwis S.A.
+  files[1].objects.mocodawca[0].data.nip: '9994524790'
+  files[1].objects.mocodawca[0].data.krs: '9995891101'
+  files[1].objects.pelnomocnicy:
+    __contains__:
+    - imie_nazwisko: Cezary Szymanski
+    - imie_nazwisko: Patrycja Bąkiewicz
+    __min_count__: 2
+  files[1].objects.mocodawca_podpisujacy:
+    __contains__:
+    - imie_nazwisko: Marek Dobrowolski
+    - imie_nazwisko: Ryszard Biernacki
+    __min_count__: 2
+  files[2].objects.przelew_bankowy[0].data.data_operacji: '2026-08-12'
+  files[2].objects.przelew_bankowy[0].data.kwota: 200.0
+  files[2].objects.przelew_bankowy[0].data.z_rachunku: '33880525177402263989269409'
+  files[2].objects.przelew_bankowy[0].data.na_rachunek: '03712918442654893065427654'
+  files[2].objects.przelew_bankowy[0].data.tytul: opłata skarbowa od pełnomocnictwa
+    dla Cezary Szymanski i Patrycja Bąkiewicz w postępowaniu przed KIO w przetargu
+    DI.906.2026 CEN2608223176575
+  files[2].objects.przelew_bankowy[0].data.numer_transakcji: CEN2608223176575
+min_similarity: 0.55
+version: '2'

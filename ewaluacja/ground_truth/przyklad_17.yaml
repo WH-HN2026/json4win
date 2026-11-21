@@ -1,0 +1,40 @@
+assert:
+  files[0].objects.OdwolanieKIO[0].data.miejscowosc: Lublin
+  files[0].objects.OdwolanieKIO[0].data.data: '2026-10-27'
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_dzien: '2026-10-10'
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_opis: Zaniechanie odrzucenia oferty
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_powod_id: 7
+  files[0].objects.Odwolujacy[0].data.nazwa: Kavendis Infrastruktura sp. z o.o.
+  files[0].objects.Odwolujacy[0].data.nip: '9999892540'
+  files[0].objects.Odwolujacy[0].data.regon: '999263852'
+  files[0].objects.Odwolujacy[0].data.krs: '9999008184'
+  files[0].objects.Zamawiajacy[0].data.nazwa: Ypsilon Usługi sp. j.
+  files[0].objects.Zamawiajacy[0].data.nip: '9994288070'
+  files[0].objects.Zamawiajacy[0].data.regon: '999461865'
+  files[0].objects.Zamawiajacy[0].data.krs: '9998618920'
+  files[0].objects.ZamowieniePubliczne[0].data.numer_postepowania: DI.356.2026
+  files[0].objects.ZamowieniePubliczne[0].data.tytul: Świadczenie usług pocztowych
+    i kurierskich na potrzeby urzędu
+  files[0].objects.ZamowieniePubliczne[0].data.numer_bzp: 2026/BZP00999352
+  files[0].objects.ZamowieniePubliczne[0].data.numer_ted: null
+  files[1].objects.mocodawca[0].data.typ: osoba_prawna
+  files[1].objects.mocodawca[0].data.nazwa: Kavendis Infrastruktura sp. z o.o.
+  files[1].objects.mocodawca[0].data.nip: '9999892540'
+  files[1].objects.mocodawca[0].data.krs: '9999008184'
+  files[1].objects.pelnomocnicy:
+    __contains__:
+    - imie_nazwisko: Norbert Milewski
+    __min_count__: 1
+  files[1].objects.mocodawca_podpisujacy:
+    __contains__:
+    - imie_nazwisko: Halina Bartoszewicz
+    __min_count__: 1
+  files[2].objects.przelew_bankowy[0].data.data_operacji: '2026-10-11'
+  files[2].objects.przelew_bankowy[0].data.kwota: 200.0
+  files[2].objects.przelew_bankowy[0].data.z_rachunku: '21671392196881757429472751'
+  files[2].objects.przelew_bankowy[0].data.na_rachunek: '40948702352746681959149838'
+  files[2].objects.przelew_bankowy[0].data.tytul: opłata skarbowa od pełnomocnictwa
+    dla Norbert Milewski w postępowaniu przed KIO w przetargu DI.356.2026 CEN2610271073361
+  files[2].objects.przelew_bankowy[0].data.numer_transakcji: CEN2610271073361
+min_similarity: 0.55
+version: '2'

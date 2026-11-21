@@ -1,0 +1,44 @@
+assert:
+  files[0].objects.OdwolanieKIO[0].data.miejscowosc: Warszawa
+  files[0].objects.OdwolanieKIO[0].data.data: '2026-06-27'
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_dzien: '2026-06-03'
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_opis: Odpowiedzi i wyjaśnienia do
+    SWZ
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_powod_id: 6
+  files[0].objects.Odwolujacy[0].data.nazwa: Belmoria Systemy S.A.
+  files[0].objects.Odwolujacy[0].data.nip: '9992160970'
+  files[0].objects.Odwolujacy[0].data.regon: '999702501'
+  files[0].objects.Odwolujacy[0].data.krs: '9991240860'
+  files[0].objects.Zamawiajacy[0].data.nazwa: Faronis Konsulting sp. k.
+  files[0].objects.Zamawiajacy[0].data.nip: '9996638835'
+  files[0].objects.Zamawiajacy[0].data.regon: '999758909'
+  files[0].objects.Zamawiajacy[0].data.krs: '9996391409'
+  files[0].objects.ZamowieniePubliczne[0].data.numer_postepowania: SWZ.189.2026
+  files[0].objects.ZamowieniePubliczne[0].data.tytul: Dostawa materiałów eksploatacyjnych
+    do urządzeń biurowych
+  files[0].objects.ZamowieniePubliczne[0].data.numer_bzp: 2026/BZP00999453
+  files[0].objects.ZamowieniePubliczne[0].data.numer_ted: null
+  files[1].objects.mocodawca[0].data.typ: osoba_prawna
+  files[1].objects.mocodawca[0].data.nazwa: Belmoria Systemy S.A.
+  files[1].objects.mocodawca[0].data.nip: '9992160970'
+  files[1].objects.mocodawca[0].data.krs: '9991240860'
+  files[1].objects.pelnomocnicy:
+    __contains__:
+    - imie_nazwisko: Zbigniew Górnicki
+    - imie_nazwisko: Zbigniew Szymanski
+    __min_count__: 2
+  files[1].objects.mocodawca_podpisujacy:
+    __contains__:
+    - imie_nazwisko: Patrycja Głowacz
+    - imie_nazwisko: Oliwia Jabłończyk
+    __min_count__: 2
+  files[2].objects.przelew_bankowy[0].data.data_operacji: '2026-06-04'
+  files[2].objects.przelew_bankowy[0].data.kwota: 100.0
+  files[2].objects.przelew_bankowy[0].data.z_rachunku: '92476215236332523894371099'
+  files[2].objects.przelew_bankowy[0].data.na_rachunek: '26435909972191537905850420'
+  files[2].objects.przelew_bankowy[0].data.tytul: opłata skarbowa od pełnomocnictwa
+    dla Zbigniew Górnicki i Zbigniew Szymanski w postępowaniu przed KIO w przetargu
+    SWZ.189.2026 CEN2606275668655
+  files[2].objects.przelew_bankowy[0].data.numer_transakcji: CEN2606275668655
+min_similarity: 0.55
+version: '2'

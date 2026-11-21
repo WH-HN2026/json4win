@@ -1,0 +1,43 @@
+assert:
+  files[0].objects.OdwolanieKIO[0].data.miejscowosc: Gdańsk
+  files[0].objects.OdwolanieKIO[0].data.data: '2026-08-01'
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_dzien: '2026-07-11'
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_opis: Decyzja o unieważnieniu postępowania
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_powod_id: 9
+  files[0].objects.Odwolujacy[0].data.nazwa: Opalit Serwis sp. k.
+  files[0].objects.Odwolujacy[0].data.nip: '9992251714'
+  files[0].objects.Odwolujacy[0].data.regon: '999950475'
+  files[0].objects.Odwolujacy[0].data.krs: '9996902468'
+  files[0].objects.Zamawiajacy[0].data.nazwa: Opalit Wyposażenie S.A.
+  files[0].objects.Zamawiajacy[0].data.nip: '9997564636'
+  files[0].objects.Zamawiajacy[0].data.regon: '999247630'
+  files[0].objects.Zamawiajacy[0].data.krs: '9998459407'
+  files[0].objects.ZamowieniePubliczne[0].data.numer_postepowania: ZP.621.2026
+  files[0].objects.ZamowieniePubliczne[0].data.tytul: Dostawa i wdrożenie oprogramowania
+    do obsługi dokumentacji wraz z serwisem wsparcia technicznego
+  files[0].objects.ZamowieniePubliczne[0].data.numer_bzp: 2026/BZP00999107
+  files[0].objects.ZamowieniePubliczne[0].data.numer_ted: '999639-2026'
+  files[1].objects.mocodawca[0].data.typ: osoba_prawna
+  files[1].objects.mocodawca[0].data.nazwa: Opalit Serwis sp. k.
+  files[1].objects.mocodawca[0].data.nip: '9992251714'
+  files[1].objects.mocodawca[0].data.krs: '9996902468'
+  files[1].objects.pelnomocnicy:
+    __contains__:
+    - imie_nazwisko: Patrycja Bartoszewicz
+    - imie_nazwisko: Aleksandra Gajewicz
+    __min_count__: 2
+  files[1].objects.mocodawca_podpisujacy:
+    __contains__:
+    - imie_nazwisko: Zbigniew Dobrowolski
+    - imie_nazwisko: Marek Rutkiewicz
+    __min_count__: 2
+  files[2].objects.przelew_bankowy[0].data.data_operacji: '2026-07-12'
+  files[2].objects.przelew_bankowy[0].data.kwota: 17.0
+  files[2].objects.przelew_bankowy[0].data.z_rachunku: '65163294615868454368277984'
+  files[2].objects.przelew_bankowy[0].data.na_rachunek: '70127936703217946356148898'
+  files[2].objects.przelew_bankowy[0].data.tytul: opłata skarbowa od pełnomocnictwa
+    dla Patrycja Bartoszewicz i Aleksandra Gajewicz w postępowaniu przed KIO w przetargu
+    ZP.621.2026 CEN2608017634528
+  files[2].objects.przelew_bankowy[0].data.numer_transakcji: CEN2608017634528
+min_similarity: 0.55
+version: '2'

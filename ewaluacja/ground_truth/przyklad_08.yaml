@@ -1,0 +1,43 @@
+assert:
+  files[0].objects.OdwolanieKIO[0].data.miejscowosc: Rzeszów
+  files[0].objects.OdwolanieKIO[0].data.data: '2026-06-05'
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_dzien: '2026-05-25'
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_opis: Modyfikacja treści SWZ
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_powod_id: 5
+  files[0].objects.Odwolujacy[0].data.nazwa: Umbria Rozwiązania sp. j.
+  files[0].objects.Odwolujacy[0].data.nip: '9990600725'
+  files[0].objects.Odwolujacy[0].data.regon: '999424597'
+  files[0].objects.Odwolujacy[0].data.krs: '9997927279'
+  files[0].objects.Zamawiajacy[0].data.nazwa: Corvella Sieci sp. k.
+  files[0].objects.Zamawiajacy[0].data.nip: '9997193358'
+  files[0].objects.Zamawiajacy[0].data.regon: '999209545'
+  files[0].objects.Zamawiajacy[0].data.krs: '9999495942'
+  files[0].objects.ZamowieniePubliczne[0].data.numer_postepowania: ZS.158.2026
+  files[0].objects.ZamowieniePubliczne[0].data.tytul: Dostawa i wdrożenie oprogramowania
+    do obsługi dokumentacji wraz z serwisem wsparcia technicznego
+  files[0].objects.ZamowieniePubliczne[0].data.numer_bzp: 2026/BZP00999955
+  files[0].objects.ZamowieniePubliczne[0].data.numer_ted: '999211-2026'
+  files[1].objects.mocodawca[0].data.typ: osoba_prawna
+  files[1].objects.mocodawca[0].data.nazwa: Umbria Rozwiązania sp. j.
+  files[1].objects.mocodawca[0].data.nip: '9990600725'
+  files[1].objects.mocodawca[0].data.krs: '9997927279'
+  files[1].objects.pelnomocnicy:
+    __contains__:
+    - imie_nazwisko: Bartosz Jastrzębski
+    - imie_nazwisko: Oliwia Zajkowski
+    __min_count__: 2
+  files[1].objects.mocodawca_podpisujacy:
+    __contains__:
+    - imie_nazwisko: Halina Ostrowczyk
+    - imie_nazwisko: Ryszard Lewandowski
+    __min_count__: 2
+  files[2].objects.przelew_bankowy[0].data.data_operacji: '2026-05-26'
+  files[2].objects.przelew_bankowy[0].data.kwota: 34.0
+  files[2].objects.przelew_bankowy[0].data.z_rachunku: '57936403120146943695277279'
+  files[2].objects.przelew_bankowy[0].data.na_rachunek: '41351879105578128609561192'
+  files[2].objects.przelew_bankowy[0].data.tytul: opłata skarbowa od pełnomocnictwa
+    dla Bartosz Jastrzębski i Oliwia Zajkowski w postępowaniu przed KIO w przetargu
+    ZS.158.2026 CEN2606053930003
+  files[2].objects.przelew_bankowy[0].data.numer_transakcji: CEN2606053930003
+min_similarity: 0.55
+version: '2'

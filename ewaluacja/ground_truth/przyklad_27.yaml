@@ -1,0 +1,42 @@
+assert:
+  files[0].objects.OdwolanieKIO[0].data.miejscowosc: Wrocław
+  files[0].objects.OdwolanieKIO[0].data.data: '2026-11-12'
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_dzien: '2026-10-27'
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_opis: Zaniechanie wykluczenia wykonawcy
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_powod_id: 8
+  files[0].objects.Odwolujacy[0].data.nazwa: Ilyrion Sieci sp. j.
+  files[0].objects.Odwolujacy[0].data.nip: '9997585897'
+  files[0].objects.Odwolujacy[0].data.regon: '999917510'
+  files[0].objects.Odwolujacy[0].data.krs: '9995046546'
+  files[0].objects.Zamawiajacy[0].data.nazwa: Kadmos Systemy sp. k.
+  files[0].objects.Zamawiajacy[0].data.nip: '9998081160'
+  files[0].objects.Zamawiajacy[0].data.regon: '999915958'
+  files[0].objects.Zamawiajacy[0].data.krs: '9992446832'
+  files[0].objects.ZamowieniePubliczne[0].data.numer_postepowania: SWZ.716.2026
+  files[0].objects.ZamowieniePubliczne[0].data.tytul: Modernizacja instalacji wentylacyjnej
+    w obiekcie użyteczności publicznej
+  files[0].objects.ZamowieniePubliczne[0].data.numer_bzp: null
+  files[0].objects.ZamowieniePubliczne[0].data.numer_ted: '999918-2026'
+  files[1].objects.mocodawca[0].data.typ: osoba_prawna
+  files[1].objects.mocodawca[0].data.nazwa: Ilyrion Sieci sp. j.
+  files[1].objects.mocodawca[0].data.nip: '9997585897'
+  files[1].objects.mocodawca[0].data.krs: '9995046546'
+  files[1].objects.pelnomocnicy:
+    __contains__:
+    - imie_nazwisko: Aleksandra Jabłończyk
+    - imie_nazwisko: Dorota Jurgielewicz
+    __min_count__: 2
+  files[1].objects.mocodawca_podpisujacy:
+    __contains__:
+    - imie_nazwisko: Halina Dudziewicz
+    __min_count__: 1
+  files[2].objects.przelew_bankowy[0].data.data_operacji: '2026-10-28'
+  files[2].objects.przelew_bankowy[0].data.kwota: 34.0
+  files[2].objects.przelew_bankowy[0].data.z_rachunku: '97432190332550070532957559'
+  files[2].objects.przelew_bankowy[0].data.na_rachunek: '14112745698863024356935073'
+  files[2].objects.przelew_bankowy[0].data.tytul: opłata skarbowa od pełnomocnictwa
+    dla Aleksandra Jabłończyk i Dorota Jurgielewicz w postępowaniu przed KIO w przetargu
+    SWZ.716.2026 CEN2611122913642
+  files[2].objects.przelew_bankowy[0].data.numer_transakcji: CEN2611122913642
+min_similarity: 0.55
+version: '2'

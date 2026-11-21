@@ -1,0 +1,43 @@
+assert:
+  files[0].objects.OdwolanieKIO[0].data.miejscowosc: Warszawa
+  files[0].objects.OdwolanieKIO[0].data.data: '2026-05-27'
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_dzien: '2026-05-11'
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_opis: Decyzja o unieważnieniu postępowania
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_powod_id: 9
+  files[0].objects.Odwolujacy[0].data.nazwa: Quentavis Usługi sp. z o.o.
+  files[0].objects.Odwolujacy[0].data.nip: '9992111166'
+  files[0].objects.Odwolujacy[0].data.regon: '999970360'
+  files[0].objects.Odwolujacy[0].data.krs: '9996429969'
+  files[0].objects.Zamawiajacy[0].data.nazwa: Talveris Automatyka sp. j.
+  files[0].objects.Zamawiajacy[0].data.nip: '9994312880'
+  files[0].objects.Zamawiajacy[0].data.regon: '999732519'
+  files[0].objects.Zamawiajacy[0].data.krs: '9991809197'
+  files[0].objects.ZamowieniePubliczne[0].data.numer_postepowania: DI.228.2026
+  files[0].objects.ZamowieniePubliczne[0].data.tytul: Dostawa materiałów eksploatacyjnych
+    do urządzeń biurowych
+  files[0].objects.ZamowieniePubliczne[0].data.numer_bzp: 2026/BZP00999715
+  files[0].objects.ZamowieniePubliczne[0].data.numer_ted: null
+  files[1].objects.mocodawca[0].data.typ: osoba_prawna
+  files[1].objects.mocodawca[0].data.nazwa: Quentavis Usługi sp. z o.o.
+  files[1].objects.mocodawca[0].data.nip: '9992111166'
+  files[1].objects.mocodawca[0].data.krs: '9996429969'
+  files[1].objects.pelnomocnicy:
+    __contains__:
+    - imie_nazwisko: Aleksandra Wierzbicka
+    - imie_nazwisko: Jolanta Najder
+    __min_count__: 2
+  files[1].objects.mocodawca_podpisujacy:
+    __contains__:
+    - imie_nazwisko: Sławomir Dudek
+    - imie_nazwisko: Sławomir Mazurkiewicz
+    __min_count__: 2
+  files[2].objects.przelew_bankowy[0].data.data_operacji: '2026-05-12'
+  files[2].objects.przelew_bankowy[0].data.kwota: 17.0
+  files[2].objects.przelew_bankowy[0].data.z_rachunku: '83849557122740895669356241'
+  files[2].objects.przelew_bankowy[0].data.na_rachunek: '81296583508215258243090935'
+  files[2].objects.przelew_bankowy[0].data.tytul: opłata skarbowa od pełnomocnictwa
+    dla Aleksandra Wierzbicka i Jolanta Najder w postępowaniu przed KIO w przetargu
+    DI.228.2026 CEN2605272985635
+  files[2].objects.przelew_bankowy[0].data.numer_transakcji: CEN2605272985635
+min_similarity: 0.55
+version: '2'

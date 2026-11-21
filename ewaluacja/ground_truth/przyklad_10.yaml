@@ -1,0 +1,44 @@
+assert:
+  files[0].objects.OdwolanieKIO[0].data.miejscowosc: Gdańsk
+  files[0].objects.OdwolanieKIO[0].data.data: '2026-10-11'
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_dzien: '2026-09-25'
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_opis: Publikacja specyfikacji warunków
+    zamówienia (SWZ)
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_powod_id: 4
+  files[0].objects.Odwolujacy[0].data.nazwa: Meridian Konsulting sp. j.
+  files[0].objects.Odwolujacy[0].data.nip: '9992049237'
+  files[0].objects.Odwolujacy[0].data.regon: '999851916'
+  files[0].objects.Odwolujacy[0].data.krs: '9998577437'
+  files[0].objects.Zamawiajacy[0].data.nazwa: Uldaris Systemy sp. j.
+  files[0].objects.Zamawiajacy[0].data.nip: '9998031630'
+  files[0].objects.Zamawiajacy[0].data.regon: '999107260'
+  files[0].objects.Zamawiajacy[0].data.krs: '9992290948'
+  files[0].objects.ZamowieniePubliczne[0].data.numer_postepowania: ZP.856.2026
+  files[0].objects.ZamowieniePubliczne[0].data.tytul: Dostawa licencji oprogramowania
+    do monitorowania infrastruktury i alarmowej
+  files[0].objects.ZamowieniePubliczne[0].data.numer_bzp: 2026/BZP00999489
+  files[0].objects.ZamowieniePubliczne[0].data.numer_ted: '999328-2026'
+  files[1].objects.mocodawca[0].data.typ: osoba_prawna
+  files[1].objects.mocodawca[0].data.nazwa: Meridian Konsulting sp. j.
+  files[1].objects.mocodawca[0].data.nip: '9992049237'
+  files[1].objects.mocodawca[0].data.krs: '9998577437'
+  files[1].objects.pelnomocnicy:
+    __contains__:
+    - imie_nazwisko: Patrycja Rutkiewicz
+    - imie_nazwisko: Marek Łukaszewski
+    __min_count__: 2
+  files[1].objects.mocodawca_podpisujacy:
+    __contains__:
+    - imie_nazwisko: Halina Przybylski
+    - imie_nazwisko: Ignacy Milewski
+    __min_count__: 2
+  files[2].objects.przelew_bankowy[0].data.data_operacji: '2026-09-26'
+  files[2].objects.przelew_bankowy[0].data.kwota: 200.0
+  files[2].objects.przelew_bankowy[0].data.z_rachunku: '21822962409050354037148193'
+  files[2].objects.przelew_bankowy[0].data.na_rachunek: '64610803725981455663135560'
+  files[2].objects.przelew_bankowy[0].data.tytul: opłata skarbowa od pełnomocnictwa
+    dla Patrycja Rutkiewicz i Marek Łukaszewski w postępowaniu przed KIO w przetargu
+    ZP.856.2026 CEN2610117441609
+  files[2].objects.przelew_bankowy[0].data.numer_transakcji: CEN2610117441609
+min_similarity: 0.55
+version: '2'

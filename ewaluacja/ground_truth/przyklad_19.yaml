@@ -1,0 +1,42 @@
+assert:
+  files[0].objects.OdwolanieKIO[0].data.miejscowosc: null
+  files[0].objects.OdwolanieKIO[0].data.data: null
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_dzien: '2026-04-25'
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_opis: Odpowiedzi i wyjaśnienia do
+    SWZ
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_powod_id: 6
+  files[0].objects.Odwolujacy[0].data.nazwa: Corvantis Sieci sp. z o.o.
+  files[0].objects.Odwolujacy[0].data.nip: '9995584735'
+  files[0].objects.Odwolujacy[0].data.regon: '999992367'
+  files[0].objects.Odwolujacy[0].data.krs: '9997939273'
+  files[0].objects.Zamawiajacy[0].data.nazwa: Danevia Automatyka sp. j.
+  files[0].objects.Zamawiajacy[0].data.nip: '9990166660'
+  files[0].objects.Zamawiajacy[0].data.regon: '999032816'
+  files[0].objects.Zamawiajacy[0].data.krs: '9991132786'
+  files[0].objects.ZamowieniePubliczne[0].data.numer_postepowania: DI.578.2026
+  files[0].objects.ZamowieniePubliczne[0].data.tytul: Zakup i dostawa systemów telematycznych
+    do obsługi zgłoszeń obywateli
+  files[0].objects.ZamowieniePubliczne[0].data.numer_bzp: 2026/BZP00999371
+  files[0].objects.ZamowieniePubliczne[0].data.numer_ted: '999927-2026'
+  files[1].objects.mocodawca[0].data.typ: osoba_prawna
+  files[1].objects.mocodawca[0].data.nazwa: Corvantis Sieci sp. z o.o.
+  files[1].objects.mocodawca[0].data.nip: '9995584735'
+  files[1].objects.mocodawca[0].data.krs: '9997939273'
+  files[1].objects.pelnomocnicy:
+    __contains__:
+    - imie_nazwisko: Aleksandra Wierzbicki
+    __min_count__: 1
+  files[1].objects.mocodawca_podpisujacy:
+    __contains__:
+    - imie_nazwisko: Sławomir Niedźwiecki
+    - imie_nazwisko: Ewa Dudziewicz
+    __min_count__: 2
+  files[2].objects.przelew_bankowy[0].data.data_operacji: '2026-04-26'
+  files[2].objects.przelew_bankowy[0].data.kwota: 100.0
+  files[2].objects.przelew_bankowy[0].data.z_rachunku: '97552076088416465820563693'
+  files[2].objects.przelew_bankowy[0].data.na_rachunek: '98259602737060888831984936'
+  files[2].objects.przelew_bankowy[0].data.tytul: opłata skarbowa od pełnomocnictwa
+    dla Aleksandra Wierzbicki w postępowaniu przed KIO w przetargu DI.578.2026 CEN2605113961811
+  files[2].objects.przelew_bankowy[0].data.numer_transakcji: CEN2605113961811
+min_similarity: 0.55
+version: '2'

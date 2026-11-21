@@ -1,0 +1,43 @@
+assert:
+  files[0].objects.OdwolanieKIO[0].data.miejscowosc: null
+  files[0].objects.OdwolanieKIO[0].data.data: null
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_dzien: '2025-12-21'
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_opis: Decyzja o odrzuceniu oferty
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_powod_id: 1
+  files[0].objects.Odwolujacy[0].data.nazwa: Deltawing Usługi sp. j.
+  files[0].objects.Odwolujacy[0].data.nip: '9994888947'
+  files[0].objects.Odwolujacy[0].data.regon: '999788508'
+  files[0].objects.Odwolujacy[0].data.krs: '9990929624'
+  files[0].objects.Zamawiajacy[0].data.nazwa: Wexoria Serwis sp. z o.o.
+  files[0].objects.Zamawiajacy[0].data.nip: '9990199346'
+  files[0].objects.Zamawiajacy[0].data.regon: '999007965'
+  files[0].objects.Zamawiajacy[0].data.krs: '9999087092'
+  files[0].objects.ZamowieniePubliczne[0].data.numer_postepowania: ZP.354.2026
+  files[0].objects.ZamowieniePubliczne[0].data.tytul: Modernizacja instalacji wentylacyjnej
+    w obiekcie użyteczności publicznej
+  files[0].objects.ZamowieniePubliczne[0].data.numer_bzp: 2026/BZP00999484
+  files[0].objects.ZamowieniePubliczne[0].data.numer_ted: '999000-2026'
+  files[1].objects.mocodawca[0].data.typ: osoba_prawna
+  files[1].objects.mocodawca[0].data.nazwa: Deltawing Usługi sp. j.
+  files[1].objects.mocodawca[0].data.nip: '9994888947'
+  files[1].objects.mocodawca[0].data.krs: '9990929624'
+  files[1].objects.pelnomocnicy:
+    __contains__:
+    - imie_nazwisko: Ignacy Rutkiewicz
+    - imie_nazwisko: Weronika Furman
+    __min_count__: 2
+  files[1].objects.mocodawca_podpisujacy:
+    __contains__:
+    - imie_nazwisko: Oliwia Górnicki
+    - imie_nazwisko: Jolanta Kaczmarek
+    __min_count__: 2
+  files[2].objects.przelew_bankowy[0].data.data_operacji: '2025-12-22'
+  files[2].objects.przelew_bankowy[0].data.kwota: 50.0
+  files[2].objects.przelew_bankowy[0].data.z_rachunku: '34484587158449675491600836'
+  files[2].objects.przelew_bankowy[0].data.na_rachunek: '47326231412257943251088415'
+  files[2].objects.przelew_bankowy[0].data.tytul: opłata skarbowa od pełnomocnictwa
+    dla Ignacy Rutkiewicz i Weronika Furman w postępowaniu przed KIO w przetargu ZP.354.2026
+    CEN2601015794125
+  files[2].objects.przelew_bankowy[0].data.numer_transakcji: CEN2601015794125
+min_similarity: 0.55
+version: '2'

@@ -1,0 +1,44 @@
+assert:
+  files[0].objects.OdwolanieKIO[0].data.miejscowosc: Łódź
+  files[0].objects.OdwolanieKIO[0].data.data: '2026-08-12'
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_dzien: '2026-07-22'
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_opis: Opis przedmiotu zamówienia
+    (OPZ)
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_powod_id: 11
+  files[0].objects.Odwolujacy[0].data.nazwa: Granitix Usługi S.A.
+  files[0].objects.Odwolujacy[0].data.nip: '9993373158'
+  files[0].objects.Odwolujacy[0].data.regon: '999402472'
+  files[0].objects.Odwolujacy[0].data.krs: '9992992231'
+  files[0].objects.Zamawiajacy[0].data.nazwa: Umbria Automatyka sp. z o.o.
+  files[0].objects.Zamawiajacy[0].data.nip: '9990955300'
+  files[0].objects.Zamawiajacy[0].data.regon: '999022723'
+  files[0].objects.Zamawiajacy[0].data.krs: '9998396331'
+  files[0].objects.ZamowieniePubliczne[0].data.numer_postepowania: SWZ.702.2026
+  files[0].objects.ZamowieniePubliczne[0].data.tytul: Dostawa wyposażenia pomieszczeń
+    biurowych oraz elementów wyposażenia architektonicznego
+  files[0].objects.ZamowieniePubliczne[0].data.numer_bzp: 2026/BZP00999641
+  files[0].objects.ZamowieniePubliczne[0].data.numer_ted: '999836-2026'
+  files[1].objects.mocodawca[0].data.typ: osoba_prawna
+  files[1].objects.mocodawca[0].data.nazwa: Granitix Usługi S.A.
+  files[1].objects.mocodawca[0].data.nip: '9993373158'
+  files[1].objects.mocodawca[0].data.krs: '9992992231'
+  files[1].objects.pelnomocnicy:
+    __contains__:
+    - imie_nazwisko: Oliwia Wierzbicka
+    - imie_nazwisko: Jolanta Jabłończyk
+    __min_count__: 2
+  files[1].objects.mocodawca_podpisujacy:
+    __contains__:
+    - imie_nazwisko: Ryszard Nowakowicz
+    - imie_nazwisko: Jolanta Tomaszewski
+    __min_count__: 2
+  files[2].objects.przelew_bankowy[0].data.data_operacji: '2026-07-23'
+  files[2].objects.przelew_bankowy[0].data.kwota: 17.0
+  files[2].objects.przelew_bankowy[0].data.z_rachunku: '83946066034690104112344871'
+  files[2].objects.przelew_bankowy[0].data.na_rachunek: '74731826432991037523980996'
+  files[2].objects.przelew_bankowy[0].data.tytul: opłata skarbowa od pełnomocnictwa
+    dla Oliwia Wierzbicka i Jolanta Jabłończyk w postępowaniu przed KIO w przetargu
+    SWZ.702.2026 CEN2608122277227
+  files[2].objects.przelew_bankowy[0].data.numer_transakcji: CEN2608122277227
+min_similarity: 0.55
+version: '2'

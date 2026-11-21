@@ -1,0 +1,40 @@
+assert:
+  files[0].objects.OdwolanieKIO[0].data.miejscowosc: Bydgoszcz
+  files[0].objects.OdwolanieKIO[0].data.data: '2026-03-02'
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_dzien: '2026-02-16'
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_opis: Zaniechanie wykluczenia wykonawcy
+  files[0].objects.OdwolanieKIO[0].data.czynnosc_powod_id: 8
+  files[0].objects.Odwolujacy[0].data.nazwa: Silvatica Automatyka sp. k.
+  files[0].objects.Odwolujacy[0].data.nip: '9995501241'
+  files[0].objects.Odwolujacy[0].data.regon: '999302380'
+  files[0].objects.Odwolujacy[0].data.krs: '9991877493'
+  files[0].objects.Zamawiajacy[0].data.nazwa: Lunareth Automatyka sp. z o.o.
+  files[0].objects.Zamawiajacy[0].data.nip: '9997945568'
+  files[0].objects.Zamawiajacy[0].data.regon: '999298856'
+  files[0].objects.Zamawiajacy[0].data.krs: '9999176757'
+  files[0].objects.ZamowieniePubliczne[0].data.numer_postepowania: ZP.154.2026
+  files[0].objects.ZamowieniePubliczne[0].data.tytul: Dostawa i wdrożenie oprogramowania
+    do obsługi dokumentacji wraz z serwisem wsparcia technicznego
+  files[0].objects.ZamowieniePubliczne[0].data.numer_bzp: 2026/BZP00999555
+  files[0].objects.ZamowieniePubliczne[0].data.numer_ted: '999414-2026'
+  files[1].objects.mocodawca[0].data.typ: osoba_prawna
+  files[1].objects.mocodawca[0].data.nazwa: Silvatica Automatyka sp. k.
+  files[1].objects.mocodawca[0].data.nip: '9995501241'
+  files[1].objects.mocodawca[0].data.krs: '9991877493'
+  files[1].objects.pelnomocnicy:
+    __contains__:
+    - imie_nazwisko: Norbert Szulc
+    __min_count__: 1
+  files[1].objects.mocodawca_podpisujacy:
+    __contains__:
+    - imie_nazwisko: Sławomir Jabłoński
+    __min_count__: 1
+  files[2].objects.przelew_bankowy[0].data.data_operacji: '2026-02-17'
+  files[2].objects.przelew_bankowy[0].data.kwota: 50.0
+  files[2].objects.przelew_bankowy[0].data.z_rachunku: '39203888965989833490230983'
+  files[2].objects.przelew_bankowy[0].data.na_rachunek: '09460896147587484470692985'
+  files[2].objects.przelew_bankowy[0].data.tytul: opłata skarbowa od pełnomocnictwa
+    dla Norbert Szulc w postępowaniu przed KIO w przetargu ZP.154.2026 CEN2603024646444
+  files[2].objects.przelew_bankowy[0].data.numer_transakcji: CEN2603024646444
+min_similarity: 0.55
+version: '2'
