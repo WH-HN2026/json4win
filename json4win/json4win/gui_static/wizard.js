@@ -23,7 +23,21 @@
   const els = {
     configDirInfo: document.getElementById("config-dir-info"),
     btnReset: document.getElementById("btn-reset"),
+    resetConfirm: document.getElementById("reset-confirm"),
+    btnResetConfirm: document.getElementById("btn-reset-confirm"),
+    btnResetCancel: document.getElementById("btn-reset-cancel"),
     globalError: document.getElementById("global-error"),
+    globalErrorText: document.getElementById("global-error-text"),
+    btnErrorClose: document.getElementById("btn-error-close"),
+    stageStatus: document.getElementById("stage-status"),
+    busy: document.getElementById("busy"),
+    busyLabel: document.getElementById("busy-label"),
+    busyTime: document.getElementById("busy-time"),
+    stepMetas: [
+      document.getElementById("step-meta-1"),
+      document.getElementById("step-meta-2"),
+      document.getElementById("step-meta-3"),
+    ],
     stepBtns: [
       document.getElementById("step-btn-1"),
       document.getElementById("step-btn-2"),
@@ -48,11 +62,9 @@
     ocrProgressFill: document.getElementById("ocr-progress-fill"),
     filesList: document.getElementById("wizard-files-list"),
     // Stage 2
-    btnBack1: document.getElementById("btn-back-1"),
     btnProposeSzablon: document.getElementById("btn-propose-szablon"),
     btnRefreshPreview: document.getElementById("btn-refresh-preview"),
     btnToStage3: document.getElementById("btn-to-stage-3"),
-    stage2Busy: document.getElementById("stage2-busy"),
     leafCountTag: document.getElementById("leaf-count-tag"),
     btnAddRootField: document.getElementById("btn-add-root-field"),
     schemaTree: document.getElementById("schema-tree"),
@@ -62,12 +74,10 @@
     previewTabs: document.getElementById("preview-tabs"),
     previewBody: document.getElementById("preview-body"),
     // Stage 3
-    btnBack2: document.getElementById("btn-back-2"),
     btnProposeYaml: document.getElementById("btn-propose-yaml"),
     btnTestPipeline: document.getElementById("btn-test-pipeline"),
     btnDownloadYaml: document.getElementById("btn-download-yaml"),
     btnSaveYaml: document.getElementById("btn-save-yaml"),
-    stage3Busy: document.getElementById("stage3-busy"),
     overwriteBar: document.getElementById("overwrite-bar"),
     overwriteMessage: document.getElementById("overwrite-message"),
     btnConfirmOverwrite: document.getElementById("btn-confirm-overwrite"),
@@ -83,91 +93,45 @@
     markerResults: document.getElementById("marker-results"),
     testSummaryTag: document.getElementById("test-summary-tag"),
     testResults: document.getElementById("test-results"),
+    tabTest: document.getElementById("tab-test"),
+    tabMarker: document.getElementById("tab-marker"),
+    stage2Empty: document.getElementById("stage2-empty"),
+    stage3Empty: document.getElementById("stage3-empty"),
   };
 
-  function escapeHtml(text) {
-    return String(text)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;");
-  }
+  const J = window.J4W;
+  const renderPrettyJson = J.renderJson;
+  const apiJson = J.api;
+  const formatBytes = J.formatBytes;
 
   function showError(msg) {
     if (!msg) {
       els.globalError.classList.add("hidden");
-      els.globalError.textContent = "";
+      els.globalErrorText.textContent = "";
       return;
     }
-    els.globalError.textContent = msg;
+    els.globalErrorText.textContent = J.shorten(msg, 400);
+    els.globalError.title = msg;
     els.globalError.classList.remove("hidden");
-  }
-
-  function formatBytes(bytes) {
-    if (bytes < 1024) return bytes + " B";
-    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
-    return (bytes / (1024 * 1024)).toFixed(1) + " MB";
-  }
-
-  function renderPrettyJson(value, indent) {
-    const level = indent || 0;
-    const pad = "  ".repeat(level);
-    const childPad = "  ".repeat(level + 1);
-
-    if (value === null) return '<span class="json-null">null</span>';
-    if (typeof value === "string") {
-      return '<span class="json-string">' + escapeHtml(JSON.stringify(value)) + "</span>";
-    }
-    if (typeof value === "number") return '<span class="json-number">' + String(value) + "</span>";
-    if (typeof value === "boolean") return '<span class="json-bool">' + String(value) + "</span>";
-    if (Array.isArray(value)) {
-      if (!value.length) return '<span class="json-punct">[]</span>';
-      const items = value.map(function (item, idx) {
-        const comma = idx < value.length - 1 ? '<span class="json-punct">,</span>' : "";
-        return childPad + renderPrettyJson(item, level + 1) + comma;
-      });
-      return '<span class="json-punct">[</span>\n' + items.join("\n") + "\n" + pad + '<span class="json-punct">]</span>';
-    }
-    if (typeof value === "object") {
-      const keys = Object.keys(value);
-      if (!keys.length) return '<span class="json-punct">{}</span>';
-      const entries = keys.map(function (key, idx) {
-        const val = value[key];
-        const comma = idx < keys.length - 1 ? '<span class="json-punct">,</span>' : "";
-        const line =
-          childPad +
-          '<span class="json-key">' +
-          escapeHtml(JSON.stringify(key)) +
-          '</span><span class="json-punct">: </span>' +
-          renderPrettyJson(val, level + 1) +
-          comma;
-        return val === null ? '<span class="json-null-entry">' + line + "</span>" : line;
-      });
-      return '<span class="json-punct">{</span>\n' + entries.join("\n") + "\n" + pad + '<span class="json-punct">}</span>';
-    }
-    return escapeHtml(String(value));
-  }
-
-  async function apiJson(url, payload) {
-    const res = await fetch(url, {
-      method: payload === undefined ? "GET" : "POST",
-      cache: "no-store",
-      headers: payload === undefined ? {} : { "Content-Type": "application/json" },
-      body: payload === undefined ? undefined : JSON.stringify(payload),
-    });
-    const body = await res.json().catch(function () {
-      return { error: "Niepoprawna odpowiedź serwera (HTTP " + res.status + ")." };
-    });
-    return { ok: res.ok, status: res.status, body: body };
   }
 
   // ---- Stage navigation ----
 
-  function setStage(num) {
-    state.stage = Math.max(1, Math.min(3, num));
+  // Furthest stage the session can show: 2 needs OCR text, 3 needs a valid shape (or a YAML draft).
+  function maxStage() {
+    if (!hasReadyOcr()) return state.yamlText ? 3 : state.szablon ? 2 : 1;
+    if (!state.szablon || !state.rawJsonValid) return state.yamlText ? 3 : 2;
+    return 3;
+  }
+
+  function setStage(num, force) {
+    state.stage = Math.max(1, Math.min(force ? 3 : maxStage(), num));
     els.stagePanels.forEach(function (panel, idx) {
       panel.classList.toggle("hidden", idx + 1 !== state.stage);
     });
+    const panel = els.stagePanels[state.stage - 1];
+    const head = panel.querySelector(".page-head");
+    panel.insertBefore(els.stageStatus, head.nextSibling);
     updateStepper();
     try {
       const url = new URL(window.location.href);
@@ -195,17 +159,45 @@
     const done2 = Boolean(state.szablon && state.rawJsonValid);
     const done3 = Boolean(state.validation && state.validation.valid);
     const doneFlags = [done1, done2, done3];
+    const max = maxStage();
     els.stepBtns.forEach(function (btn, idx) {
       const s = idx + 1;
       btn.classList.toggle("active", s === state.stage);
-      btn.classList.toggle("done", s < state.stage || (doneFlags[idx] && s !== state.stage));
+      btn.classList.toggle("done", doneFlags[idx] && s !== state.stage);
+      btn.disabled = s > max && s !== state.stage;
+      btn.title = btn.disabled ? "Najpierw ukończ poprzedni etap" : "";
     });
+    const ready = state.files.filter(function (f) {
+      return f.pages && f.pages.length;
+    }).length;
+    const failed = state.files.filter(function (f) {
+      return f.status === "error";
+    }).length;
+    els.stepMetas[0].textContent = state.files.length
+      ? ready + "/" + state.files.length + " odczytane" + (failed ? ", błędy: " + failed : "")
+      : "brak plików";
+    els.stepMetas[1].textContent = state.szablon
+      ? leafPaths(state.szablon, "").length + " pól" + (state.rawJsonValid ? "" : ", błąd JSON")
+      : "";
+    els.stepMetas[2].textContent = state.validation
+      ? (state.validation.valid ? "poprawny" : "błędy: " + (state.validation.errors || []).length) +
+        (state.lastTest && state.lastTest.results ? ", test wykonany" : "")
+      : state.yamlText
+        ? "szkic"
+        : "";
   }
 
   function setBusy(busy, label) {
     state.busy = busy;
-    els.stage2Busy.textContent = busy && state.stage === 2 ? label || "Przetwarzanie..." : "";
-    els.stage3Busy.textContent = busy && state.stage === 3 ? label || "Przetwarzanie..." : "";
+    if (busy) {
+      els.busyLabel.textContent = label || "Przetwarzanie";
+      els.busyTime.setAttribute("data-since", String(Date.now()));
+      els.busyTime.textContent = "0:00";
+      els.busy.classList.remove("hidden");
+    } else {
+      els.busyTime.removeAttribute("data-since");
+      els.busy.classList.add("hidden");
+    }
     updateButtons();
   }
 
@@ -223,114 +215,109 @@
     els.btnSaveYaml.disabled = state.busy || !validYaml;
     els.btnDownloadYaml.disabled = !state.yamlText.trim();
     els.btnReset.disabled = state.busy;
+    document.querySelectorAll(".btn-remove-file").forEach(function (b) {
+      b.disabled = state.busy;
+    });
+    els.stage2Empty.classList.toggle("hidden", Boolean(state.szablon) || state.busy);
+    els.stage3Empty.classList.toggle("hidden", Boolean(state.yamlText) || state.busy);
   }
 
   // ---- Stage 1: Files & OCR ----
 
+  function fileMarker(f) {
+    if (f.status === "done") return "mk-done";
+    if (f.status === "ocr") return "mk-run";
+    if (f.status === "error") return "mk-err";
+    return "mk-wait";
+  }
+
   function renderFiles() {
-    els.fileCounter.textContent = state.files.length + " / " + state.maxFiles + " plików";
+    els.fileCounter.textContent = state.files.length + "/" + state.maxFiles;
     els.filesList.innerHTML = "";
+    els.filesList.classList.toggle("hidden", !state.files.length);
     if (!state.files.length) {
-      const empty = document.createElement("div");
-      empty.className = "empty-state";
-      empty.textContent = "Brak plików. Wgraj 1–5 przykładowych dokumentów PDF.";
-      els.filesList.appendChild(empty);
       updateStepper();
       updateButtons();
       return;
     }
 
     state.files.forEach(function (f) {
-      const card = document.createElement("div");
-      card.className = "file-card";
+      const item = document.createElement("div");
+      item.className = "wfile";
 
       const head = document.createElement("div");
-      head.className = "file-card-head";
-
-      const meta = document.createElement("div");
-      meta.className = "file-card-meta";
+      head.className = "wfile-head";
 
       const marker = document.createElement("span");
-      marker.className = "sq-marker st-" + f.status;
+      marker.className = "mk " + fileMarker(f);
 
       const title = document.createElement("span");
-      title.className = "file-title";
+      title.className = "wfile-name";
       title.textContent = f.filename;
       title.title = f.filename;
 
       const size = document.createElement("span");
-      size.className = "file-size";
+      size.className = "wfile-meta";
       size.textContent = formatBytes(f.size);
 
-      meta.appendChild(marker);
-      meta.appendChild(title);
-      meta.appendChild(size);
-
-      const right = document.createElement("div");
-      right.className = "file-card-right";
-
       const tag = document.createElement("span");
-      tag.className = "file-status-tag st-" + f.status;
+      tag.className = "wfile-meta";
       if (f.status === "done") {
-        tag.textContent = "OCR: " + f.pages.length + "/" + (f.total_pages || f.pages.length) + " str.";
+        tag.textContent = "OCR " + f.pages.length + "/" + (f.total_pages || f.pages.length) + " str.";
       } else if (f.status === "ocr") {
-        tag.textContent = "OCR...";
+        tag.textContent = "OCR w toku";
       } else if (f.status === "error") {
-        tag.textContent = "Błąd OCR";
-        tag.title = f.error || "";
+        tag.textContent = "błąd OCR";
+        tag.classList.add("is-err");
       } else {
-        tag.textContent = "Oczekuje";
+        tag.textContent = "czeka na OCR";
       }
 
       const rmBtn = document.createElement("button");
       rmBtn.type = "button";
-      rmBtn.className = "btn btn-xs btn-secondary";
+      rmBtn.className = "btn btn-quiet btn-remove-file";
       rmBtn.textContent = "Usuń";
+      rmBtn.title = "Usuń przykład " + f.filename;
       rmBtn.disabled = state.busy;
       rmBtn.addEventListener("click", function () {
         removeFile(f.doc_id);
       });
 
-      right.appendChild(tag);
-      right.appendChild(rmBtn);
-
-      head.appendChild(meta);
-      head.appendChild(right);
-      card.appendChild(head);
+      head.appendChild(marker);
+      head.appendChild(title);
+      head.appendChild(size);
+      head.appendChild(tag);
+      head.appendChild(rmBtn);
+      item.appendChild(head);
 
       if (f.error) {
         const errDiv = document.createElement("div");
-        errDiv.className = "inline-error";
-        errDiv.textContent = f.error;
-        card.appendChild(errDiv);
+        errDiv.className = "wfile-err";
+        errDiv.textContent = J.shorten(f.error, 240);
+        errDiv.title = f.error;
+        item.appendChild(errDiv);
       }
 
-      if (f.pages && f.pages.length) {
-        const pagesWrap = document.createElement("div");
-        pagesWrap.className = "file-pages";
-        f.pages.forEach(function (p) {
-          const det = document.createElement("details");
-          det.className = "ocr-page-details";
-          const sum = document.createElement("summary");
-          const leftLabel = document.createElement("span");
-          leftLabel.textContent = "Strona " + p.page;
-          const rightLabel = document.createElement("span");
-          rightLabel.textContent = p.chars + " zn.";
-          sum.appendChild(leftLabel);
-          sum.appendChild(rightLabel);
+      (f.pages || []).forEach(function (p) {
+        const det = document.createElement("details");
+        det.className = "wfile-page";
+        const sum = document.createElement("summary");
+        const leftLabel = document.createElement("span");
+        leftLabel.textContent = "Strona " + p.page;
+        const rightLabel = document.createElement("span");
+        rightLabel.className = "wfile-meta";
+        rightLabel.textContent = p.chars + " zn.";
+        sum.appendChild(leftLabel);
+        sum.appendChild(rightLabel);
+        const pre = document.createElement("pre");
+        pre.className = "code ocr-text";
+        pre.textContent = p.text || "(pusty tekst)";
+        det.appendChild(sum);
+        det.appendChild(pre);
+        item.appendChild(det);
+      });
 
-          const pre = document.createElement("pre");
-          pre.className = "ocr-text";
-          pre.textContent = p.text || "(pusty tekst)";
-
-          det.appendChild(sum);
-          det.appendChild(pre);
-          pagesWrap.appendChild(det);
-        });
-        card.appendChild(pagesWrap);
-      }
-
-      els.filesList.appendChild(card);
+      els.filesList.appendChild(item);
     });
 
     updateStepper();
@@ -344,7 +331,7 @@
     }
     els.ocrProgressWrap.classList.remove("hidden");
     els.ocrProgressLabel.textContent = label;
-    els.ocrProgressCount.textContent = done + " / " + total;
+    els.ocrProgressCount.textContent = done + "/" + total;
     els.ocrProgressFill.style.width = Math.round((done / total) * 100) + "%";
   }
 
@@ -370,7 +357,7 @@
       showError("Dodano pierwsze " + remaining + " plików (limit: " + state.maxFiles + ").");
     }
 
-    setBusy(true, "Wgrywanie...");
+    setBusy(true, "Wgrywanie");
     const addedIds = [];
     for (const file of batch) {
       const url = "/api/wizard/upload?filename=" + encodeURIComponent(file.name);
@@ -394,6 +381,7 @@
     renderFiles();
 
     if (addedIds.length) {
+      setBusy(true, "OCR");
       await runOcrForIds(addedIds);
     }
     setBusy(false);
@@ -404,6 +392,7 @@
     state.maxPages = maxPages;
     const total = docIds.length;
     let done = 0;
+    let failed = 0;
 
     for (const docId of docIds) {
       const f = state.files.find(function (x) {
@@ -414,6 +403,11 @@
       f.error = null;
       renderFiles();
       showOcrProgress(done, total, "OCR: " + f.filename);
+      els.ocrProgressCount.textContent = done + "/" + total + " ";
+      const t = document.createElement("span");
+      t.setAttribute("data-since", String(Date.now()));
+      t.textContent = "0:00";
+      els.ocrProgressCount.appendChild(t);
 
       const res = await apiJson("/api/wizard/ocr", { doc_id: docId, max_pages: maxPages });
       if (!res.ok) {
@@ -423,7 +417,12 @@
         Object.assign(f, res.body.file);
       }
       done += 1;
-      showOcrProgress(done, total, done < total ? "OCR..." : "OCR zakończone");
+      if (f.status === "error") failed += 1;
+      showOcrProgress(
+        done,
+        total,
+        (done < total ? "OCR" : "OCR zakończony") + (failed ? " · błędy: " + failed : "")
+      );
       renderFiles();
     }
   }
@@ -545,7 +544,7 @@
     els.rawJsonError.classList.add("hidden");
     els.rawJsonError.textContent = "";
     els.rawJsonStatus.textContent = "OK";
-    els.rawJsonStatus.className = "meta-tag ok";
+    els.rawJsonStatus.className = "tag tag-blue";
     renderSchemaTree();
     updateStepper();
     updateButtons();
@@ -554,16 +553,16 @@
   function renderSchemaTree() {
     els.schemaTree.innerHTML = "";
     if (!state.szablon) {
-      els.leafCountTag.textContent = "0 liści";
+      els.leafCountTag.textContent = "0 pól";
       const empty = document.createElement("div");
-      empty.className = "empty-state";
-      empty.textContent = "Kliknij „Zaproponuj kształt” lub dodaj pola przyciskiem „+ Pole”.";
+      empty.className = "empty";
+      empty.textContent = "Brak pól.";
       els.schemaTree.appendChild(empty);
       return;
     }
 
     const leaves = leafPaths(state.szablon, "");
-    els.leafCountTag.textContent = leaves.length + " liści";
+    els.leafCountTag.textContent = leaves.length + " pól";
 
     function buildObjectList(obj, prefix) {
       const wrap = document.createElement("div");
@@ -581,7 +580,7 @@
 
         const keyInput = document.createElement("input");
         keyInput.type = "text";
-        keyInput.className = "field-key-input";
+        keyInput.className = "input input-sm field-key-input";
         keyInput.value = key;
         keyInput.setAttribute("aria-label", "Nazwa pola");
         keyInput.addEventListener("change", function () {
@@ -603,7 +602,7 @@
         });
 
         const kindSel = document.createElement("select");
-        kindSel.className = "field-kind-select";
+        kindSel.className = "select select-sm field-kind-select";
         kindSel.setAttribute("aria-label", "Rodzaj węzła");
         [
           ["pole", "pole"],
@@ -645,7 +644,7 @@
 
         if (kind === "pole") {
           const typeSel = document.createElement("select");
-          typeSel.className = "field-type-select";
+          typeSel.className = "select select-sm field-type-select";
           typeSel.setAttribute("aria-label", "Typ liścia");
           ["str", "int", "float"].forEach(function (t) {
             const opt = document.createElement("option");
@@ -666,8 +665,9 @@
         if (kind === "obiekt" || (kind === "lista" && val[0] && typeof val[0] === "object")) {
           const addChild = document.createElement("button");
           addChild.type = "button";
-          addChild.className = "btn btn-xs btn-secondary";
-          addChild.textContent = "+ Pole";
+          addChild.className = "btn btn-quiet";
+          addChild.textContent = "Dodaj";
+          addChild.title = "Dodaj pole w " + fullPath;
           addChild.addEventListener("click", function () {
             const target = kind === "lista" ? val[0] : val;
             target[uniqueKey(target, "nowe_pole")] = null;
@@ -678,8 +678,8 @@
 
         const upBtn = document.createElement("button");
         upBtn.type = "button";
-        upBtn.className = "btn btn-xs btn-secondary";
-        upBtn.textContent = "Góra";
+        upBtn.className = "btn btn-quiet";
+        upBtn.textContent = "Wyżej";
         upBtn.disabled = idx === 0;
         upBtn.addEventListener("click", function () {
           const reordered = keys.slice();
@@ -692,8 +692,8 @@
 
         const downBtn = document.createElement("button");
         downBtn.type = "button";
-        downBtn.className = "btn btn-xs btn-secondary";
-        downBtn.textContent = "Dół";
+        downBtn.className = "btn btn-quiet";
+        downBtn.textContent = "Niżej";
         downBtn.disabled = idx === keys.length - 1;
         downBtn.addEventListener("click", function () {
           const reordered = keys.slice();
@@ -706,7 +706,7 @@
 
         const delBtn = document.createElement("button");
         delBtn.type = "button";
-        delBtn.className = "btn btn-xs btn-secondary";
+        delBtn.className = "btn btn-quiet";
         delBtn.textContent = "Usuń";
         delBtn.disabled = keys.length <= 1;
         delBtn.addEventListener("click", function () {
@@ -741,8 +741,8 @@
       state.rawJsonValid = false;
       els.rawJsonError.textContent = "Szablon JSON jest pusty.";
       els.rawJsonError.classList.remove("hidden");
-      els.rawJsonStatus.textContent = "Błąd";
-      els.rawJsonStatus.className = "meta-tag err";
+      els.rawJsonStatus.textContent = "błąd";
+      els.rawJsonStatus.className = "tag tag-err";
       updateButtons();
       return;
     }
@@ -753,8 +753,8 @@
       state.rawJsonValid = false;
       els.rawJsonError.textContent = "Błąd składni JSON: " + err.message;
       els.rawJsonError.classList.remove("hidden");
-      els.rawJsonStatus.textContent = "Błąd";
-      els.rawJsonStatus.className = "meta-tag err";
+      els.rawJsonStatus.textContent = "błąd";
+      els.rawJsonStatus.className = "tag tag-err";
       updateButtons();
       return;
     }
@@ -763,8 +763,8 @@
       state.rawJsonValid = false;
       els.rawJsonError.textContent = structErr;
       els.rawJsonError.classList.remove("hidden");
-      els.rawJsonStatus.textContent = "Błąd";
-      els.rawJsonStatus.className = "meta-tag err";
+      els.rawJsonStatus.textContent = "błąd";
+      els.rawJsonStatus.className = "tag tag-err";
       updateButtons();
       return;
     }
@@ -774,7 +774,7 @@
     els.rawJsonError.classList.add("hidden");
     els.rawJsonError.textContent = "";
     els.rawJsonStatus.textContent = "OK";
-    els.rawJsonStatus.className = "meta-tag ok";
+    els.rawJsonStatus.className = "tag tag-blue";
     renderSchemaTree();
     updateStepper();
     updateButtons();
@@ -786,8 +786,8 @@
 
     if (!state.previews.length) {
       const empty = document.createElement("div");
-      empty.className = "empty-state";
-      empty.textContent = "Brak podglądu. Kliknij „Zaproponuj kształt” lub „Odśwież podgląd”.";
+      empty.className = "empty";
+      empty.textContent = "Brak podglądu.";
       els.previewBody.appendChild(empty);
       return;
     }
@@ -798,7 +798,7 @@
     state.previews.forEach(function (item, idx) {
       const btn = document.createElement("button");
       btn.type = "button";
-      btn.className = "tab-btn" + (idx === state.activePreviewIdx ? " active" : "");
+      btn.className = "tab" + (idx === state.activePreviewIdx ? " active" : "");
       btn.textContent = item.filename;
       btn.addEventListener("click", function () {
         state.activePreviewIdx = idx;
@@ -816,8 +816,8 @@
 
   async function proposeSzablon() {
     showError("");
-    setStage(2);
-    setBusy(true, "LLM proponuje kształt JSON...");
+    setStage(2, true);
+    setBusy(true, "LLM proponuje kształt JSON");
     const res = await apiJson("/api/wizard/propose-szablon", {
       hint: els.hintInput.value.trim(),
     });
@@ -837,7 +837,7 @@
   async function refreshPreview() {
     if (!state.szablon || !state.rawJsonValid) return;
     showError("");
-    setBusy(true, "LLM odświeża podgląd...");
+    setBusy(true, "LLM wypełnia podgląd");
     const res = await apiJson("/api/wizard/preview", {
       szablon: state.szablon,
       typy: state.typy,
@@ -868,8 +868,8 @@
     els.overwriteBar.classList.add("hidden");
 
     if (!val) {
-      els.yamlValidChip.textContent = "Walidacja";
-      els.yamlValidChip.className = "state-chip";
+      els.yamlValidChip.textContent = "walidacja";
+      els.yamlValidChip.className = "tag";
       updateStepper();
       updateButtons();
       return;
@@ -877,20 +877,20 @@
 
     els.yamlFilenameLabel.textContent = val.filename || "nowa_klasa.yaml";
     if (val.valid) {
-      els.yamlValidChip.textContent = "Poprawny";
-      els.yamlValidChip.className = "state-chip valid";
+      els.yamlValidChip.textContent = "poprawny";
+      els.yamlValidChip.className = "tag tag-blue";
       const okRow = document.createElement("div");
       okRow.className = "val-row val-ok";
-      okRow.textContent =
-        "Konfiguracja poprawna (cel: " + val.target_dir + "/" + val.filename + (val.exists ? " — istnieje" : "") + ")";
+      okRow.textContent = "Poprawny" + (val.exists ? " · plik istnieje" : "");
+      okRow.title = val.target_dir + "/" + val.filename;
       els.yamlValidationPanel.appendChild(okRow);
     } else {
-      els.yamlValidChip.textContent = "Błąd";
-      els.yamlValidChip.className = "state-chip invalid";
+      els.yamlValidChip.textContent = "błędy: " + (val.errors || []).length;
+      els.yamlValidChip.className = "tag tag-err";
       (val.errors || []).forEach(function (err) {
         const row = document.createElement("div");
         row.className = "val-row val-err";
-        const loc = err.line ? "Linia " + err.line + (err.column ? ":" + err.column : "") + " — " : "";
+        const loc = err.line ? "L" + err.line + (err.column ? ":" + err.column : "") + "  " : "";
         row.textContent = loc + err.message;
         els.yamlValidationPanel.appendChild(row);
       });
@@ -913,15 +913,16 @@
     if (!marker || !marker.pattern) {
       els.markerPatternTag.textContent = "brak";
       const empty = document.createElement("div");
-      empty.className = "empty-state";
-      empty.textContent = "Brak znacznika — czytanie do max_stron / kompletny_gdy.";
+      empty.className = "empty";
+      empty.textContent = "Brak znacznika: czytanie do max_stron.";
       els.markerResults.appendChild(empty);
       return;
     }
-    els.markerPatternTag.textContent = marker.pattern;
+    els.markerPatternTag.textContent = J.shorten(marker.pattern, 40);
+    els.markerPatternTag.title = marker.pattern;
     if (marker.error) {
       const err = document.createElement("div");
-      err.className = "inline-error";
+      err.className = "note note-err";
       err.textContent = marker.error;
       els.markerResults.appendChild(err);
       return;
@@ -929,7 +930,7 @@
     const list = marker.results || [];
     if (!list.length) {
       const empty = document.createElement("div");
-      empty.className = "empty-state";
+      empty.className = "empty";
       empty.textContent = "Brak odczytanych stron OCR.";
       els.markerResults.appendChild(empty);
       return;
@@ -945,12 +946,11 @@
 
       const hit = document.createElement("span");
       if (item.matched) {
-        hit.className = "marker-hit";
-        hit.textContent =
-          "Strona " + item.first_match_page + " (stop po str. " + item.would_stop_after_page + ")";
+        hit.className = "tag tag-blue";
+        hit.textContent = "str. " + item.first_match_page + ", stop po " + item.would_stop_after_page;
       } else {
-        hit.className = "marker-miss";
-        hit.textContent = "Brak dopasowania (" + item.pages_checked + " str.)";
+        hit.className = "tag tag-warn";
+        hit.textContent = "brak (" + item.pages_checked + " str.)";
       }
 
       head.appendChild(fn);
@@ -971,10 +971,11 @@
     state.lastTest = payload;
     els.testResults.innerHTML = "";
     if (!payload || !payload.results || !payload.results.length) {
-      els.testSummaryTag.textContent = "nie uruchomiono";
+      els.testSummaryTag.textContent = "brak";
+      els.testSummaryTag.classList.remove("tag-blue", "tag-warn");
       const empty = document.createElement("div");
-      empty.className = "empty-state";
-      empty.textContent = "Kliknij „Testuj”, aby uruchomić klasyfikację, czytanie i ekstrakcję.";
+      empty.className = "empty";
+      empty.textContent = "Test nie był uruchomiony.";
       els.testResults.appendChild(empty);
       return;
     }
@@ -982,7 +983,9 @@
     const matched = payload.results.filter(function (r) {
       return r.matched_draft && !r.error;
     }).length;
-    els.testSummaryTag.textContent = matched + " / " + payload.results.length + " trafień";
+    els.testSummaryTag.textContent = matched + "/" + payload.results.length + " trafień";
+    els.testSummaryTag.classList.remove("tag-blue", "tag-warn");
+    els.testSummaryTag.classList.add(matched === payload.results.length ? "tag-blue" : "tag-warn");
 
     payload.results.forEach(function (r) {
       const card = document.createElement("div");
@@ -992,30 +995,30 @@
       head.className = "test-card-head";
 
       const title = document.createElement("span");
-      title.className = "mono";
-      title.style.fontWeight = "700";
+      title.className = "test-name";
       title.textContent = r.filename;
+      title.title = r.filename;
 
       const badges = document.createElement("div");
       badges.className = "test-badges";
 
       const decTag = document.createElement("span");
-      decTag.className = "test-tag " + (r.error ? "err" : r.matched_draft ? "ok" : "warn");
+      decTag.className = "tag " + (r.error ? "tag-err" : r.matched_draft ? "tag-blue" : "tag-warn");
       decTag.textContent = r.error ? "błąd" : "klasa: " + (r.decision || "inne");
       badges.appendChild(decTag);
 
       if (!r.error) {
         const pgTag = document.createElement("span");
-        pgTag.className = "test-tag";
+        pgTag.className = "tag";
         pgTag.textContent = "str: " + r.pages_read;
         badges.appendChild(pgTag);
 
         const valTag = document.createElement("span");
-        valTag.className = "test-tag " + (r.nulled && r.nulled.length ? "warn" : "ok");
+        valTag.className = "tag " + (r.nulled && r.nulled.length ? "tag-warn" : "tag-blue");
         valTag.textContent =
           r.nulled && r.nulled.length
             ? "wyzerowane: " + r.nulled.length
-            : "walidacja: OK" + (r.retries ? " (popr.: " + r.retries + ")" : "");
+            : "walidacja OK" + (r.retries ? " (popr.: " + r.retries + ")" : "");
         badges.appendChild(valTag);
       }
 
@@ -1028,8 +1031,9 @@
 
       if (r.error) {
         const errDiv = document.createElement("div");
-        errDiv.className = "inline-error";
-        errDiv.textContent = r.error;
+        errDiv.className = "note note-err";
+        errDiv.textContent = J.shorten(r.error, 300);
+        errDiv.title = r.error;
         body.appendChild(errDiv);
       } else {
         if (r.nulled && r.nulled.length) {
@@ -1053,8 +1057,8 @@
     if (!state.szablon || !state.rawJsonValid) return;
     showError("");
     els.saveOkBar.classList.add("hidden");
-    setStage(3);
-    setBusy(true, "LLM generuje YAML...");
+    setStage(3, true);
+    setBusy(true, "LLM generuje YAML");
     const res = await apiJson("/api/wizard/propose-yaml", {
       szablon: state.szablon,
       typy: state.typy,
@@ -1102,7 +1106,7 @@
 
   async function runPipelineTest() {
     showError("");
-    setBusy(true, "Test potoku na przykładach...");
+    setBusy(true, "Test: klasyfikacja, czytanie, ekstrakcja");
     const res = await apiJson("/api/wizard/test", {
       yaml_text: els.yamlEditor.value,
     });
@@ -1112,21 +1116,22 @@
       return;
     }
     renderTestResults(res.body);
+    setRightTab("test");
   }
 
   async function saveYaml(overwrite) {
     showError("");
     els.saveOkBar.classList.add("hidden");
     els.overwriteBar.classList.add("hidden");
-    setBusy(true, "Zapisywanie...");
+    setBusy(true, "Zapisywanie");
     const res = await apiJson("/api/wizard/save", {
       yaml_text: els.yamlEditor.value,
       overwrite: Boolean(overwrite),
     });
     setBusy(false);
     if (res.status === 409 && res.body.exists) {
-      els.overwriteMessage.textContent =
-        "Plik " + res.body.filename + " już istnieje w " + res.body.target_dir + ". Nadpisać?";
+      els.overwriteMessage.textContent = res.body.filename + " już istnieje. Nadpisać?";
+      els.overwriteMessage.title = res.body.path || res.body.target_dir;
       els.overwriteBar.classList.remove("hidden");
       return;
     }
@@ -1134,7 +1139,8 @@
       showError(res.body.error || "Nie udało się zapisać pliku.");
       return;
     }
-    els.saveOkBar.textContent = "Zapisano klasę `" + res.body.id + "` → " + res.body.path;
+    els.saveOkBar.textContent = "Zapisano: " + res.body.filename;
+    els.saveOkBar.title = res.body.path;
     els.saveOkBar.classList.remove("hidden");
     await runValidateYaml(false);
   }
@@ -1169,9 +1175,10 @@
     state.yamlText = snap.yaml_text || "";
     state.lastTest = snap.last_test || null;
 
-    els.configDirInfo.textContent = "Zapis: " + state.configDir;
+    els.configDirInfo.textContent = "zapis: " + state.configDir;
+    els.configDirInfo.title = "Katalog zapisu nowej klasy: " + state.configDir;
     els.maxPagesInput.value = String(state.maxPages);
-    els.hintInput.value = state.hint;
+    if (state.hint) els.hintInput.value = state.hint;
 
     renderFiles();
 
@@ -1204,6 +1211,7 @@
     const params = new URLSearchParams(window.location.search);
     const reqStage = parseInt(params.get("stage") || "1", 10);
     setStage(reqStage === 2 || reqStage === 3 ? reqStage : 1);
+    J.watchJob();
   }
 
   // ---- Wire up events ----
@@ -1214,16 +1222,45 @@
     });
   });
 
-  els.btnReset.addEventListener("click", async function () {
+  els.btnReset.addEventListener("click", function () {
+    els.resetConfirm.classList.remove("hidden");
+    els.btnResetCancel.focus();
+  });
+  els.btnResetCancel.addEventListener("click", function () {
+    els.resetConfirm.classList.add("hidden");
+  });
+  els.btnResetConfirm.addEventListener("click", async function () {
+    els.resetConfirm.classList.add("hidden");
     showError("");
     els.saveOkBar.classList.add("hidden");
     els.overwriteBar.classList.add("hidden");
     els.ocrProgressWrap.classList.add("hidden");
     const res = await apiJson("/api/wizard/reset", {});
     if (res.ok) {
+      els.hintInput.value = "";
       applySnapshot(res.body);
       setStage(1);
+    } else {
+      showError(res.body.error || "Nie udało się zresetować sesji.");
     }
+  });
+  els.btnErrorClose.addEventListener("click", function () {
+    showError("");
+  });
+  function setRightTab(which) {
+    const marker = which === "marker";
+    els.tabTest.classList.toggle("active", !marker);
+    els.tabMarker.classList.toggle("active", marker);
+    els.testResults.classList.toggle("hidden", marker);
+    els.markerResults.classList.toggle("hidden", !marker);
+    els.testSummaryTag.classList.toggle("hidden", marker);
+    els.markerPatternTag.classList.toggle("hidden", !marker);
+  }
+  els.tabTest.addEventListener("click", function () {
+    setRightTab("test");
+  });
+  els.tabMarker.addEventListener("click", function () {
+    setRightTab("marker");
   });
 
   // Stage 1 events
@@ -1255,7 +1292,7 @@
 
   els.btnRerunOcr.addEventListener("click", async function () {
     showError("");
-    setBusy(true, "OCR...");
+    setBusy(true, "OCR");
     await runOcrForIds(
       state.files.map(function (f) {
         return f.doc_id;
@@ -1273,9 +1310,6 @@
   });
 
   // Stage 2 events
-  els.btnBack1.addEventListener("click", function () {
-    setStage(1);
-  });
   els.btnProposeSzablon.addEventListener("click", proposeSzablon);
   els.btnRefreshPreview.addEventListener("click", refreshPreview);
   els.btnAddRootField.addEventListener("click", function () {
@@ -1296,9 +1330,6 @@
   });
 
   // Stage 3 events
-  els.btnBack2.addEventListener("click", function () {
-    setStage(2);
-  });
   els.btnProposeYaml.addEventListener("click", proposeYaml);
   els.btnTestPipeline.addEventListener("click", runPipelineTest);
   els.btnDownloadYaml.addEventListener("click", downloadYaml);

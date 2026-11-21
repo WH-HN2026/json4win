@@ -62,12 +62,23 @@ standardowej Pythona 3.13, nasłuchuje tylko na `127.0.0.1`):
 python -m json4win --gui [--port PORT] [--input KATALOG] [--output KATALOG] [--no-browser]
 ```
 
-Domyślnie serwer wybiera wolny port na `127.0.0.1` i automatycznie otwiera przeglądarkę.
-W interfejsie można:
-- przeglądać drzewo spraw z katalogu wejściowego i wgrywać pliki PDF (przeciągnij i upuść lub wybór z dysku) do nowej albo istniejącej sprawy,
-- uruchamiać przetwarzanie dla wybranej sprawy, pojedynczego pliku lub wszystkich spraw („Przetwórz”) z podglądem statusu każdego pliku na żywo,
-- oglądać podgląd PDF obok sformatowanego wyniku JSON (z wyszarzonymi polami `null` oraz oznaczeniem „nie rozpoznano (pusty JSON)” dla pustych wyników `{}`) i pobierać wynikowy plik JSON,
-- tworzyć nowe klasy dokumentów bez pisania kodu w trzyetapowym kreatorze **Nowa klasa** (`/wizard`: przykładowe PDF-y + OCR → edytor kształtu JSON → edytor YAML z walidacją na żywo, testem potoku i zapisem).
+Domyślnie serwer wybiera wolny port na `127.0.0.1` i automatycznie otwiera przeglądarkę. Interfejs ma
+jeden układ dla obu widoków: górny pasek ze wskaźnikiem przetwarzania (stan, licznik plików, czas; widoczny
+w każdym widoku), menu po lewej (**Dokumenty**, **Nowa klasa**) i obszar roboczy po prawej. Działa też na
+wąskim ekranie (lista, a po wybraniu dokumentu jego podgląd).
+
+**Dokumenty** (`/`):
+- lewy panel: sprawy z katalogu wejściowego i ich pliki ze stanem (kwadratowy znacznik: nowy, w kolejce,
+  w toku z czasem, gotowe z kluczem głównym wyniku, pusty `{}`, błąd); **Przetwórz wszystko**, a przy każdej
+  sprawie **Dodaj** (wgranie PDF; można też upuścić pliki na sprawę) i **Przetwórz**; panel **Nowa sprawa**
+  (nazwa podpowiadana, przeciągnij i upuść lub wybór z dysku); strzałki góra/dół przechodzą między plikami;
+- obszar roboczy: podgląd PDF obok wyniku JSON (pola `null` wyszarzone, „nie rozpoznano (pusty JSON)” dla
+  `{}`), zakładka **Ślad** ze śladem ekstrakcji, komunikat błędu przetwarzania nad wynikiem, **Przetwórz**,
+  **Kopiuj**, **Pobierz JSON**; wybrany dokument jest w adresie (`/?doc=sprawa/plik.pdf`).
+
+**Nowa klasa** (`/wizard`): trzyetapowy kreator nowej klasy dokumentu bez pisania kodu (etapy w lewym
+panelu: przykładowe PDF-y + OCR → edytor kształtu JSON → edytor YAML z walidacją na żywo, testem potoku
+i zapisem); długie kroki (OCR, LLM) pokazują pasek i upływający czas. Szczegóły: [`../docs/nowa-klasa.md`](../docs/nowa-klasa.md).
 
 ## OCR (lokalnie, CPU)
 

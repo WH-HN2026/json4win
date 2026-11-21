@@ -22,9 +22,9 @@ STATIC_FILES: dict[str, tuple[str, str]] = {
     "/index.html": ("index.html", "text/html; charset=utf-8"),
     "/wizard": ("wizard.html", "text/html; charset=utf-8"),
     "/wizard.html": ("wizard.html", "text/html; charset=utf-8"),
-    "/static/style.css": ("style.css", "text/css; charset=utf-8"),
-    "/static/app.js": ("app.js", "application/javascript; charset=utf-8"),
-    "/static/wizard.css": ("wizard.css", "text/css; charset=utf-8"),
+    "/static/ui.css": ("ui.css", "text/css; charset=utf-8"),
+    "/static/ui.js": ("ui.js", "application/javascript; charset=utf-8"),
+    "/static/docs.js": ("docs.js", "application/javascript; charset=utf-8"),
     "/static/wizard.js": ("wizard.js", "application/javascript; charset=utf-8"),
 }
 

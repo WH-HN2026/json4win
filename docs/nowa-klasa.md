@@ -20,22 +20,24 @@ zmiany w kodzie Pythona.
 ## Kreator w GUI („Nowa klasa”)
 
 Nową klasę dokumentu można utworzyć także z poziomu lokalnego interfejsu webowego (`python -m json4win --gui`,
-przycisk **Nowa klasa** w górnym pasku lub adres `/wizard`). Kreator prowadzi przez trzy etapy:
+pozycja **Nowa klasa** w menu po lewej lub adres `/wizard`). Kreator prowadzi przez trzy etapy (lewy panel;
+etap otwiera się, gdy poprzedni ma wynik). Pole **Wskazówka dla LLM** w lewym panelu (opcjonalne) trafia do
+propozycji kształtu JSON i YAML; **Nowa sesja** usuwa przykłady i szkic po potwierdzeniu:
 
 1. **Przykłady PDF** — wgranie 1–5 przykładowych plików PDF nowej klasy (do osobnego katalogu roboczego
    poza `output/` i `input/`). Każda strona do limitu `N` (domyślnie 2, edytowalne) przechodzi przez
-   lokalny OCR (`json4win.ocr`, z cache; warstwa tekstowa PDF nie jest używana). Tekst OCR każdej strony
-   można rozwinąć na liście plików.
+   lokalny OCR (`json4win.ocr`, z cache; warstwa tekstowa PDF nie jest używana; pole **Strony OCR**). Tekst
+   OCR każdej strony można rozwinąć na liście plików, a przykład z błędem usunąć przyciskiem **Usuń**.
 2. **Kształt JSON** — model LLM proponuje `szablon` (obiekty, listy, liście `null`), typy pól (`str`, `int`,
    `float`) oraz podgląd wartości wyciągniętych z przykładów. Interaktywny edytor struktury pól
-   (dodawanie, zmiana nazw, przenoszenie, usuwanie, obiekt vs. lista, typ liścia) działa dwukierunkowo
+   (**Dodaj pole**, zmiana nazw, **Wyżej**/**Niżej**, **Usuń**, obiekt vs. lista, typ liścia) działa dwukierunkowo
    z edytorem surowego JSON-a (z walidacją składni na żywo). Przycisk **Odśwież podgląd** ponownie
    odpytuje LLM o podgląd dla zmodyfikowanego kształtu.
 3. **Konfiguracja YAML** — model LLM generuje resztę pliku YAML (`id`, `nazwa`, `opis`, `cechy`,
    `nie_mylic_z`, `czytanie`, reguły `pola` dla każdego liścia ze zmyślonymi `przyklady` oraz `instrukcje`).
    Edytor YAML waliduje plik na żywo przez właściwy loader (`json4win.config.load_class`) z numerami linii,
-   testuje regex `czytanie.znacznik` na odczytanych stronach OCR, a przycisk **Testuj** uruchamia pełny
-   potok (decyzja + czytanie + ekstrakcja) na wgranych przykładach.
+   testuje regex `czytanie.znacznik` na odczytanych stronach OCR (zakładka **Znacznik**), a przycisk **Testuj**
+   uruchamia pełny potok (decyzja + czytanie + ekstrakcja) na wgranych przykładach (zakładka **Test**).
 
 **Gdzie kreator zapisuje plik:** kliknięcie **Zapisz** zapisuje `<id>.yaml` w pierwszym katalogu
 wskazanym w zmiennej środowiskowej `JSON4WIN_CONFIG_DIRS`, a jeśli nie jest ustawiona — w `json4win/config/`.

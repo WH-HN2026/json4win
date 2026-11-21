@@ -3,194 +3,232 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>json4win — Nowa klasa</title>
-  <link rel="stylesheet" href="/static/wizard.css">
+  <title>Nowa klasa · json4win</title>
+  <link rel="stylesheet" href="/static/ui.css">
 </head>
-<body>
-  <header class="topbar">
-    <div class="brand">
-      <div class="brand-row">
-        <h1>json4win</h1>
-        <span class="brand-sep"></span>
-        <span class="brand-title">Nowa klasa</span>
-      </div>
-      <div class="config-path" id="config-dir-info"></div>
+<body class="view-wizard">
+  <header class="top">
+    <a class="brand" href="/" title="json4win: dokumenty odwołania KIO w JSON">
+      <span class="brand-mark"></span><span class="brand-name">json4win</span>
+      <span class="brand-sep"></span><span class="brand-sub">Odwołania2json</span>
+    </a>
+    <nav class="top-nav" aria-label="Widoki">
+      <a href="/">Dokumenty</a>
+      <a href="/wizard" class="active">Nowa klasa</a>
+    </nav>
+    <div class="top-right">
+      <a class="job hidden" id="job-pill" href="/">
+        <span class="mk" id="job-mk"></span>
+        <span class="job-label" id="job-label"></span>
+        <span class="mono" id="job-count"></span>
+        <span class="job-time hidden" id="job-time"></span>
+      </a>
     </div>
-    <div class="topbar-actions">
-      <button type="button" class="btn btn-dark-outline" id="btn-reset">Nowa sesja</button>
-      <a class="btn btn-dark-outline" href="/">Dokumenty</a>
-    </div>
+    <div class="jobline"><div class="jobline-fill" id="jobline-fill"></div></div>
   </header>
 
-  <nav class="stepper" aria-label="Etapy kreatora">
-    <button type="button" class="step-btn active" data-stage="1" id="step-btn-1">
-      <span class="step-num">1</span>
-      <span class="step-label">Przykłady PDF</span>
-    </button>
-    <span class="step-line"></span>
-    <button type="button" class="step-btn" data-stage="2" id="step-btn-2">
-      <span class="step-num">2</span>
-      <span class="step-label">Kształt JSON</span>
-    </button>
-    <span class="step-line"></span>
-    <button type="button" class="step-btn" data-stage="3" id="step-btn-3">
-      <span class="step-num">3</span>
-      <span class="step-label">Konfiguracja YAML</span>
-    </button>
-  </nav>
+  <div class="layout">
+    <aside class="rail">
+      <nav class="nav" aria-label="Widoki">
+        <a href="/">Dokumenty</a>
+        <a href="/wizard" class="active">Nowa klasa</a>
+      </nav>
 
-  <main class="stage-host">
-    <div class="alert alert-error hidden" id="global-error" role="alert"></div>
-
-    <!-- STAGE 1: EXAMPLES + OCR -->
-    <section class="stage-panel" id="stage-1">
-      <div class="toolbar">
-        <div class="toolbar-group">
-          <label class="inline-label" for="max-pages-input">Strony OCR (N)</label>
-          <input type="number" id="max-pages-input" class="input-num" min="1" max="20" value="2">
-          <label class="inline-label" for="hint-input">Wskazówka</label>
-          <input type="text" id="hint-input" class="input-text input-hint" placeholder="opcjonalnie, np. faktura VAT" autocomplete="off">
-        </div>
-        <div class="toolbar-group">
-          <button type="button" class="btn btn-secondary" id="btn-rerun-ocr" disabled>Odczytaj OCR</button>
-          <button type="button" class="btn btn-primary" id="btn-to-stage-2" disabled>Zaproponuj kształt JSON</button>
-        </div>
+      <div class="rail-head">
+        <h2 class="rail-title">Etapy</h2>
+        <button type="button" class="btn btn-quiet" id="btn-reset" title="Usuń przykłady i szkic, zacznij od nowa">Nowa sesja</button>
       </div>
-
-      <div class="dropzone" id="wizard-dropzone" tabindex="0" role="button" aria-label="Wgraj 1–5 przykładowych plików PDF">
-        <input type="file" id="wizard-file-input" accept=".pdf,application/pdf" multiple hidden>
-        <div class="dropzone-main">Przeciągnij 1–5 plików PDF lub kliknij</div>
-        <div class="dropzone-meta" id="file-counter">0 / 5 plików</div>
-      </div>
-
-      <div class="progress-wrap hidden" id="ocr-progress-wrap">
-        <div class="progress-head">
-          <span id="ocr-progress-label">OCR</span>
-          <span class="mono" id="ocr-progress-count">0 / 0</span>
-        </div>
-        <div class="progress-track">
-          <div class="progress-fill" id="ocr-progress-fill"></div>
-        </div>
-      </div>
-
-      <div class="files-list" id="wizard-files-list">
-        <div class="empty-state">Brak plików. Wgraj 1–5 przykładowych dokumentów PDF.</div>
-      </div>
-    </section>
-
-    <!-- STAGE 2: OUTPUT JSON SHAPE + PREVIEWS -->
-    <section class="stage-panel hidden" id="stage-2">
-      <div class="toolbar">
-        <div class="toolbar-group">
-          <button type="button" class="btn btn-secondary" id="btn-back-1">Wstecz</button>
-          <button type="button" class="btn btn-secondary" id="btn-propose-szablon">Zaproponuj kształt</button>
-          <button type="button" class="btn btn-secondary" id="btn-refresh-preview">Odśwież podgląd</button>
-        </div>
-        <div class="toolbar-group">
-          <span class="status-inline mono" id="stage2-busy"></span>
-          <button type="button" class="btn btn-primary" id="btn-to-stage-3">Generuj YAML</button>
-        </div>
-      </div>
-
-      <div class="grid-2 stage2-grid">
-        <div class="box">
-          <div class="box-header">
-            <span>Struktura pól</span>
-            <div class="box-header-actions">
-              <span class="meta-tag mono" id="leaf-count-tag">0 liści</span>
-              <button type="button" class="btn btn-xs btn-secondary" id="btn-add-root-field">+ Pole</button>
-            </div>
-          </div>
-          <div class="box-body scroll-y" id="schema-tree"></div>
-        </div>
-
-        <div class="box">
-          <div class="box-header">
-            <span>Szablon JSON</span>
-            <span class="meta-tag" id="raw-json-status">OK</span>
-          </div>
-          <div class="inline-error hidden" id="raw-json-error"></div>
-          <textarea class="code-editor" id="raw-json-editor" spellcheck="false" aria-label="Surowy szablon JSON"></textarea>
-        </div>
-      </div>
-
-      <div class="box preview-box">
-        <div class="box-header">
-          <span>Podgląd wartości</span>
-          <div class="tab-bar" id="preview-tabs"></div>
-        </div>
-        <div class="box-body scroll-y" id="preview-body">
-          <div class="empty-state">Brak podglądu. Kliknij „Zaproponuj kształt” lub „Odśwież podgląd”.</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- STAGE 3: YAML CONFIG + LIVE VALIDATION + MARKER + PIPELINE TEST + SAVE -->
-    <section class="stage-panel hidden" id="stage-3">
-      <div class="toolbar">
-        <div class="toolbar-group">
-          <button type="button" class="btn btn-secondary" id="btn-back-2">Wstecz</button>
-          <button type="button" class="btn btn-secondary" id="btn-propose-yaml">Wygeneruj YAML</button>
-          <button type="button" class="btn btn-secondary" id="btn-test-pipeline">Testuj</button>
-        </div>
-        <div class="toolbar-group">
-          <span class="status-inline mono" id="stage3-busy"></span>
-          <button type="button" class="btn btn-secondary" id="btn-download-yaml">Pobierz YAML</button>
-          <button type="button" class="btn btn-primary" id="btn-save-yaml">Zapisz</button>
-        </div>
-      </div>
-
-      <div class="confirm-bar hidden" id="overwrite-bar" role="alert">
-        <span id="overwrite-message"></span>
+      <div class="confirm hidden" id="reset-confirm" role="alert">
+        <span>Usunąć przykłady i szkic?</span>
         <div class="confirm-actions">
-          <button type="button" class="btn btn-danger btn-sm" id="btn-confirm-overwrite">Nadpisz</button>
-          <button type="button" class="btn btn-secondary btn-sm" id="btn-cancel-overwrite">Anuluj</button>
+          <button type="button" class="btn btn-danger btn-sm" id="btn-reset-confirm">Usuń</button>
+          <button type="button" class="btn btn-sm" id="btn-reset-cancel">Anuluj</button>
         </div>
       </div>
 
-      <div class="alert alert-ok hidden" id="save-ok-bar"></div>
+      <nav class="steps" aria-label="Etapy kreatora">
+        <button type="button" class="step active" data-stage="1" id="step-btn-1">
+          <span class="step-num">1</span>
+          <span class="step-text"><span class="step-label">Przykłady PDF</span><span class="step-meta" id="step-meta-1"></span></span>
+        </button>
+        <button type="button" class="step" data-stage="2" id="step-btn-2">
+          <span class="step-num">2</span>
+          <span class="step-text"><span class="step-label">Kształt JSON</span><span class="step-meta" id="step-meta-2"></span></span>
+        </button>
+        <button type="button" class="step" data-stage="3" id="step-btn-3">
+          <span class="step-num">3</span>
+          <span class="step-text"><span class="step-label">Konfiguracja YAML</span><span class="step-meta" id="step-meta-3"></span></span>
+        </button>
+      </nav>
 
-      <div class="grid-yaml stage3-grid">
-        <div class="box yaml-box">
-          <div class="box-header">
-            <span class="mono" id="yaml-filename-label">nowa_klasa.yaml</span>
-            <div class="box-header-actions">
-              <span class="state-chip" id="yaml-valid-chip">Walidacja</span>
-              <span class="meta-tag mono" id="yaml-lines-count">0 linii</span>
-            </div>
+      <div class="group-body stack rail-hint">
+        <label class="field">
+          <span class="field-label">Wskazówka dla LLM</span>
+          <input type="text" id="hint-input" class="input" placeholder="np. faktura VAT" autocomplete="off" title="Opcjonalnie: czym jest nowa klasa. Używana przy propozycji kształtu JSON i YAML.">
+        </label>
+      </div>
+
+      <div class="rail-foot">
+        <div id="config-dir-info"></div>
+      </div>
+    </aside>
+
+    <main class="work">
+      <!-- Shared status (moved under the active stage header by wizard.js) -->
+      <div id="stage-status">
+        <div class="busy hidden" id="busy">
+          <div class="busy-row">
+            <span class="mk mk-run"></span>
+            <span class="busy-label" id="busy-label"></span>
+            <span class="busy-time" id="busy-time"></span>
           </div>
-          <div class="yaml-editor-wrap">
-            <pre class="line-gutter" id="yaml-gutter" aria-hidden="true">1</pre>
-            <textarea class="code-editor yaml-textarea" id="yaml-editor" spellcheck="false" aria-label="Edytor konfiguracji YAML"></textarea>
-          </div>
-          <div class="validation-panel" id="yaml-validation-panel"></div>
+          <div class="bar bar-indet" id="busy-bar"><div class="bar-fill" id="busy-fill"></div></div>
         </div>
-
-        <div class="right-stack">
-          <div class="box marker-box">
-            <div class="box-header">
-              <span>Znacznik OCR</span>
-              <span class="meta-tag mono" id="marker-pattern-tag">brak</span>
-            </div>
-            <div class="box-body" id="marker-results">
-              <div class="empty-state">Brak znacznika.</div>
-            </div>
-          </div>
-
-          <div class="box test-box">
-            <div class="box-header">
-              <span>Wynik testu potoku</span>
-              <span class="meta-tag mono" id="test-summary-tag">nie uruchomiono</span>
-            </div>
-            <div class="box-body scroll-y" id="test-results">
-              <div class="empty-state">Kliknij „Testuj”, aby uruchomić klasyfikację, czytanie i ekstrakcję.</div>
-            </div>
-          </div>
+        <div class="note note-err hidden stage-note" id="global-error" role="alert">
+          <span class="mk mk-err"></span><span class="note-text" id="global-error-text"></span>
+          <span class="note-actions"><button type="button" class="btn btn-quiet" id="btn-error-close">Zamknij</button></span>
         </div>
       </div>
-    </section>
-  </main>
 
+      <!-- STAGE 1: examples + OCR -->
+      <section class="stage" id="stage-1">
+        <div class="page-head">
+          <div class="grow">
+            <div class="crumb">Nowa klasa <span class="sep">/</span> 1</div>
+            <h1 class="page-title">Przykłady PDF</h1>
+            <div class="page-meta">
+              <span class="tag" id="file-counter">0/5</span>
+              <label class="inline-field" title="Ile pierwszych stron każdego przykładu czyta OCR">
+                Strony OCR <input type="number" id="max-pages-input" class="input input-sm input-num" min="1" max="20" value="2">
+              </label>
+            </div>
+          </div>
+          <div class="actions">
+            <button type="button" class="btn" id="btn-rerun-ocr" disabled title="Odczytaj ponownie wszystkie przykłady">Odczytaj OCR</button>
+            <button type="button" class="btn btn-primary" id="btn-to-stage-2" disabled>Zaproponuj kształt JSON</button>
+          </div>
+        </div>
+        <div class="stage-body stack">
+          <div class="drop" id="wizard-dropzone" tabindex="0" role="button" aria-label="Dodaj 1–5 przykładowych PDF">
+            <input type="file" id="wizard-file-input" accept=".pdf,application/pdf" multiple hidden>
+            <span><strong>Dodaj PDF</strong> lub upuść tutaj</span>
+            <span class="tag" title="Limit przykładów">1–5</span>
+          </div>
+
+          <div class="busy-inline hidden" id="ocr-progress-wrap">
+            <div class="busy-row">
+              <span class="busy-label" id="ocr-progress-label">OCR</span>
+              <span class="busy-time mono" id="ocr-progress-count">0/0</span>
+            </div>
+            <div class="bar"><div class="bar-fill" id="ocr-progress-fill"></div></div>
+          </div>
+
+          <div class="panel" id="wizard-files-list"></div>
+        </div>
+      </section>
+
+      <!-- STAGE 2: output JSON shape + previews -->
+      <section class="stage hidden" id="stage-2">
+        <div class="page-head">
+          <div class="grow">
+            <div class="crumb">Nowa klasa <span class="sep">/</span> 2</div>
+            <h1 class="page-title">Kształt JSON</h1>
+            <div class="page-meta"><span class="tag" id="leaf-count-tag">0 pól</span></div>
+          </div>
+          <div class="actions">
+            <button type="button" class="btn" id="btn-propose-szablon" title="LLM proponuje kształt od nowa">Zaproponuj kształt</button>
+            <button type="button" class="btn" id="btn-refresh-preview" title="LLM wypełnia obecny kształt wartościami z przykładów">Odśwież podgląd</button>
+            <button type="button" class="btn btn-primary" id="btn-to-stage-3">Generuj YAML</button>
+          </div>
+        </div>
+        <div class="stage-body grid-2x">
+          <div class="note note-muted span-2 hidden" id="stage2-empty"><span class="mk mk-idle"></span><span class="note-text">Brak kształtu: Zaproponuj kształt albo Dodaj pole.</span></div>
+          <div class="panel">
+            <div class="panel-head">
+              <h2 class="panel-title">Pola</h2>
+              <span class="grow"></span>
+              <button type="button" class="btn btn-quiet" id="btn-add-root-field">Dodaj pole</button>
+            </div>
+            <div class="panel-body" id="schema-tree"></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head">
+              <h2 class="panel-title">JSON</h2>
+              <span class="grow"></span>
+              <span class="tag" id="raw-json-status">OK</span>
+            </div>
+            <div class="note note-err hidden" id="raw-json-error"></div>
+            <textarea class="code-editor panel-body" id="raw-json-editor" spellcheck="false" aria-label="Szablon JSON"></textarea>
+          </div>
+          <div class="panel span-2">
+            <div class="panel-head">
+              <h2 class="panel-title">Podgląd</h2>
+              <div class="tabs" id="preview-tabs"></div>
+            </div>
+            <div class="panel-body" id="preview-body"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STAGE 3: YAML + validation + marker + test + save -->
+      <section class="stage hidden" id="stage-3">
+        <div class="page-head">
+          <div class="grow">
+            <div class="crumb">Nowa klasa <span class="sep">/</span> 3</div>
+            <h1 class="page-title">Konfiguracja YAML</h1>
+            <div class="page-meta">
+              <span class="mono" id="yaml-filename-label">nowa_klasa.yaml</span>
+              <span class="tag" id="yaml-valid-chip">walidacja</span>
+            </div>
+          </div>
+          <div class="actions">
+            <button type="button" class="btn" id="btn-propose-yaml" title="LLM generuje YAML od nowa">Wygeneruj YAML</button>
+            <button type="button" class="btn" id="btn-test-pipeline" title="Klasyfikacja, czytanie i ekstrakcja na przykładach">Testuj</button>
+            <button type="button" class="btn" id="btn-download-yaml">Pobierz YAML</button>
+            <button type="button" class="btn btn-primary" id="btn-save-yaml">Zapisz</button>
+          </div>
+        </div>
+        <div class="confirm hidden" id="overwrite-bar" role="alert">
+          <span id="overwrite-message"></span>
+          <div class="confirm-actions">
+            <button type="button" class="btn btn-danger btn-sm" id="btn-confirm-overwrite">Nadpisz</button>
+            <button type="button" class="btn btn-sm" id="btn-cancel-overwrite">Anuluj</button>
+          </div>
+        </div>
+        <div class="note stage-note hidden" id="save-ok-bar" role="status"></div>
+        <div class="stage-body grid-yaml">
+          <div class="note note-muted span-2 hidden" id="stage3-empty"><span class="mk mk-idle"></span><span class="note-text">Brak YAML: Wygeneruj YAML.</span></div>
+          <div class="panel">
+            <div class="panel-head">
+              <h2 class="panel-title">YAML</h2>
+              <span class="grow"></span>
+              <span class="tag" id="yaml-lines-count">0 linii</span>
+            </div>
+            <div class="yaml-editor-wrap panel-body">
+              <pre class="line-gutter" id="yaml-gutter" aria-hidden="true">1</pre>
+              <textarea class="code-editor yaml-textarea" id="yaml-editor" spellcheck="false" aria-label="Edytor YAML"></textarea>
+            </div>
+            <div class="validation-panel" id="yaml-validation-panel"></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head">
+              <div class="tabs" role="tablist">
+                <button type="button" class="tab active" id="tab-test" role="tab">Test</button>
+                <button type="button" class="tab" id="tab-marker" role="tab" title="Regex czytanie.znacznik na stronach OCR">Znacznik</button>
+              </div>
+              <span class="grow"></span>
+              <span class="tag" id="test-summary-tag">brak</span>
+              <span class="tag hidden" id="marker-pattern-tag">brak</span>
+            </div>
+            <div class="panel-body" id="test-results"></div>
+            <div class="panel-body hidden" id="marker-results"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="/static/ui.js"></script>
   <script src="/static/wizard.js"></script>
 </body>
 </html>

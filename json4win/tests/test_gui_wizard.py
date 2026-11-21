@@ -104,7 +104,7 @@ def test_serves_wizard_ui_offline_and_nav_link(
     assert "http://" not in html and "https://" not in html
 
     for path, expected_ct in [
-        ("/static/wizard.css", "text/css"),
+        ("/static/ui.css", "text/css"),
         ("/static/wizard.js", "application/javascript"),
     ]:
         st, hdrs, data = _http_request(f"{server.url}{path}")

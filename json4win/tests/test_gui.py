@@ -81,13 +81,56 @@ def test_serves_static_ui_offline(gui_server: tuple[gui.GuiServer, Path, Path]) 
     assert "http://" not in html and "https://" not in html
 
     for path, expected_ct in [
-        ("/static/style.css", "text/css"),
-        ("/static/app.js", "application/javascript"),
+        ("/static/ui.css", "text/css"),
+        ("/static/ui.js", "application/javascript"),
+        ("/static/docs.js", "application/javascript"),
     ]:
         st, hdrs, data = _http_request(f"{server.url}{path}")
         assert st == 200
         assert expected_ct in hdrs["content-type"]
         assert len(data) > 0
+
+
+def _is_emoji_or_pictograph(ch: str) -> bool:
+    cp = ord(ch)
+    return (
+        0x1F000 <= cp <= 0x1FAFF  # emoji, pictographs, symbols & pictographs
+        or 0x2600 <= cp <= 0x27BF  # misc symbols, dingbats
+        or 0x2190 <= cp <= 0x21FF  # arrows (no icons-as-text)
+        or 0x25A0 <= cp <= 0x25FF  # geometric shapes
+        or cp == 0xFE0F
+    )
+
+
+def test_one_design_system_and_shell_for_every_view(
+    gui_server: tuple[gui.GuiServer, Path, Path],
+) -> None:
+    """Both views share ui.css/ui.js and the same navigation; static files are offline and plain."""
+    server, _, _ = gui_server
+    for page in ("/", "/wizard"):
+        st, _, raw = _http_request(f"{server.url}{page}")
+        assert st == 200
+        html = raw.decode("utf-8")
+        assert '<link rel="stylesheet" href="/static/ui.css">' in html
+        assert '<script src="/static/ui.js"></script>' in html
+        assert 'href="/"' in html and 'href="/wizard"' in html
+        assert 'id="job-pill"' in html  # global job indicator on every view
+
+    for name in sorted(p.name for p in gui.STATIC_DIR.iterdir()):
+        text = (gui.STATIC_DIR / name).read_text(encoding="utf-8")
+        assert "http://" not in text and "https://" not in text, name
+        assert "@font-face" not in text and "@import" not in text, name
+        bad = sorted({ch for ch in text if _is_emoji_or_pictograph(ch)})
+        assert not bad, f"{name}: {bad}"
+
+    css = (gui.STATIC_DIR / "ui.css").read_text(encoding="utf-8")
+    for line in css.splitlines():
+        if "border-radius" in line:
+            assert "border-radius: 0;" in line, line
+
+    for old in ("/static/style.css", "/static/app.js", "/static/wizard.css"):
+        st, _, _ = _http_request(f"{server.url}{old}")
+        assert st == 404
 
 
 def test_upload_polish_and_special_filenames(gui_server: tuple[gui.GuiServer, Path, Path]) -> None:
