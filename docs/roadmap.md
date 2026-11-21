@@ -41,3 +41,4 @@ track. `orca orchestration worker-list` is the claim list, not this file.
 - [ ] **D1** Jury path: clean clone → `pip install -r json4win/requirements.txt` → `start.bat` / `start.sh` on Windows and Linux, CPU only, model download, timing on jury-like limits; jury key (O3). deps: P1, C1
 - [ ] **D2** Submission docs: project title, LLM used and its size, own quality results. deps: V1
 - [ ] **G1** Optional GUI: upload PDFs, show the JSON results (O5). deps: D1
+- [x] **D3** LLM API compliance check (`docs/compliance.md`). deps: I1
