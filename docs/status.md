@@ -56,8 +56,8 @@ trzeba wpisać w `json4win/.env.local` (wzór: `.env.example`).
    `OCR_CACHE_ONLY=1 make eval-skany`. Następnie strojenie klas na prawdziwym OCR (T1–T4).
 3. **Mniejszy model:** usunąć z `pelnomocnictwo.yaml` przykład KRS, który małe modele przepisują. Przetestować
    ministral-3b do decyzji z ministral-14b albo mistral-small do ekstrakcji (M1), potem wybrać domyślny zestaw.
-4. **Szybkość i koszt LLM:** `LLM_REASONING_EFFORT=low` (na 1 sprawie F1 1.000, LLM 2–3 s zamiast 4–16 s na
-   dokument). Do potwierdzenia na większej próbce.
+4. ~~**Szybkość i koszt LLM:** `LLM_REASONING_EFFORT=low`~~ **zrobione:** domyślne od teraz. Na 4 skanach z testu MVP
+   wyniki są identyczne, a czas LLM na dokument spadł z 1,8–12,3 s do 0,5–2,7 s. Wyłączenie: `LLM_REASONING_EFFORT=off`.
 5. **Dostawa (D1):**
    - przełączyć na endpoint UE;
    - osobny klucz dla jury z limitem;

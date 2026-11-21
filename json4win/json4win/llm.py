@@ -27,6 +27,8 @@ log = logging.getLogger(__name__)
 
 DEFAULT_BASE_URL = "https://api.mistral.ai/v1"  # delivery: api.eu.mistral.ai (task D1)
 DEFAULT_MODEL = "zai-glm-5-3-flash"
+# Low reasoning effort: same F1 on the checked case, LLM time 2-3 s instead of 4-16 s per document.
+DEFAULT_REASONING_EFFORT = "low"
 # Appended to the system prompt on a retry when the model does not accept `reasoning_effort`.
 BRIEF_REASONING = "Rozumuj krótko i od razu podaj odpowiedź: sam obiekt JSON."
 
@@ -142,9 +144,9 @@ def _with_brief_note(messages: list[dict]) -> list[dict]:
 
 def reasoning_effort(role: str | None) -> str | None:
     """First-attempt reasoning_effort for a role: LLM_REASONING_EFFORT_<ROLE>, else
-    LLM_REASONING_EFFORT; None (empty or "off") = not sent, the model's default."""
+    LLM_REASONING_EFFORT, else DEFAULT_REASONING_EFFORT; "off" = not sent (the model's default)."""
     raw = (role and env.get(f"LLM_REASONING_EFFORT_{role.upper()}")) or env.get(
-        "LLM_REASONING_EFFORT"
+        "LLM_REASONING_EFFORT", DEFAULT_REASONING_EFFORT
     )
     return None if raw in ("", "off") else raw
 

@@ -92,6 +92,9 @@ def post(monkeypatch):
         "LLM_REASONING_EFFORT_EXTRACT",
     ):
         monkeypatch.delenv(name, raising=False)
+    # The retry-plan tests below start from "no effort on the first attempt"; the shipped default
+    # (DEFAULT_REASONING_EFFORT) is covered by test_default_reasoning_effort_is_low.
+    monkeypatch.setenv("LLM_REASONING_EFFORT", "off")
     monkeypatch.setattr(llm.time, "sleep", lambda s: None)
     calls = []
 
@@ -279,13 +282,14 @@ def test_first_attempt_already_low_goes_straight_to_bigger_budget(post, monkeypa
 @pytest.mark.parametrize(
     "general, decision, role, want",
     [
-        ("", "", "decision", None),
+        ("", "", "decision", "low"),
         ("off", "", "extract", None),
         ("high", "", "decision", "high"),
         ("high", "low", "decision", "low"),
         ("high", "low", "extract", "high"),
         ("high", "low", None, "high"),
-        ("", "low", "extract", None),
+        ("", "low", "extract", "low"),
+        ("off", "high", "extract", None),
     ],
 )
 def test_reasoning_effort_per_role(post, monkeypatch, general, decision, role, want) -> None:
@@ -296,3 +300,11 @@ def test_reasoning_effort_per_role(post, monkeypatch, general, decision, role, w
     llm.chat_json("m", [], role=role)
     assert _sent(calls, "reasoning_effort") == [want]
     assert ("reasoning_effort" in calls[0][1]) == (want is not None)
+
+
+def test_default_reasoning_effort_is_low(post, monkeypatch) -> None:
+    monkeypatch.delenv("LLM_REASONING_EFFORT", raising=False)
+    assert llm.reasoning_effort("decision") == llm.reasoning_effort("extract") == "low"
+    calls = post(_thinking('{"ok": 1}'))
+    llm.chat_json("m", [], role="extract")
+    assert _sent(calls, "reasoning_effort") == ["low"]
