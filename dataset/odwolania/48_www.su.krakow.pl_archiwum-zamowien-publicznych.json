@@ -1,0 +1,38 @@
+{
+  "OdwolanieKIO": {
+    "data": "2021-05-24",
+    "czynnosc_dzien": "2021-05-14",
+    "czynnosc_powod_id": 10,
+    "czynnosc_opis": "Zaniechanie unieważnienia postępowania",
+    "miejscowosc": "Łódź"
+  },
+  "Odwolujacy": [
+    {
+      "krs": "0000182633",
+      "nazwa": "Kolumna Transportu Sanitarnego Triomed spółka z ograniczoną odpowiedzialnością",
+      "nip": null,
+      "regon": null,
+      "przez-pelnomocnika": 1,
+      "pelnomocnik": {
+        "imie_nazwisko": "Katarzyna Frankowska",
+        "nazwa": null,
+        "mail": "przetargi@rekeep.pl"
+      }
+    }
+  ],
+  "Zamawiajacy": [
+    {
+      "krs": null,
+      "nazwa": "Szpital Uniwersytecki w Krakowie",
+      "nip": null,
+      "regon": null,
+      "prowadzacy_postepowanie": null
+    }
+  ],
+  "ZamowieniePubliczne": {
+    "numer_bzp": null,
+    "numer_postepowania": "DFP.271.38.2021.LS",
+    "numer_ted": "243484-2021",
+    "tytul": "Kompleksowe całodobowe wykonywanie usług polegających na przewożeniu transportem medycznym pacjentów Szpitala Uniwersyteckiego w Krakowie wraz z personelem medycznym, sprzętu medycznego, materiałów do badań, wyników tych badań i innych materiałów stosowanych w procesie leczenia, także przewozów wykonywanych na hasło „przeszczepy” oraz usług polegających na przewożeniu pacjentów dializowanych do Stacji Hemodializ i ze Stacji Hemodializ zlokalizowanej w Krakowie przy ul. Maciej Jakubowskiego 2"
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "OdwolanieKIO": {
+    "data": "2019-05-29",
+    "czynnosc_dzien": "2019-05-24",
+    "czynnosc_powod_id": 7,
+    "czynnosc_opis": "Zaniechanie odrzucenia oferty",
+    "miejscowosc": "Warszawa"
+  },
+  "Odwolujacy": [
+    {
+      "krs": null,
+      "nazwa": "Sterimed Sp. z o.o.",
+      "nip": null,
+      "regon": null,
+      "przez-pelnomocnika": 1,
+      "pelnomocnik": {
+        "imie_nazwisko": "Joanna Marczewska",
+        "nazwa": "Joanna Marczewska Zamówienia Publiczne - Konsultacje i Doradztwo",
+        "mail": "joanna@marczewska.com.pl"
+      }
+    }
+  ],
+  "Zamawiajacy": [
+    {
+      "krs": null,
+      "nazwa": "Samodzielny Publiczny Zakład Opieki Zdrowotnej w Kępnie",
+      "nip": null,
+      "regon": null,
+      "prowadzacy_postepowanie": null
+    }
+  ],
+  "ZamowieniePubliczne": {
+    "numer_bzp": "525894-N-2019",
+    "numer_postepowania": null,
+    "numer_ted": null,
+    "tytul": "Dostawa sprzętu medycznego i pozostałego wyposażenia pomieszczeń nowej Centralnej Sterylizatorni Samodzielnego Publicznego Zakładu Opieki Zdrowotnej w Kępnie"
+  }
+}
