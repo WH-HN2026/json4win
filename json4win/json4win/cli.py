@@ -5,9 +5,10 @@ import json
 import logging
 from pathlib import Path
 
+from json4win import env
 from json4win.pipeline import process_document
 
-APP_ROOT = Path(__file__).resolve().parent.parent
+APP_ROOT = env.APP_ROOT
 log = logging.getLogger("json4win")
 
 
@@ -41,5 +42,6 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--output", type=Path, default=APP_ROOT / "output")
     ap.add_argument("-v", "--verbose", action="store_true")
     a = ap.parse_args(argv)
+    env.load_env()
     logging.basicConfig(level=logging.DEBUG if a.verbose else logging.INFO, format="%(message)s")
     return 1 if run(a.input, a.output) else 0

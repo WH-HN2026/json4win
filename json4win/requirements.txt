@@ -1,2 +1,2 @@
 # Runtime dependencies of json4win (Python >= 3.13). Open-source only, pinned (==).
-# Empty for now: the stub uses only the standard library. Tasks P*/I2 add the PDF/OCR/LLM libs.
+# OCR deps are added by task P1, YAML by C1.

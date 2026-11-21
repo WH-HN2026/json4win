@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Per-worktree setup: .venv (Python >= 3.13) with runtime + dev deps, and json4win/.env.local
+# Per-worktree setup: .venv (Python 3.13, like the jury; uv downloads it if missing) with runtime + dev deps, and json4win/.env.local
 # copied from the main checkout if this worktree has none. Safe to re-run.
 set -euo pipefail
 root=$(git rev-parse --show-toplevel)
@@ -7,7 +7,7 @@ cd "$root"
 
 reqs=(-r json4win/requirements.txt -r requirements-dev.txt)
 if command -v uv >/dev/null; then
-  [[ -d .venv ]] || uv venv --quiet --python '>=3.13' .venv
+  [[ -d .venv ]] || uv venv --quiet --python 3.13 .venv
   uv pip install --quiet --python .venv/bin/python "${reqs[@]}"
 else
   [[ -d .venv ]] || python3 -m venv .venv
