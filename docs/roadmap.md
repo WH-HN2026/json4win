@@ -20,7 +20,7 @@ track. `orca orchestration worker-list` is the claim list, not this file.
 - [ ] **E1** `przelew.yaml`: first version of the class config (`przelew_bankowy`). deps: I1
 - [ ] **E2** `pelnomocnictwo.yaml`: first version (`mocodawca[]`, `podpisujacy[]`, `pelnomocnicy[]`). deps: I1
 - [ ] **E3** `odwolanie.yaml`: first version (`OdwolanieKIO`, `Odwolujacy[]`, `Zamawiajacy[]`, `ZamowieniePubliczne`), incl. `czynnosc_powod_id` from the first charge only. deps: I1
-- [ ] **E4** Normalisers in `normalize.py`: text, digits, date → ISO, amount → float, int, regex_sub. deps: I1
+- [x] **E4** Normalisers in `normalize.py`: text, digits, date → ISO, amount → float, int, regex_sub. deps: I1
 
 ## T: tuning on real OCR (one class per task)
 - [ ] **T1** Tune `przelew` with `OCR_CACHE_ONLY=1 make eval`: read the misses, fix config/prompt. deps: C1, P2, E1, E4
