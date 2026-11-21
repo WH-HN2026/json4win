@@ -351,3 +351,58 @@ values found in the text):
 - Cost: C is no faster than A here (median 61.8 vs 55.9 s/page, mostly decode at ~12–13 tok/s), but it needs 3.2 GB
   instead of 11.1 GB of RAM.
 - Delivering it would need transformers 5 (see docs/ocr.md), so it stays a benchmark.
+
+## Per-model config tuning (TM1–TM5) and validation on public KIO appeals (2026-11-21)
+
+### Tuning on the 30 real scans (branches `t/tm1-glm` … `t/tm5-ministral-3b`, not merged)
+
+One branch per LLM, configs and prompt templates only (no code), tuned on scans 0001–0007, 0008–0010 held out,
+single OCR inputs (A = Unlimited-OCR-2, B = Tesseract, C = LightOnOCR), `OCR_CACHE_ONLY=1`. Errors (FP+FN) on all
+30 scans, run 1 · run 2, before (dev configs) → after (branch configs). Full sections in each branch's `docs/quality.md`.
+
+| Task | Model | A | B | C | Recommended env |
+|---|---|---|---|---|---|
+| TM1 | `zai-glm-5-3-flash` | 2·1 → 1·1 | 2·1 → 1·1 | 1·1 → 1·1 | `LLM_REASONING_EFFORT=low`; −5 to −8 % prompt tokens |
+| TM2 | `mistral-small-2603` | 6·6 → 1·1 | 8·2 → 2·2 | 2·2 → 1·1 | `LLM_REASONING_EFFORT=off` |
+| TM3 | `ministral-14b-2512` | 8·4 → 1·1 | 11·10 → 1·1 | 4·3 → 1·1 | `LLM_REASONING_EFFORT=off` |
+| TM4 | `ministral-8b-2512` | 3·5 → 2·1 | 3·4 → 2·2 | 5·3 → 1·1 | `LLM_REASONING_EFFORT=off` |
+| TM5 | `ministral-3b-2512` | 11·11 → 7·6 | 33·26 → 32·34 | 14·13 → 7·8 | `LLM_REASONING_EFFORT=off`, `LLM_RETRY_REASONING_EFFORT=off`, `LLM_MAX_TOKENS=4096` |
+
+The last error of every 1·1 row is the disputed `pelnomocnictwa_0010` `mocodawca[0].data.nazwa` (sole trader, GT null).
+The coordinator re-ran one slice per branch (TM2 appeals A/B, TM1 appeals C, TM3 powers + transfers B, TM4 powers +
+transfers A, TM5 appeals A); all matched the reports within run-to-run noise.
+
+### Validation on `dataset/` (public KIO appeals and hard negatives, never used for tuning)
+
+`dataset/odwolania/` has 8 appeals with ground-truth JSONs, `dataset/negatywne/` 15 procurement documents that must give
+`{}`. OCR was run once for these PDFs (A and B; C was not run). Harness: `scripts/eval_skany.py` of each branch pointed at a
+mirror of `dataset/odwolania` (5 appeals, ~53 fields per run) and the CLI on the negatives; a negative passes only when
+its output is `{}` **and** the log says `class=inne pages=1` (so an error cannot pass as a negative).
+
+- **Negatives:** 15/15 `{}` in all 40 runs (5 models × dev/branch configs × A/B × 2 runs), no cache misses, no errors.
+- **Appeals 01, 02 and 18 are not scored:** page 1 is the contracting authority's cover letter or its response to the
+  appeal, and the copy of the appeal starts on page 2–3. The pipeline classifies on page 1, so every config returns `{}`
+  for them. This is a pipeline limit (classification sees page 1 only), not config quality.
+- **Five scored appeals (04, 05, 12, 13, 19)**, F1 averaged over 2 runs (errors run 1 · run 2):
+
+| Model | A: dev configs | A: branch configs | B: dev configs | B: branch configs |
+|---|---|---|---|---|
+| `zai-glm-5-3-flash` (TM1) | 0.908 (9·10) | 0.927 (9·6) | 0.937 (8·5) | 0.942 (8·4) |
+| `mistral-small-2603` (TM2) | 0.925 (8·8) | 0.933 (7·7) | 0.914 (8·10) | 0.932 (7·7) |
+| `ministral-14b-2512` (TM3) | 0.952 (5·5) | 0.942 (4·8) | 0.904 (9·10) | 0.914 (7·10) |
+| `ministral-8b-2512` (TM4) | 0.892 (14·10) | 0.923 (10·7) | 0.891 (12·12) | 0.909 (12·8) |
+| `ministral-3b-2512` (TM5) | 0.920 (7·9) | 0.902 (9·11) | 0.900 (10·10) | 0.922 (8·8) |
+
+One field is about 0.01 F1 and run-to-run noise is 1–2 fields, so differences below ~0.02 are not significant. The tuned
+configs do not hurt (no sign of overfitting to the scans), help a little for Mistral Small 4 and Ministral 8B on both OCRs
+and for GLM on A, are neutral for Ministral 14B, and are mixed for Ministral 3B (better on B, worse on A). The large gains
+on the scans do not carry over because the public appeals fail on other fields:
+
+- `p05` `Odwolujacy.nip` (18/18 Tesseract runs): every model returns the NIP printed next to the appellant's name; the
+  ground truth has null. Suspect label.
+- `p12` `czynnosc_dzien` / `czynnosc_powod_id` / `czynnosc_opis` (14–15/18): the expected date is not on pages 1–3,
+  which is all the pipeline reads for an appeal.
+- `p13` `czynnosc_dzien` (14/18): the date is on pages 2–3 and the models return null; a real miss.
+- `p04` `czynnosc_powod_id` (9/18): 12 (contract terms) vs the expected 4 (SWZ publication); debatable.
+
+The set stays held out: misses are reported here, not fixed in configs.
