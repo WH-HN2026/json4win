@@ -34,6 +34,23 @@ pip install -r requirements.txt        # Python 3.13+
 
 Opcje: `python -m json4win --input KATALOG --output KATALOG [-v]`.
 
+## Interfejs graficzny (GUI)
+
+Aplikacja zawiera lekki, lokalny interfejs webowy (działa w pełni offline, wyłącznie na bibliotece
+standardowej Pythona 3.13, nasłuchuje tylko na `127.0.0.1`):
+
+```bash
+./start_gui.sh                         # Windows: start_gui.bat
+# albo bezpośrednio:
+python -m json4win --gui [--port PORT] [--input KATALOG] [--output KATALOG] [--no-browser]
+```
+
+Domyślnie serwer wybiera wolny port na `127.0.0.1` i automatycznie otwiera przeglądarkę.
+W interfejsie można:
+- przeglądać drzewo spraw z katalogu wejściowego i wgrywać pliki PDF (przeciągnij i upuść lub wybór z dysku) do nowej albo istniejącej sprawy,
+- uruchamiać przetwarzanie dla wybranej sprawy, pojedynczego pliku lub wszystkich spraw („Przetwórz”) z podglądem statusu każdego pliku na żywo,
+- oglądać podgląd PDF obok sformatowanego wyniku JSON (z wyszarzonymi polami `null` oraz oznaczeniem „nie rozpoznano (pusty JSON)” dla pustych wyników `{}`) i pobierać wynikowy plik JSON.
+
 ## Struktura
 
 ```
@@ -41,10 +58,11 @@ json4win/
 ├── input/            # wejście: input/<sprawa>/*.pdf
 ├── output/           # wyjście: output/<sprawa>/*.json (te same nazwy co w input)
 ├── config/           # definicje klas dokumentów (nowa klasa = nowy plik, bez zmian w kodzie)
-├── json4win/         # kod: cli.py (wejście/wyjście), pipeline.py (przebieg), config.py (klasy),
-│                     #   prompts.py, llm.py, decide.py (decyzja, czytanie), extract.py, validate.py
+├── json4win/         # kod: cli.py (CLI), gui.py + gui_static/ (GUI), pipeline.py (przebieg),
+│                     #   config.py (klasy), prompts.py, llm.py, decide.py, extract.py, validate.py
 ├── tests/
 ├── requirements.txt
 ├── start.bat / start.sh
+├── start_gui.bat / start_gui.sh
 └── .env.example      # konfiguracja LLM, kopiuj do .env.local
 ```
