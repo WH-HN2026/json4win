@@ -58,3 +58,23 @@ Only 7 assertions failed across all 39 cases (0 false positives, 7 false negativ
   - `dane/negatywne/Decyzja-Ministra-Sportu-i-Turystyki1.pdf`
   - `dane/negatywne/Minister-Sprawiedliwosci-pismo-RDSSP-z-11.03.2024-r..pdf`
   Under `--ideal-ocr` they trivially classify as `inne`; they must be re-tested on real cached OCR in task T4.
+
+---
+
+## Model comparison (ideal OCR, partial)
+
+Dev-only ideal-OCR comparison of GA open-weight Mistral API models against the `zai-glm-5-3-flash` baseline
+(task M1, partial: all 4 homogeneous runs complete; mixed decision+extraction runs paused on coordinator/user
+request — see [`docs/models.md`](models.md) for primary-source metadata, per-field misses, and next steps).
+
+- **Date:** 2026-11-21
+- **Mode:** `make eval IDEAL=1 NEG=1 V=1 JOBS=4` (`LLM_BASE_URL=https://api.mistral.ai/v1`)
+- **Dataset:** `dane/przyklad_01..39` (39 cases, 1,172 assertions: 1,135 valued + 37 null) + 16 negative PDFs
+
+| Decision + Extract model | Params (total / active) | `odwolanie` F1 | `pelnomocnictwo` F1 | `przelew` F1 | **Total F1** | TP / FP / FN | null ok / zle | Negatives FP | Wall time | Failures |
+|---|---|---:|---:|---:|---:|---|---:|---:|---:|---|
+| `ministral-3b-latest` (`ministral-3b-2512`) | 3.85B / 3.85B | 0.973 | 0.995 | 0.944 | **0.973** | 1085 / 11 / 50 | 30 / 7 | 0 / 16 | 99.4s | 1 `finish_reason='length'` (`przyklad_22/odwolanie.pdf`) |
+| `ministral-8b-latest` (`ministral-8b-2512`) | 8.92B / 8.92B | 0.988 | 0.969 | 0.969 | **0.980** | 1110 / 21 / 25 | 22 / 15 | 0 / 16 | 130.5s | 0 |
+| `ministral-14b-latest` (`ministral-14b-2512`) | 13.95B / 13.95B | 0.998 | 0.980 | 0.985 | **0.991** | 1120 / 5 / 15 | 37 / 0 | 0 / 16 | 189.3s | 0 |
+| `mistral-small-latest` (`mistral-small-2603`) | 119B / 6.5B | 0.994 | 1.000 | 0.996 | **0.996** | 1131 / 6 / 4 | 33 / 4 | 0 / 16 | 70.9s | 0 |
+| `zai-glm-5-3-flash` *(ref. baseline above)* | 320B / 18B | 0.999 | 1.000 | 0.987 | **0.997** | 1128 / 0 / 7 | 37 / 0 | 0 / 16 | *n/a* | 1 `finish_reason='length'` (`przyklad_31/potwierdzenie_przelewu.pdf`) |
