@@ -51,7 +51,7 @@ Odpowiedzialny za:
 
 - analizę dokumentów,
 
-- klasyfikację dokumentów,
+- klasyfikację dokumentów na podstawie ich zawartości (uwaga! nazwa pliku może być różna - nie sugerujcie się nazwą pliku),
 
 - ekstrakcję informacji,
 
@@ -141,6 +141,8 @@ Ocena zostanie przeprowadzona na dwóch zbiorach danych:
 ### Zbiór treningowy
 
 Udostępniony uczestnikom podczas realizacji wyzwania dostępny w katalogu dane. Zbiór danych zawiera też kategorie dokumentów, które NIE powinny być zidentyfikowane (zwrócić pusty plik `.json`).
+
+dane negatywne (które nie powinny zostać sklasyfikowane) umieszczone zostały w wybranych przykładach oraz w katalogu https://github.com/Urzad-Zamowien-Publicznych/hacknation-2026/tree/main/dane/negatywne.
 
 ### Zbiór testowy
 
