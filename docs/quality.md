@@ -192,3 +192,31 @@ against ground truth) reveals where Tesseract is noticeably weaker and relies on
 high-speed, low-RAM alternative (1 s/page, 150 MB RAM, F1 0.998 with GLM-5.3-Flash), though its raw text has
 materially more symbol/noise errors than Unlimited-OCR-2 — a risk if paired with a smaller extraction LLM (M1)
 or stricter exact-match scoring on hidden tests. Default remains `OCR_BACKEND=local`.
+
+## Real scans: LLM model × OCR backend (2026-11-21)
+
+All 30 scans in `dane/skany/`, OCR only from the cache (`OCR_CACHE_ONLY=1`, no OCR re-run), the same model for decision
+and extraction, configs after commit 62fa6d5 (no invented examples on digit-only fields). GLM with
+`LLM_REASONING_EFFORT=low`, the others with `off`. Runs in parallel.
+
+| model | params (total / active) | F1 Unlimited-OCR-2 | F1 Tesseract | LLM s/doc (median) |
+|---|---|---|---|---|
+| zai-glm-5-3-flash | 320B / 18B | **0.998** (266/1/0) | **0.998** (266/1/0) | 2.6–2.7 |
+| ministral-3b-2512 | 3.85B | 0.975 (258/5/8) | 0.943 (247/11/19) | 2.4 |
+| ministral-8b-2512 | 8.9B | **0.994** (264/1/2) | **0.992** (263/1/3) | 3.0–3.3 |
+| ministral-14b-2512 | 14B | 0.985 (262/4/4) | 0.987 (262/3/4) | 4.2–4.6 |
+| mistral-small-2603 (Small 4) | 119B / 6.5B | 0.989 (264/4/2) | 0.987 (263/4/3) | 2.3–2.5 |
+
+Per-class F1 and the misses:
+- GLM (both OCRs): only the disputed `pelnomocnictwa_0010` `mocodawca.nazwa` (sole trader). On Tesseract one call hit
+  `finish_reason=length` and was recovered by the R1 retry.
+- ministral-8b: the same disputed miss plus 1–2 account numbers on transfer confirmations (`z_rachunku` with a `PL`
+  prefix in the ground truth returned as null; one `na_rachunek`).
+- ministral-14b: writes KRS as `0000000000` / `0000009991` on 2–3 powers of attorney (pelnomocnictwa F1 0.953–0.966),
+  apparently over-applying the "keep leading zeros, KRS has 10 digits" hint.
+- mistral-small-2603: wrong `czynnosc_powod_id` / `czynnosc_opis` on `odwolania_0001`, one KRS, one account.
+- ministral-3b: `miejscowosc` taken from the law firm's letterhead in 5–6 appeals; on Tesseract also IDs (NIP/KRS/
+  REGON) and a second Zamawiający on `odwolania_0004`. Noisy OCR hurts the smallest model most.
+
+Takeaways: ministral-8b is the best small model (−0.004 F1 vs GLM on Unlimited-OCR-2, −0.006 on Tesseract) at 36×
+fewer total parameters; its misses and ministral-14b's KRS problem look fixable with config hints (tuning tasks).
