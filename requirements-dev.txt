@@ -1,0 +1,4 @@
+# Dev/CI only: make check, make eval. The jury needs only json4win/requirements.txt.
+pytest==8.4.2
+ruff==0.14.5
+pyyaml==6.0.3
