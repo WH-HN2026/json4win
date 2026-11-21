@@ -10,7 +10,7 @@ track. `orca orchestration worker-list` is the claim list, not this file.
 - [x] **I1** Repo bootstrap: `json4win/` skeleton, AGENTS.md (local mode), Makefile, `scripts/wt-env.sh`, `scripts/eval_training.py`, decisions D10–D13, config format, contract stubs `env.py`, `ocr.py`, `normalize.py`.
 
 ## P: OCR
-- [ ] **P1** Local OCR engine: Unlimited-OCR-2 on CPU behind `json4win.ocr` (page rendering, pinned revision, shared cache, `OCR_CACHE_ONLY`), `scripts/ocr_cache.py` + `make ocr-cache`, speed/RAM/quality gate in `docs/ocr.md`. deps: I1
+- [x] **P1** Local OCR engine: Unlimited-OCR-2 on CPU behind `json4win.ocr` (page rendering, pinned revision, shared cache, `OCR_CACHE_ONLY`), `scripts/ocr_cache.py` + `make ocr-cache`, speed/RAM/quality gate in `docs/ocr.md`. deps: I1
 - [ ] **P2** Fill the training OCR cache (coordinator runs `make ocr-cache` once, one process). deps: P1
 
 ## C: core engine

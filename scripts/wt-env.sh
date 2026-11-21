@@ -8,7 +8,7 @@ cd "$root"
 reqs=(-r json4win/requirements.txt -r requirements-dev.txt)
 if command -v uv >/dev/null; then
   [[ -d .venv ]] || uv venv --quiet --python 3.13 .venv
-  uv pip install --quiet --python .venv/bin/python "${reqs[@]}"
+  uv pip install --quiet --index-strategy unsafe-best-match --python .venv/bin/python "${reqs[@]}"
 else
   [[ -d .venv ]] || python3 -m venv .venv
   .venv/bin/python -c 'import sys; assert sys.version_info >= (3, 13), sys.version'

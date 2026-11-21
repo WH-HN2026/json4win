@@ -67,6 +67,23 @@ W interfejsie można:
 - uruchamiać przetwarzanie dla wybranej sprawy, pojedynczego pliku lub wszystkich spraw („Przetwórz”) z podglądem statusu każdego pliku na żywo,
 - oglądać podgląd PDF obok sformatowanego wyniku JSON (z wyszarzonymi polami `null` oraz oznaczeniem „nie rozpoznano (pusty JSON)” dla pustych wyników `{}`) i pobierać wynikowy plik JSON.
 
+## OCR (lokalnie, CPU)
+
+Każda czytana strona przechodzi przez lokalny model OCR `baidu/Unlimited-OCR-2` (MIT, otwarte wagi),
+na CPU, bez GPU (warstwa tekstowa PDF nie jest używana). Szczegóły i pomiary: [`../docs/ocr.md`](../docs/ocr.md).
+
+- **Instalacja:** `pip install -r requirements.txt` pobiera torch w wersji CPU (indeks
+  `download.pytorch.org/whl/cpu`, bez CUDA) i resztę zależności; razem ok. 1 GB na dysku w venv.
+- **Pierwsze uruchomienie** pobiera wagi modelu z Hugging Face (ok. 6,7 GB, przypięta rewizja) do
+  `~/.cache/huggingface/hub` (Windows: `%USERPROFILE%\.cache\huggingface\hub`; zmiana: zmienna `HF_HOME`).
+  Kolejne uruchomienia działają offline (`HF_HUB_OFFLINE=1`).
+- **Zasoby:** ok. 10 GB RAM w szczycie; 45–90 s na stronę A4 (zależnie od ilości tekstu) przy AVX2 i 8 wątkach. Czytamy tylko tyle stron, ile potrzebuje dana klasa dokumentu.
+- **Cache:** wynik OCR każdej strony jest zapisywany (klucz: sha256 PDF + strona + ustawienia) w
+  `~/.cache/json4win/ocr` (Windows: `%LOCALAPPDATA%\json4win\ocr`; zmiana: `JSON4WIN_CACHE_DIR`), więc
+  ponowne przetworzenie tych samych plików jest natychmiastowe.
+- **Zmienne** (`.env.example`): `OCR_THREADS` (domyślnie liczba rdzeni fizycznych), `OCR_MODE`,
+  `OCR_MAX_TOKENS`, `OCR_DTYPE`, `OCR_FAST_DECODE`, `OCR_CACHE_ONLY`.
+
 ## Struktura
 
 ```
