@@ -3,8 +3,12 @@ from pathlib import Path
 
 from json4win.cli import main
 
+from json4win import cli
 
-def test_mirrors_input_tree(tmp_path: Path) -> None:
+
+def test_mirrors_input_tree(tmp_path: Path, monkeypatch) -> None:
+    # The pipeline itself (OCR, LLM) is tested elsewhere; here only the file mirroring.
+    monkeypatch.setattr(cli, "process_document", lambda pdf: {})
     inp, out = tmp_path / "input", tmp_path / "output"
     files = ["case1/odwolanie nr 1.pdf", "case1/przelew.PDF", "case 2/pełnomocnictwo.pdf"]
     for f in files:

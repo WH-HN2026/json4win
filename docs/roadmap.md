@@ -14,7 +14,7 @@ track. `orca orchestration worker-list` is the claim list, not this file.
 - [ ] **P2** Fill the training OCR cache (coordinator runs `make ocr-cache` once, one process). deps: P1
 
 ## C: core engine
-- [ ] **C1** Config-driven engine: config loader/validator, base + decision prompts, LLM client (Mistral API), decision step, read-until-complete loop, extraction with validation/retry, wiring in `pipeline.py`. deps: I1
+- [x] **C1** Config-driven engine: config loader/validator, base + decision prompts, LLM client (Mistral API), decision step, read-until-complete loop, extraction with validation/retry, wiring in `pipeline.py`. deps: I1
 
 ## E: classes and fields (all driven by the class config)
 - [x] **E1** `przelew.yaml`: first version of the class config (`przelew_bankowy`). deps: I1
