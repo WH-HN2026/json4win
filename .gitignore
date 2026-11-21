@@ -8,3 +8,4 @@ json4win/input/*
 !json4win/input/.gitkeep
 json4win/output/*
 !json4win/output/.gitkeep
+/minstal_token

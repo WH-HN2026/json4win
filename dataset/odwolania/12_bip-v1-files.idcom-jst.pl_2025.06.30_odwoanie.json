@@ -1,0 +1,38 @@
+{
+  "OdwolanieKIO": {
+    "data": "2025-06-30",
+    "czynnosc_dzien": "2025-06-24",
+    "czynnosc_powod_id": 7,
+    "czynnosc_opis": "Zaniechanie odrzucenia oferty",
+    "miejscowosc": "Kraków"
+  },
+  "Odwolujacy": [
+    {
+      "krs": "0001049913",
+      "nazwa": "Light On sp. z o.o.",
+      "nip": null,
+      "regon": null,
+      "przez-pelnomocnika": 1,
+      "pelnomocnik": {
+        "imie_nazwisko": "Dawid Pantak",
+        "nazwa": "+PZP Kancelaria Prawa Zamówień Publicznych",
+        "mail": "kancelaria@pluspzp.pl"
+      }
+    }
+  ],
+  "Zamawiajacy": [
+    {
+      "krs": null,
+      "nazwa": "Gmina Wleń",
+      "nip": null,
+      "regon": null,
+      "prowadzacy_postepowanie": null
+    }
+  ],
+  "ZamowieniePubliczne": {
+    "numer_bzp": "2025/BZP00210397",
+    "numer_postepowania": "RIS.271.3.2025",
+    "numer_ted": null,
+    "tytul": "Rozświetlamy gminę Wleń"
+  }
+}

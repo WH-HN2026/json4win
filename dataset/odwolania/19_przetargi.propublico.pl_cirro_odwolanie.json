@@ -1,0 +1,38 @@
+{
+  "OdwolanieKIO": {
+    "data": "2026-10-14",
+    "czynnosc_dzien": "2026-10-06",
+    "czynnosc_powod_id": 2,
+    "czynnosc_opis": "Ogłoszenie wyboru oferty",
+    "miejscowosc": "Białystok"
+  },
+  "Odwolujacy": [
+    {
+      "krs": "0000140907",
+      "nazwa": "CIRRO spółka z ograniczoną odpowiedzialnością",
+      "nip": null,
+      "regon": null,
+      "przez-pelnomocnika": 1,
+      "pelnomocnik": {
+        "imie_nazwisko": "Katarzyna Z. Zadykowicz",
+        "nazwa": "Kancelaria Radców Prawnych Bieluk i Partnerzy",
+        "mail": "k.zadykowicz@bieluk.pl"
+      }
+    }
+  ],
+  "Zamawiajacy": [
+    {
+      "krs": null,
+      "nazwa": "Szpital Wojewódzki w Poznaniu",
+      "nip": null,
+      "regon": null,
+      "prowadzacy_postepowanie": null
+    }
+  ],
+  "ZamowieniePubliczne": {
+    "numer_bzp": null,
+    "numer_postepowania": "SZW/DZP/63/2026",
+    "numer_ted": "524709-2026",
+    "tytul": "Zakup specjalistycznego urządzenia medycznego używanego w leczeniu nowotworów z wykorzystaniem technologii nieodwracalnej elektroporacji"
+  }
+}
