@@ -1,0 +1,38 @@
+{
+  "OdwolanieKIO": {
+    "data": "2017-09-11",
+    "czynnosc_dzien": "2017-08-30",
+    "czynnosc_powod_id": 11,
+    "czynnosc_opis": "Opis przedmiotu zamówienia (OPZ)",
+    "miejscowosc": "Tarnów"
+  },
+  "Odwolujacy": [
+    {
+      "krs": null,
+      "nazwa": "SUNTAR sp. z o.o.",
+      "nip": null,
+      "regon": null,
+      "przez-pelnomocnika": 1,
+      "pelnomocnik": {
+        "imie_nazwisko": "Michał Cich",
+        "nazwa": null,
+        "mail": "suntar@suntar.pl"
+      }
+    }
+  ],
+  "Zamawiajacy": [
+    {
+      "krs": null,
+      "nazwa": "Sąd Apelacyjny w Białymstoku",
+      "nip": null,
+      "regon": null,
+      "prowadzacy_postepowanie": null
+    }
+  ],
+  "ZamowieniePubliczne": {
+    "numer_bzp": null,
+    "numer_postepowania": "G-241-17/17",
+    "numer_ted": "339537-2017",
+    "tytul": "Dostawa komputerów oraz monitorów na potrzeby sądów apelacji białostockiej"
+  }
+}

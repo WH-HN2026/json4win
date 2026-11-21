@@ -1,0 +1,38 @@
+{
+  "OdwolanieKIO": {
+    "data": "2022-02-14",
+    "czynnosc_dzien": "2022-02-04",
+    "czynnosc_powod_id": 1,
+    "czynnosc_opis": "Decyzja o odrzuceniu oferty",
+    "miejscowosc": "Bełchatów"
+  },
+  "Odwolujacy": [
+    {
+      "krs": "0000126774",
+      "nazwa": "ECO - ABC Sp. z o.o.",
+      "nip": null,
+      "regon": null,
+      "przez-pelnomocnika": 0,
+      "pelnomocnik": {
+        "imie_nazwisko": null,
+        "nazwa": null,
+        "mail": null
+      }
+    }
+  ],
+  "Zamawiajacy": [
+    {
+      "krs": "0000001580",
+      "nazwa": "Wojewódzki Szpital Zespolony w Kielcach",
+      "nip": null,
+      "regon": null,
+      "prowadzacy_postepowanie": null
+    }
+  ],
+  "ZamowieniePubliczne": {
+    "numer_bzp": null,
+    "numer_postepowania": "EZ/ZP/162/2021/MW",
+    "numer_ted": "635534-2021",
+    "tytul": "Świadczenie usług w zakresie odbioru, transportu oraz utylizacji odpadów medycznych na potrzeby Wojewódzkiego Szpitala Zespolonego w Kielcach"
+  }
+}
