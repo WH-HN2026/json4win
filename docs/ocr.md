@@ -1,4 +1,4 @@
-# OCR engine: Unlimited-OCR-2 on CPU (task P1), Tesseract backend (task P4), LightOnOCR-2-1B benchmark backend (task P5)
+# OCR engine: Unlimited-OCR-2 on CPU (task P1), Tesseract backend (task P4), LightOnOCR-2-1B benchmark backend (task P5), hybrid mode (task P7)
 
 Code: [`json4win/json4win/ocr.py`](../json4win/json4win/ocr.py) (contract, backend dispatcher, rendering,
 shared cache, local text cleaning), [`ocr_engine.py`](../json4win/json4win/ocr_engine.py) (Unlimited-OCR-2
@@ -23,13 +23,15 @@ Wybór backendu odbywa się zmienną środowiskową `OCR_BACKEND` (w `.env.local
 - **`OCR_BACKEND=lighton` (tylko benchmark):** `lightonai/LightOnOCR-2-1B` (Apache 2.0, ~1B parametrów) na CPU
   przez `json4win.ocr_lighton`. Wymaga transformers 5, więc działa tylko w osobnym venv `.venv-lighton`
   (sekcja niżej); nie jest częścią dostawy.
+- **`OCR_BACKEND=hybrid` (task P7, domyślnie też tylko benchmark):** pierwsze `OCR_HYBRID_FIRST_PAGES` stron czyta
+  `OCR_HYBRID_FIRST` (domyślnie `lighton`), każdą następną `OCR_HYBRID_REST` (domyślnie `tesseract`). Sekcja niżej.
 - Nieznana wartość `OCR_BACKEND` podnosi `ValueError`.
 
 ### Zmienne dla `OCR_BACKEND=tesseract`
 
 | Zmienna | Domyślnie | Opis |
 |---|---|---|
-| `OCR_BACKEND` | `local` | `local` \| `tesseract` \| `lighton` |
+| `OCR_BACKEND` | `local` | `local` \| `tesseract` \| `lighton` \| `hybrid` |
 | `OCR_TESSERACT_CMD` | `tesseract` | Nazwa lub pełna ścieżka pliku wykonywalnego Tesseract |
 | `OCR_TESSERACT_LANG` | `pol` | Język(i) przekazane przez `-l` (np. `pol` lub `pol+eng`) |
 | `OCR_TESSERACT_DPI` | `300` | Rozdzielczość renderowania `pypdfium2` oraz flaga `--dpi` |
@@ -108,6 +110,37 @@ Unlimited-OCR-2 albo przenieść jego zdalny kod na transformers 5 (nietestowane
 proces z własnym venv (dwa zestawy zależności w dostawie, `start.bat` musiałby tworzyć drugi venv). Do tego pomiar
 na laptopie AVX2 bez AVX512-BF16 (wybór `fp32` vs `bf16`) i ochrona przed pętlami dekodowania greedy (np.
 `no_repeat_ngram_size` jak w `local`). Wyniki: [`quality.md`](quality.md), sekcja "Real scans: LightOnOCR-2-1B".
+
+### `OCR_BACKEND=hybrid`: LightOnOCR na początek, Tesseract na resztę (task P7)
+
+Nagłówek każdej klasy (strony, NIP/KRS, e-maile, sygnatury) jest na stronie 1, a tam LightOnOCR czyta najlepiej;
+dalsze strony odwołania (uzasadnienie, terminy) czyta Tesseract w ~1 s/stronę. Tryb jest wyłącznie w dispatcherze
+`json4win.ocr`: `page_backend(index)` mówi, który backend czyta daną stronę, a `ocr_page` / `is_cached` /
+`cache_path` / `ocr_page_entry` biorą ustawienia tego backendu (`active_settings(index)`). Pipeline, `decide` i
+skrypty się nie zmieniają: klasyfikacja dostaje stronę 1 (tekst LightOnOCR), a znaczniki czytania i ekstrakcja
+strony sklejone w kolejności, tak jak dla jednego backendu.
+
+| Zmienna | Domyślnie | Opis |
+|---|---|---|
+| `OCR_HYBRID_FIRST` | `lighton` | Backend pierwszych stron: `local` \| `tesseract` \| `lighton` |
+| `OCR_HYBRID_REST` | `tesseract` | Backend każdej dalszej strony: `local` \| `tesseract` \| `lighton` |
+| `OCR_HYBRID_FIRST_PAGES` | `1` | Ile stron czyta `OCR_HYBRID_FIRST` (liczba całkowita ≥ 1) |
+
+- **Cache:** każda strona idzie do przestrzeni swojego backendu z jego ustawieniami (`OCR_LIGHTON_*`,
+  `OCR_TESSERACT_*`, `OCR_*` dla `local`), więc hybryda trafia w wpisy zapisane wcześniej przez `OCR_BACKEND=lighton`
+  i `OCR_BACKEND=tesseract` (te same `settings_id`, te same klucze stron); nie ma osobnej przestrzeni `hybrid`.
+- **Ślad:** `trace.py` zapisuje w `ocr_pages[*].backend` backend, który przeczytał daną stronę (`lighton`, `tesseract`).
+- **Błędy:** nieznany backend w `OCR_HYBRID_FIRST`/`_REST` (także `hybrid`) albo `OCR_HYBRID_FIRST_PAGES` < 1 lub
+  niebędące liczbą → `ValueError` z nazwą zmiennej przy pierwszej czytanej stronie (jak nieznany `OCR_BACKEND`).
+  Gdy `OCR_BACKEND` ≠ `hybrid`, zmienne `OCR_HYBRID_*` są ignorowane, a dispatcher woła tylko wybrany backend.
+- **Uruchomienie:** z domyślnym `lighton` na początek tylko w `.venv-lighton` (transformers 5; ten venv ma już wszystko,
+  czego potrzebuje reszta pipeline'u: PyYAML, pypdfium2, pillow, a LLM idzie przez `urllib`). Tesseract to binarka
+  systemowa jak przy `OCR_BACKEND=tesseract`. Z `OCR_CACHE_ONLY=1` hybrydę czyta też główny `.venv`.
+
+  ```bash
+  OCR_BACKEND=hybrid OCR_CACHE_ONLY=1 .venv-lighton/bin/python scripts/eval_skany.py -v
+  ```
+- **Co by trzeba, żeby ją dostarczyć, i czas:** [`quality.md`](quality.md), sekcja "Real scans: hybrid OCR".
 
 ## How it works
 

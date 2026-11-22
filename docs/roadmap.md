@@ -14,7 +14,7 @@ track. `orca orchestration worker-list` is the claim list, not this file.
 - [ ] **P2** Fill the training OCR cache (coordinator runs `make ocr-cache` once, one process). deps: P1
 - [x] **P4** OCR backend switch (`OCR_BACKEND=local|tesseract`) + Tesseract comparison on real scans. deps: P1
 - [x] **P5** LightOnOCR-2-1B backend (`OCR_BACKEND=lighton`, benchmark-only: needs transformers 5) + comparison on real scans. deps: P4
-- [ ] **P7** Hybrid OCR: the first page(s) with LightOnOCR, the rest with Tesseract, page texts joined in order for classification and extraction (opt-in, default unchanged) + comparison on real scans. deps: P4, P5
+- [x] **P7** Hybrid OCR: the first page(s) with LightOnOCR, the rest with Tesseract, page texts joined in order for classification and extraction (opt-in, default unchanged) + comparison on real scans. deps: P4, P5
 
 ## C: core engine
 - [x] **C1** Config-driven engine: config loader/validator, base + decision prompts, LLM client (Mistral API), decision step, read-until-complete loop, extraction with validation/retry, wiring in `pipeline.py`. deps: I1

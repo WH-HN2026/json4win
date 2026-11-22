@@ -5,7 +5,10 @@ with pypdfium2 and passed to the backend selected by `OCR_BACKEND`:
 - `local` (default): Unlimited-OCR-2 on CPU (`json4win.ocr_engine`);
 - `tesseract`: Tesseract CLI via subprocess (`json4win.ocr_tesseract`);
 - `lighton`: LightOnOCR-2-1B on CPU (`json4win.ocr_lighton`), benchmark-only: needs transformers 5
-  (`.venv-lighton`); its cache can be read from any venv with OCR_CACHE_ONLY=1.
+  (`.venv-lighton`); its cache can be read from any venv with OCR_CACHE_ONLY=1;
+- `hybrid`: the first OCR_HYBRID_FIRST_PAGES pages (default 1) by OCR_HYBRID_FIRST (default
+  `lighton`), the rest by OCR_HYBRID_REST (default `tesseract`). Each page uses that backend's own
+  settings and cache, so a hybrid run reads the entries written by single-backend runs (task P7).
 
 The raw backend output is cached in `json4win.env.cache_dir()/ocr/<settings_id>/<sha256>/`
 and cleaned to plain text on read. With `OCR_CACHE_ONLY=1` a cache miss raises `OcrCacheMiss`.
@@ -32,6 +35,8 @@ log = logging.getLogger(__name__)
 RENDER_DPI = ocr_engine.RENDER_DPI
 CACHE_FORMAT = ocr_engine.CACHE_FORMAT
 BACKENDS = (ocr_engine.BACKEND, ocr_tesseract.BACKEND, ocr_lighton.BACKEND)
+HYBRID = "hybrid"
+HYBRID_DEFAULTS = {"first": ocr_lighton.BACKEND, "rest": ocr_tesseract.BACKEND, "first_pages": 1}
 
 OcrSettings = InferSettings | TesseractSettings | LightOnSettings
 
@@ -41,11 +46,39 @@ class OcrCacheMiss(RuntimeError):
 
 
 def backend_name() -> str:
-    """Active OCR backend from OCR_BACKEND ('local' default, 'tesseract' or 'lighton')."""
+    """OCR_BACKEND: 'local' (default), 'tesseract', 'lighton' or 'hybrid'."""
     name = env.get("OCR_BACKEND", ocr_engine.BACKEND).strip().lower()
-    if name not in BACKENDS:
-        raise ValueError(f"unknown OCR_BACKEND {name!r}; expected one of: {', '.join(BACKENDS)}")
+    if name not in (*BACKENDS, HYBRID):
+        expected = ", ".join((*BACKENDS, HYBRID))
+        raise ValueError(f"unknown OCR_BACKEND {name!r}; expected one of: {expected}")
     return name
+
+
+def hybrid_plan() -> tuple[str, str, int]:
+    """(first backend, rest backend, first pages) from OCR_HYBRID_FIRST/_REST/_FIRST_PAGES."""
+    d = HYBRID_DEFAULTS
+    first = env.get("OCR_HYBRID_FIRST", d["first"]).strip().lower()
+    rest = env.get("OCR_HYBRID_REST", d["rest"]).strip().lower()
+    for var, name in (("OCR_HYBRID_FIRST", first), ("OCR_HYBRID_REST", rest)):
+        if name not in BACKENDS:
+            raise ValueError(f"{var} must be one of {', '.join(BACKENDS)}, got {name!r}")
+    raw = env.get("OCR_HYBRID_FIRST_PAGES", str(d["first_pages"]))
+    try:
+        n = int(raw)
+    except ValueError as e:
+        raise ValueError(f"OCR_HYBRID_FIRST_PAGES must be an integer, got {raw!r}") from e
+    if n < 1:
+        raise ValueError(f"OCR_HYBRID_FIRST_PAGES must be >= 1, got {n}")
+    return first, rest, n
+
+
+def page_backend(index: int) -> str:
+    """The backend that reads page `index` (0-based); in hybrid mode it depends on the page."""
+    name = backend_name()
+    if name != HYBRID:
+        return name
+    first, rest, n = hybrid_plan()
+    return first if index < n else rest
 
 
 def page_count(pdf: Path) -> int:
@@ -61,7 +94,7 @@ def page_count(pdf: Path) -> int:
 
 def ocr_page(pdf: Path, index: int) -> str:
     """Plain text of page `index` (0-based) of `pdf`, read by OCR (cached), diacritics kept."""
-    s = active_settings()
+    s = active_settings(index)
     raw = ocr_page_entry(pdf, index, s)["raw"]
     if isinstance(s, TesseractSettings):
         return ocr_tesseract.clean_text(raw)
@@ -78,9 +111,14 @@ def infer_settings() -> InferSettings:
     return ocr_engine.settings_from_env()
 
 
-def active_settings() -> OcrSettings:
-    """Settings for the active OCR_BACKEND."""
-    name = backend_name()
+def active_settings(index: int | None = None) -> OcrSettings:
+    """Settings of the backend that reads page `index` (OCR_BACKEND=hybrid needs the index)."""
+    if index is None:
+        name = backend_name()
+        if name == HYBRID:
+            raise ValueError("OCR_BACKEND=hybrid: settings depend on the page, pass its index")
+    else:
+        name = page_backend(index)
     if name == ocr_tesseract.BACKEND:
         return ocr_tesseract.settings_from_env()
     if name == ocr_lighton.BACKEND:
@@ -126,7 +164,7 @@ def pdf_sha256(pdf: Path) -> str:
 
 
 def cache_path(pdf: Path, index: int, s: OcrSettings | None = None) -> Path:
-    s = active_settings() if s is None else s
+    s = active_settings(index) if s is None else s
     return env.cache_dir() / "ocr" / settings_id(s) / pdf_sha256(pdf) / f"{index:04d}.json"
 
 
@@ -171,7 +209,7 @@ def render_page(pdf: Path, index: int, dpi: int = RENDER_DPI):
 
 def ocr_page_entry(pdf: Path, index: int, s: OcrSettings | None = None) -> dict:
     """The cache entry of one page (raw text + stats), running the backend on a miss."""
-    s = active_settings() if s is None else s
+    s = active_settings(index) if s is None else s
     path = cache_path(pdf, index, s)
     if path.is_file():
         return json.loads(path.read_text(encoding="utf-8"))

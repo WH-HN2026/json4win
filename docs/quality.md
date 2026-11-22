@@ -406,3 +406,87 @@ on the scans do not carry over because the public appeals fail on other fields:
 - `p04` `czynnosc_powod_id` (9/18): 12 (contract terms) vs the expected 4 (SWZ publication); debatable.
 
 The set stays held out: misses are reported here, not fixed in configs.
+
+## Real scans: hybrid OCR, LightOnOCR page 1 + Tesseract for the rest (task P7, 2026-11-22)
+
+Question: does `OCR_BACKEND=hybrid` (page 1 by LightOnOCR-2-1B = C, every later page by Tesseract = B; defaults
+`OCR_HYBRID_FIRST=lighton`, `OCR_HYBRID_REST=tesseract`, `OCR_HYBRID_FIRST_PAGES=1`, docs/ocr.md) beat Tesseract
+alone, and what would it cost? All 30 scans in `dane/skany/`, `OCR_CACHE_ONLY=1` (no OCR run; the hybrid run hit the
+existing `lighton` and `tesseract` cache entries, settings ids `13f6697c5daa30bf` and `99080cbd2483d92d`), dev configs
+(after 3429446), the same model for decision and extraction, `scripts/eval_skany.py -v` with `.venv-lighton/bin/python`
+for all three backends (so the venv is not a variable), 4 runs in parallel, each combination run twice. No cache miss
+and no failed document in any of the 18 runs (checked in the logs).
+
+### F1 (TP/FP/FN, errors = FP+FN) and LLM time
+
+| model (effort) | B Tesseract | C LightOnOCR | **B/C hybrid** | errors B · C · hybrid (run 1·run 2) | LLM s/doc, median |
+|---|---|---|---|---|---|
+| zai-glm-5-3-flash (low) | 0.998 / 0.998 (266/1/0 ×2) | 0.998 / 0.998 (266/1/0 ×2) | **0.998 / 0.998** (266/1/0 ×2) | 1·1 · 1·1 · 1·1 | 2.3–2.8 (all three) |
+| ministral-14b-2512 (off) | 0.989 / 0.985 (263/3/3, 262/4/4) | 0.989 / 0.989 (262/2/4 ×2) | **0.994 / 0.994** (264/1/2 ×2) | 6·8 · 6·6 · 3·3 | 2.7–4.3 |
+| ministral-8b-2512 (off) | 0.987 / 0.991 (260/1/6, 262/1/4) | 0.992 / 0.983 (263/1/3, 259/2/7) | **0.992 / 0.991** (263/1/3, 262/1/4) | 7·5 · 4·9 · 4·5 | 3.5–4.1 |
+
+LLM wall time per 30 scans: GLM 80–94 s, ministral-14b 115–163 s, ministral-8b 136–169 s, the same for all three
+backends within noise. Every row includes the disputed `pelnomocnictwa_0010` `mocodawca.nazwa` (sole trader, GT null).
+
+**Pages read** (same for every model and run): B 35 pages, C 37, hybrid 37 = **30 LightOnOCR + 7 Tesseract**.
+23 of 30 documents stop after page 1 (all 20 powers of attorney and transfer confirmations, appeals 0002, 0005, 0009,
+0010), so for them the hybrid input is **byte-identical to C** (checked on the cleaned text). Appeals 0003, 0004, 0006,
+0007, 0008 read page 2 (Tesseract), and 0001 pages 2–3: LightOnOCR's `ząrzucam` on page 1 misses the marker
+`zarzuca\w*` (see the P5 section), so it reads up to `max_stron`; with hybrid those two pages cost ~2 s instead of ~2 min.
+
+### What hybrid fixes or breaks versus Tesseract alone (`-v`)
+
+Every miss in all 18 runs is on a page-1 value (including `odwolania_0003` `miejscowosc`: `Gdańsk` is on page 1 in all
+three readings), and on 23 of 30 documents the hybrid prompt is the C prompt (identical OCR text; nothing in the
+prompts, configs or validation depends on the backend). So for the misses, C and hybrid are **four runs of the same
+page-1 condition**, compared with two Tesseract runs. Errors summed over both runs:
+
+| model | B Tesseract | C LightOnOCR | hybrid |
+|---|---:|---:|---:|
+| zai-glm-5-3-flash | 2 | 2 | 2 |
+| ministral-14b-2512 | 14 | 12 | 6 |
+| ministral-8b-2512 | 12 | 13 | 9 |
+
+The C-vs-hybrid gap on identical input (14b: 12 vs 6) is as large as the hybrid-vs-B gap, so it is LLM run-to-run noise
+(not reproducible at temperature 0 with a fixed seed, see llm.py): **no measurable F1 difference between B, C and
+hybrid on this set.** Fields counted as fixed or broken only when they hold in all 4 C + hybrid runs against both B runs:
+- **zai-glm-5-3-flash:** no change (only the disputed miss with every backend).
+- **ministral-14b — fixed:** `odwolania_0005` `numer_ted` (B null ×2). **Broken:** `potwierdzenia_0006` `z_rachunku`
+  null (the account is correct in the C text: a model-side null, as found in P5).
+- **ministral-8b — broken:** `potwierdzenia_0005` `na_rachunek` null. No field is fixed in all four runs.
+- **Noise, not fixes:** ministral-14b KRS written as `0000000000` (B ×2 on `pelnomocnictwa_0001/0005`, but C ×2 on
+  `0002` with the same input on which hybrid was right ×2); ministral-8b `odwolania_0009` `Odwolujacy.nip/krs`,
+  `Zamawiajacy.nip` (B null ×2, right in 3 of 4 C + hybrid runs); `z_rachunku` / `na_rachunek` nulls on
+  `potwierdzenia_0003/0006/0008/0009`, which come and go between runs for both Ministral models on every backend.
+- The values read from the Tesseract pages (`czynnosc_*` of the 6 multi-page appeals) were right in all 6 hybrid runs.
+- Caveat: only 7 of 37 pages came from Tesseract, so on this set the evaluation mostly measures "LightOnOCR page 1".
+
+### Delivery requirements and time budget
+
+Hybrid with the default `lighton` first backend is **benchmark-only** (runs in `.venv-lighton`, which needed no new pins:
+the pipeline only adds PyYAML, pypdfium2, pillow and stdlib `urllib`). Delivering it would require:
+- **Dependencies:** transformers 5 (`transformers==5.24.0`, `tokenizers==0.23.3`, `huggingface-hub==2.4.0`) instead of
+  the 4.52.1 pin for Unlimited-OCR-2. The two cannot share a venv, so either the delivery drops `OCR_BACKEND=local`
+  (Unlimited-OCR-2) and switches `json4win/requirements.txt` to the `requirements-lighton.txt` set, or ships two venvs
+  (`start.bat`/`start.sh` would build a second one). Plus the Tesseract **system binary** and `pol.traineddata` (Windows:
+  UB Mannheim installer, docs/ocr.md), which AGENTS.md says to avoid unless decided.
+- **Model download:** ~2 GB of bf16 safetensors (`lightonai/LightOnOCR-2-1B`, Apache 2.0) on first run.
+- **RAM:** ~3.2 GB peak RSS for LightOnOCR (bf16) + 0.15 GB Tesseract, vs 11.1 GB for Unlimited-OCR-2.
+- **Time (this CPU, Ryzen 9 7900X with AVX512-BF16, from the cached per-page OCR times of the pages each backend read):**
+
+| backend | OCR s/doc median / mean / max | + LLM (median) | 150 PDFs |
+|---|---|---|---|
+| B Tesseract | 1.0 / 1.2 / 3.4 | ~3 s | ~10 min |
+| C LightOnOCR | 58.4 / 86.2 / 364 | ~3 s | ~3.7 h |
+| **hybrid** | **58.4 / 61.5 / 124** | ~3 s | **~2.7 h** |
+
+  The brief's budget is 150 PDFs in 45 minutes, **~18 s per document**. Hybrid needs ~62–65 s per document, about 3.5×
+  over budget, and almost all of it is the single LightOnOCR page (`OCR_HYBRID_FIRST_PAGES=1` is already the minimum;
+  each Tesseract page adds ~1 s). On an AVX2 laptop without AVX512-BF16 it would be slower still (bf16 not measured
+  there; fp32 is 1.5× slower here and needs 6.3 GB). To fit, LightOnOCR's page 1 would have to get ~4× faster
+  (≤ ~14 s/page), e.g. by a smaller render or quantisation; not measured.
+
+**Takeaway:** hybrid gives C's page-1 reading (no measurable F1 gain over Tesseract on these 30 scans, all differences
+within LLM noise) and removes C's cost on later pages (mean 61.5 s/doc instead of 86.2 s), but it still costs one
+LightOnOCR page per document and does not fit the time budget on CPU, so Tesseract alone (or Unlimited-OCR-2) stays the
+delivery choice.

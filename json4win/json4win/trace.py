@@ -106,7 +106,7 @@ def ocr_page(pdf: Path, index: int) -> str:
         "ocr_pages",
         {
             "page": index + 1,
-            "backend": ocr.backend_name(),
+            "backend": ocr.page_backend(index),
             "chars": len(text),
             "seconds": round(time.perf_counter() - t0, 3),
         },
