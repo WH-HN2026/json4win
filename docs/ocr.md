@@ -1,10 +1,11 @@
-# OCR engine: Unlimited-OCR-2 on CPU (task P1), Tesseract backend (task P4), LightOnOCR-2-1B benchmark backend (task P5), hybrid mode (task P7)
+# OCR engine: Unlimited-OCR-2 on CPU (task P1), Tesseract backend (task P4), LightOnOCR-2-1B benchmark backend (task P5), hybrid mode (task P7), LightOnOCR-2-1B through an EU/EEA API (task P8)
 
 Code: [`json4win/json4win/ocr.py`](../json4win/json4win/ocr.py) (contract, backend dispatcher, rendering,
 shared cache, local text cleaning), [`ocr_engine.py`](../json4win/json4win/ocr_engine.py) (Unlimited-OCR-2
 model load + inference), [`ocr_fast.py`](../json4win/json4win/ocr_fast.py) (opt-in faster decode),
 [`ocr_tesseract.py`](../json4win/json4win/ocr_tesseract.py) (Tesseract CLI backend via `subprocess`),
-[`ocr_lighton.py`](../json4win/json4win/ocr_lighton.py) (LightOnOCR-2-1B, benchmark-only). Dev tools:
+[`ocr_lighton.py`](../json4win/json4win/ocr_lighton.py) (LightOnOCR-2-1B, benchmark-only),
+[`ocr_api.py`](../json4win/json4win/ocr_api.py) (LightOnOCR-2-1B through an EU/EEA OpenAI-compatible API). Dev tools:
 [`scripts/ocr_cache.py`](../scripts/ocr_cache.py) (`make ocr-cache`), [`scripts/ocr_probe.py`](../scripts/ocr_probe.py) (gate bench + quality probe).
 
 ## Backendy OCR
@@ -23,6 +24,9 @@ Wybór backendu odbywa się zmienną środowiskową `OCR_BACKEND` (w `.env.local
 - **`OCR_BACKEND=lighton` (tylko benchmark):** `lightonai/LightOnOCR-2-1B` (Apache 2.0, ~1B parametrów) na CPU
   przez `json4win.ocr_lighton`. Wymaga transformers 5, więc działa tylko w osobnym venv `.venv-lighton`
   (sekcja niżej); nie jest częścią dostawy.
+- **`OCR_BACKEND=lighton_api` (task P8):** ten sam `LightOnOCR-2-1B`, ale przez API zgodne z OpenAI u dostawcy w UE
+  (IONOS AI Model Hub lub EUrouter) przez `json4win.ocr_api`; tylko biblioteka standardowa (`urllib`), bez nowych
+  zależności. Strona, dla której API zawiedzie, idzie do `OCR_API_FALLBACK` (domyślnie `tesseract`). Sekcja niżej.
 - **`OCR_BACKEND=hybrid` (task P7, domyślnie też tylko benchmark):** pierwsze `OCR_HYBRID_FIRST_PAGES` stron czyta
   `OCR_HYBRID_FIRST` (domyślnie `lighton`), każdą następną `OCR_HYBRID_REST` (domyślnie `tesseract`). Sekcja niżej.
 - Nieznana wartość `OCR_BACKEND` podnosi `ValueError`.
@@ -31,7 +35,7 @@ Wybór backendu odbywa się zmienną środowiskową `OCR_BACKEND` (w `.env.local
 
 | Zmienna | Domyślnie | Opis |
 |---|---|---|
-| `OCR_BACKEND` | `local` | `local` \| `tesseract` \| `lighton` \| `hybrid` |
+| `OCR_BACKEND` | `local` | `local` \| `tesseract` \| `lighton` \| `lighton_api` \| `hybrid` |
 | `OCR_TESSERACT_CMD` | `tesseract` | Nazwa lub pełna ścieżka pliku wykonywalnego Tesseract |
 | `OCR_TESSERACT_LANG` | `pol` | Język(i) przekazane przez `-l` (np. `pol` lub `pol+eng`) |
 | `OCR_TESSERACT_DPI` | `300` | Rozdzielczość renderowania `pypdfium2` oraz flaga `--dpi` |
@@ -67,7 +71,13 @@ wraz z plikiem `settings.json`:
 - Dla `lighton` klucz to same stałe i ustawienia (`backend`, `model`, `revision`, `dpi`, `longest_side`, `resize`,
   `decoding`, `max_tokens`, `dtype`, `format`), bez wersji torch/transformers, więc główny `.venv` (transformers
   4.52.1) czyta cache LightOnOCR z `OCR_CACHE_ONLY=1`. Domyślny `settings_id`: `13f6697c5daa30bf`.
-- Ślad ekstrakcji (`trace.py`) zapisuje pole `backend` przy każdej przeczytanej stronie w `ocr_pages`.
+- Dla `lighton_api` klucz to `backend`, sam host z `OCR_API_BASE_URL` (np. `openai.inference.de-txl.ionos.com`),
+  `model`, `dpi`, `longest_side`, `resize`, `image_format`, `prompt` (brak), `max_tokens`, `temperature`, `top_p`,
+  `extra_body` (sparsowany `OCR_API_EXTRA_BODY`) i `format`. Bez klucza API, timeoutu, liczby prób i fallbacku (nie
+  zmieniają wyniku). IONOS i EUrouter mają więc osobne cache, choć to ten sam model u tego samego dostawcy.
+- Ślad ekstrakcji (`trace.py`) zapisuje pole `backend` przy każdej przeczytanej stronie w `ocr_pages`: backend, który
+  **faktycznie** przeczytał stronę; gdy API zawiodło i stronę przeczytał fallback, dochodzi `fallback_from: "lighton_api"`
+  (w `.trace.md`: `tesseract zamiast lighton_api`).
 
 ### `OCR_BACKEND=lighton`: LightOnOCR-2-1B (tylko benchmark, task P5)
 
@@ -122,8 +132,8 @@ strony sklejone w kolejności, tak jak dla jednego backendu.
 
 | Zmienna | Domyślnie | Opis |
 |---|---|---|
-| `OCR_HYBRID_FIRST` | `lighton` | Backend pierwszych stron: `local` \| `tesseract` \| `lighton` |
-| `OCR_HYBRID_REST` | `tesseract` | Backend każdej dalszej strony: `local` \| `tesseract` \| `lighton` |
+| `OCR_HYBRID_FIRST` | `lighton` | Backend pierwszych stron: `local` \| `tesseract` \| `lighton` \| `lighton_api` |
+| `OCR_HYBRID_REST` | `tesseract` | Backend każdej dalszej strony: `local` \| `tesseract` \| `lighton` \| `lighton_api` |
 | `OCR_HYBRID_FIRST_PAGES` | `1` | Ile stron czyta `OCR_HYBRID_FIRST` (liczba całkowita ≥ 1) |
 
 - **Cache:** każda strona idzie do przestrzeni swojego backendu z jego ustawieniami (`OCR_LIGHTON_*`,
@@ -141,6 +151,109 @@ strony sklejone w kolejności, tak jak dla jednego backendu.
   OCR_BACKEND=hybrid OCR_CACHE_ONLY=1 .venv-lighton/bin/python scripts/eval_skany.py -v
   ```
 - **Co by trzeba, żeby ją dostarczyć, i czas:** [`quality.md`](quality.md), sekcja "Real scans: hybrid OCR".
+
+### `OCR_BACKEND=lighton_api`: LightOnOCR-2-1B przez API w UE/EOG (task P8)
+
+**Po co:** serwer dostawy ma 2 rdzenie CPU, więc lokalny LightOnOCR (~60 s/stronę na 12 rdzeniach) jest za wolny.
+Ten sam model z otwartymi wagami (`lightonai/LightOnOCR-2-1B`, Apache 2.0, LightOn, Francja) jest serwowany w UE
+przez chat completions zgodne z OpenAI z obrazem na wejściu (decyzja użytkownika 2026-11-22, AGENTS.md "OCR always").
+
+**Włączenie** (w `json4win/.env.local`):
+
+```bash
+# IONOS AI Model Hub (IONOS SE, Berlin): domyślne URL i model
+OCR_BACKEND=lighton_api
+OCR_API_KEY=<token IONOS AI Model Hub>
+
+# albo EUrouter (EUrouter B.V., Amsterdam; bramka kierująca do IONOS Cloud)
+OCR_BACKEND=lighton_api
+OCR_API_KEY=<klucz EUrouter>
+OCR_API_BASE_URL=https://api.eurouter.ai/api/v1
+OCR_API_MODEL=lightonocr-2-1b
+OCR_API_EXTRA_BODY={"provider": {"only": ["ionos"], "allow_fallbacks": false, "zdr": true, "max_retention_days": 0}}
+
+# hybryda: strona 1 przez API, dalsze Tesseractem (Tesseract musi być zainstalowany)
+OCR_BACKEND=hybrid
+OCR_HYBRID_FIRST=lighton_api
+```
+
+**Dostawcy i limity:**
+
+| | IONOS AI Model Hub | EUrouter |
+|---|---|---|
+| Firma, siedziba | IONOS SE, Niemcy (centrum `de-txl`, Berlin) | EUrouter B.V., Holandia; model serwuje IONOS Cloud |
+| Base URL | `https://openai.inference.de-txl.ionos.com/v1` (domyślny) | `https://api.eurouter.ai/api/v1` |
+| Model | `lightonai/LightOnOCR-2-1B` (domyślny) | `lightonocr-2-1b` (jest też `lightonocr-3-0.8b` na Scaleway, wejście "file": nieobsługiwane tutaj) |
+| Wejście | obraz PNG/JPEG/WebP jako data URI `data:image/png;base64,…` lub URL | jak IONOS (obraz → tekst) |
+| Limity | ciało żądania ≤ 16 MiB, jeden obraz inline ≤ 12 MiB; żądania > 4 MiB maks. 2 naraz (HTTP 503 + `Retry-After`) | — |
+| Cena | wg cennika IONOS | 0,15 EUR / M tokenów wejścia, 0,30 EUR / M tokenów wyjścia |
+| Dokumentacja | [docs.ionos.com: OCR](https://docs.ionos.com/cloud/ai/ai-model-hub/how-tos/ocr) | [eurouter.ai](https://eurouter.ai) |
+
+EUrouter przyjmuje w ciele żądania obiekt `provider`; `OCR_API_EXTRA_BODY` (obiekt JSON scalany z każdym żądaniem,
+na końcu, więc może też nadpisać np. `max_tokens`) przypina dostawcę (`only: ["ionos"]`, bez przełączania na innych:
+`allow_fallbacks: false`) i prosi o brak retencji danych (`zdr: true`, `max_retention_days: 0`). Nieprawidłowy JSON
+albo coś innego niż obiekt → `ValueError` od razu, przy pierwszej stronie (bez fallbacku).
+
+**Jak działa:** strona renderowana w 200 dpi i zmniejszana do dłuższego boku 1540 px tym samym kodem co `lighton`
+(`ocr_lighton.resize`, LANCZOS: na tym rozmiarze model był trenowany), zapisywana jako PNG (6 stron z `dane/skany`: 0,35–1,55 MB PNG,
+data URI ≤ 2,1 MB, więc poniżej progu 4 MiB IONOS), wysyłana jako data URI w jednej wiadomości `user`, której treścią jest **tylko obraz**
+(jak w przykładzie IONOS i w szablonie czatu modelu). Wyjście (markdown) idzie do cache surowe, a tekst robi z niego
+`ocr_lighton.clean_text()`, jak dla `lighton`. Wpis cache ma `seconds` (czas żądania, z ponownymi próbami),
+`tokens` / `prompt_tokens` (z `usage` odpowiedzi), `attempts`, `image_bytes`, `model_image_size`, `finish`.
+
+| Zmienna | Domyślnie | Opis |
+|---|---|---|
+| `OCR_API_KEY` | *(puste)* | Klucz API (Bearer). Nigdy nie jest logowany ani zapisywany (nie ma go w kluczu cache, w błędach jest maskowany, `trace.scrub` go usuwa). Puste → każda strona idzie do fallbacku z ostrzeżeniem |
+| `OCR_API_BASE_URL` | IONOS (wyżej) | Base URL API zgodnego z OpenAI; dopisywane `/chat/completions` |
+| `OCR_API_MODEL` | `lightonai/LightOnOCR-2-1B` | Id modelu u dostawcy |
+| `OCR_API_EXTRA_BODY` | *(puste)* | Obiekt JSON scalany z ciałem żądania (EUrouter: `provider`) |
+| `OCR_API_MAX_TOKENS` | `4096` | Limit tokenów wyjścia na stronę (karta modelu, przykład IONOS) |
+| `OCR_API_TEMPERATURE` | `0` | Temperatura; `0` = greedy, jak backend `lighton` (przykład IONOS: `0.2`) |
+| `OCR_API_TOP_P` | `1` | top_p (przykład IONOS: `0.9`; przy temperaturze 0 bez znaczenia) |
+| `OCR_API_TIMEOUT` | `20` | Sekundy na jedno żądanie (timeout `urllib` na operację gniazda; serwer sączący bajty wolniej mógłby go przekroczyć) |
+| `OCR_API_RETRIES` | `1` | Ponowne próby po 429, 5xx, timeoucie, błędzie połączenia lub niepoprawnym JSON-ie; czeka `Retry-After` (sekundy albo data HTTP), a bez niego 2, 4… s, zawsze **maks. 5 s** (`MAX_RETRY_DELAY`). Inne 4xx (zły klucz, zły model) → bez ponawiania |
+| `OCR_API_FALLBACK` | `tesseract` | Backend, który czyta stronę, gdy API zawiedzie po wszystkich próbach: `tesseract` \| `local` \| `lighton` \| `none` (`none` = błąd strony jak w innych backendach, dokument kończy się `{}`) |
+
+**Wybór temperatury (niezmierzony):** domyślnie `0` (greedy), bo tak dekoduje nasz lokalny backend `lighton`, którego
+jakość na `dane/skany` jest zmierzona w [`quality.md`](quality.md), a wynik jest powtarzalny między uruchomieniami
+(cache, eval). Przykład IONOS i `generation_config.json` modelu używają `0.2` / `0.9`; nie porównaliśmy tego na żywo
+(brak klucza w czasie taska P8). Każda zmiana temperatury/top_p to nowa przestrzeń cache.
+
+**Fallback:** gdy `run()` podniesie `OcrApiError` (brak klucza, HTTP 4xx, wyczerpane próby, odpowiedź bez `choices`,
+pusta albo złożona z samych białych znaków odpowiedź 200),
+strona jest czytana przez `OCR_API_FALLBACK` z **jego** ustawieniami, renderowaniem (Tesseract: 300 dpi) i cache, a log
+dostaje ostrzeżenie `OCR [lighton_api] <plik> page N failed (…); reading it with tesseract`. Tekst z fallbacku nigdy nie
+trafia do cache API, więc następne uruchomienie znów spróbuje API. Fallback działa też w hybrydzie (dla stron
+czytanych przez `lighton_api`). Błędy konfiguracji (`OCR_API_*` z niepoprawną wartością, `OCR_API_FALLBACK=lighton_api`)
+nie przechodzą w fallback, tylko od razu podnoszą `ValueError`. Z `OCR_CACHE_ONLY=1` brak wpisu API to `OcrCacheMiss`
+(bez fallbacku), więc eval z cache nigdy nie miesza po cichu tekstu Tesseracta z tekstem API.
+
+**Ochrona danych:** obraz strony (a więc dane osobowe z odwołań, pełnomocnictw i potwierdzeń przelewu) wychodzi do
+dostawcy w UE/EOG: IONOS SE (Niemcy) bezpośrednio albo przez EUrouter B.V. (Holandia) do IONOS Cloud. Oba podmioty są
+w UE, więc dane nie opuszczają EOG; przy EUrouterze `OCR_API_EXTRA_BODY` z `zdr: true` / `max_retention_days: 0`
+prosi o brak retencji, a `only: ["ionos"]` + `allow_fallbacks: false` blokuje przekierowanie do innego dostawcy.
+Dla zastosowania produkcyjnego potrzebna jest umowa powierzenia (DPA, art. 28 RODO) z dostawcą. Zasada repo: danych
+treningowych `dane/przyklad_*` nie wysyłamy do API; do pomiarów służą wyłącznie skany z `dane/skany`.
+
+**Budżet czasu (serwer jury: 2 rdzenie, 45 min na 150 PDF-ów):**
+
+- **Najgorszy przypadek na stronę** przed przejściem na fallback: `(OCR_API_RETRIES + 1) × OCR_API_TIMEOUT +
+  OCR_API_RETRIES × 5 s` = 2 × 20 s + 5 s = **45 s** przy domyślnych (`ocr_api.worst_case_seconds()`; test z
+  wiszącym endpointem i sztucznym zegarem). Szybki błąd (503/429 bez zawieszenia, odmowa połączenia): ≤ 5 s;
+  brak klucza, 401/400: od razu.
+- **Bezpiecznik (circuit breaker):** po `BREAKER_FAILURES` = 3 kolejnych stronach z błędem API (dowolnym, który
+  uruchamia fallback, także pusta odpowiedź i brak klucza) proces nie woła już API do końca uruchomienia: jedno
+  ostrzeżenie `OCR API: 3 pages in a row failed, not calling it again in this run…`, a każda dalsza strona idzie od
+  razu do `OCR_API_FALLBACK` (bez renderowania dla API, log INFO). Udana strona zeruje licznik. Z
+  `OCR_API_FALLBACK=none` otwarty bezpiecznik daje od razu błąd strony.
+- **API niedostępne od początku:** strata ≤ 3 × 45 s = **135 s** na całe uruchomienie, gdy endpoint wisi; ≈ 3 × 5 s
+  = 15 s, gdy odpowiada błędem 5xx/429; ~0 s przy braku klucza lub złym kluczu. Reszta stron jak przy
+  `OCR_BACKEND=tesseract`.
+- Pusta odpowiedź liczy się jako błąd, więc kilka pustych stron (np. pusty rewers skanu) z rzędu też otworzy
+  bezpiecznik; czytamy tylko pierwsze strony dokumentów, więc to mało prawdopodobne.
+
+**Tryb jednego procesu:** żądania idą po jednym (pipeline czyta strony sekwencyjnie), więc limit 2 równoczesnych
+dużych żądań IONOS nie jest problemem; 503 z `Retry-After` jest obsługiwane i tak.
 
 ## How it works
 

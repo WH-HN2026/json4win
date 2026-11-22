@@ -99,18 +99,20 @@ def step(name: str) -> Iterator[None]:
 
 
 def ocr_page(pdf: Path, index: int) -> str:
-    """ocr.ocr_page(), with the page's backend, size and time recorded."""
+    """ocr.ocr_page(), with the backend that read the page, size and time recorded (when the OCR
+    API failed and another backend read the page, `fallback_from` names the planned one)."""
     t0 = time.perf_counter()
     text = ocr.ocr_page(pdf, index)
-    add(
-        "ocr_pages",
-        {
-            "page": index + 1,
-            "backend": ocr.page_backend(index),
-            "chars": len(text),
-            "seconds": round(time.perf_counter() - t0, 3),
-        },
-    )
+    planned, used = ocr.page_backend(index), ocr.used_backend(pdf, index)
+    record = {
+        "page": index + 1,
+        "backend": used,
+        "chars": len(text),
+        "seconds": round(time.perf_counter() - t0, 3),
+    }
+    if used != planned:
+        record["fallback_from"] = planned
+    add("ocr_pages", record)
     return text
 
 
@@ -351,9 +353,12 @@ def _sha256(pdf: Path) -> str:
 
 
 def scrub(text: str) -> str:
-    """`text` without the API key, should it ever appear in an error message."""
-    key = env.get("MISTRAL_API_KEY")
-    return text.replace(key, "***") if key and len(key) >= 8 else text
+    """`text` without the API keys (LLM, OCR), should one ever appear in an error message."""
+    for name in ("MISTRAL_API_KEY", "OCR_API_KEY"):
+        key = env.get(name)
+        if key and len(key) >= 8:
+            text = text.replace(key, "***")
+    return text
 
 
 def write(t: Trace, path: Path) -> None:
@@ -401,6 +406,7 @@ def markdown(d: dict) -> str:
         shown = ", ".join(
             f"{p['page']} ({p['chars']} zn., {p['seconds']} s"
             + (f", {p['backend']}" if p.get("backend") else "")
+            + (f" zamiast {p['fallback_from']}" if p.get("fallback_from") else "")
             + ")"
             for p in pages
         )

@@ -94,7 +94,7 @@ na CPU, bez GPU (warstwa tekstowa PDF nie jest używana). Szczegóły i pomiary:
 - **Cache:** wynik OCR każdej strony jest zapisywany (klucz: sha256 PDF + strona + ustawienia) w
   `~/.cache/json4win/ocr` (Windows: `%LOCALAPPDATA%\json4win\ocr`; zmiana: `JSON4WIN_CACHE_DIR`), więc
   ponowne przetworzenie tych samych plików jest natychmiastowe.
-- **Zmienne** (`.env.example`): `OCR_BACKEND` (`local` domyślnie | `tesseract`), `OCR_THREADS`
+- **Zmienne** (`.env.example`): `OCR_BACKEND` (`local` domyślnie | `tesseract` | `lighton_api` | `hybrid`), `OCR_THREADS`
   (domyślnie liczba rdzeni fizycznych), `OCR_MODE`, `OCR_MAX_TOKENS`, `OCR_DTYPE`, `OCR_FAST_DECODE`,
   `OCR_CACHE_ONLY`.
 - **Alternatywny backend Tesseract (`OCR_BACKEND=tesseract`):** zamiast ciężkiego modelu VLM można
@@ -104,6 +104,22 @@ na CPU, bez GPU (warstwa tekstowa PDF nie jest używana). Szczegóły i pomiary:
   lub wskazanie katalogu przez `OCR_TESSDATA_DIR`). Wyniki trafiają do osobnego katalogu cache.
   Szczegóły instalacji i porównanie jakości: [`../docs/ocr.md`](../docs/ocr.md) oraz
   [`../docs/quality.md`](../docs/quality.md).
+- **LightOnOCR-2-1B przez API w UE (`OCR_BACKEND=lighton_api`):** ten sam model z otwartymi wagami
+  (Apache 2.0, LightOn, Francja), ale uruchamiany u dostawcy w UE przez API zgodne z OpenAI, więc na
+  słabym CPU nie trzeba liczyć ~60 s na stronę (czas przez API jeszcze niezmierzony). Obraz strony (PNG, dłuższy bok 1540 px) jest
+  wysyłany do **IONOS AI Model Hub** (IONOS SE, Berlin; domyślnie) albo przez **EUrouter** (Amsterdam,
+  kierowany do IONOS). Wymaga klucza w `.env.local`:
+  ```
+  OCR_BACKEND=lighton_api
+  OCR_API_KEY=<token IONOS>
+  ```
+  EUrouter: dodatkowo `OCR_API_BASE_URL=https://api.eurouter.ai/api/v1`, `OCR_API_MODEL=lightonocr-2-1b`
+  i `OCR_API_EXTRA_BODY={"provider": {"only": ["ionos"], "allow_fallbacks": false, "zdr": true, "max_retention_days": 0}}`.
+  Gdy API zawiedzie dla strony (brak klucza, błąd, limit czasu po ponownych próbach), tę stronę czyta
+  lokalny Tesseract (`OCR_API_FALLBACK=tesseract`, domyślnie) i w logu pojawia się ostrzeżenie (najwyżej
+  45 s na stronę; po 3 nieudanych stronach z rzędu API nie jest już wołane do końca uruchomienia); wymaga
+  to zainstalowanego Tesseracta jak wyżej. Wariant hybrydowy: `OCR_BACKEND=hybrid` +
+  `OCR_HYBRID_FIRST=lighton_api` (strona 1 przez API, dalsze Tesseractem). Szczegóły: [`../docs/ocr.md`](../docs/ocr.md).
 - `OCR_BACKEND=lighton` (LightOnOCR-2-1B) służy tylko do porównań w repozytorium deweloperskim (wymaga transformers 5, osobny venv): [`../docs/ocr.md`](../docs/ocr.md).
 
 ## Struktura

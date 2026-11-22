@@ -6,6 +6,8 @@ with pypdfium2 and passed to the backend selected by `OCR_BACKEND`:
 - `tesseract`: Tesseract CLI via subprocess (`json4win.ocr_tesseract`);
 - `lighton`: LightOnOCR-2-1B on CPU (`json4win.ocr_lighton`), benchmark-only: needs transformers 5
   (`.venv-lighton`); its cache can be read from any venv with OCR_CACHE_ONLY=1;
+- `lighton_api`: LightOnOCR-2-1B through an EU/EEA OpenAI-compatible API (`json4win.ocr_api`,
+  task P8); a page whose API call fails is read by OCR_API_FALLBACK (default `tesseract`);
 - `hybrid`: the first OCR_HYBRID_FIRST_PAGES pages (default 1) by OCR_HYBRID_FIRST (default
   `lighton`), the rest by OCR_HYBRID_REST (default `tesseract`). Each page uses that backend's own
   settings and cache, so a hybrid run reads the entries written by single-backend runs (task P7).
@@ -25,7 +27,8 @@ import tempfile
 from dataclasses import replace
 from pathlib import Path
 
-from json4win import env, ocr_engine, ocr_lighton, ocr_tesseract
+from json4win import env, ocr_api, ocr_engine, ocr_lighton, ocr_tesseract
+from json4win.ocr_api import ApiSettings
 from json4win.ocr_engine import InferSettings
 from json4win.ocr_lighton import LightOnSettings
 from json4win.ocr_tesseract import TesseractSettings
@@ -34,11 +37,12 @@ log = logging.getLogger(__name__)
 
 RENDER_DPI = ocr_engine.RENDER_DPI
 CACHE_FORMAT = ocr_engine.CACHE_FORMAT
-BACKENDS = (ocr_engine.BACKEND, ocr_tesseract.BACKEND, ocr_lighton.BACKEND)
+BACKENDS = (ocr_engine.BACKEND, ocr_tesseract.BACKEND, ocr_lighton.BACKEND, ocr_api.BACKEND)
 HYBRID = "hybrid"
 HYBRID_DEFAULTS = {"first": ocr_lighton.BACKEND, "rest": ocr_tesseract.BACKEND, "first_pages": 1}
 
-OcrSettings = InferSettings | TesseractSettings | LightOnSettings
+OcrSettings = InferSettings | TesseractSettings | LightOnSettings | ApiSettings
+NO_FALLBACK = "none"
 
 
 class OcrCacheMiss(RuntimeError):
@@ -46,7 +50,7 @@ class OcrCacheMiss(RuntimeError):
 
 
 def backend_name() -> str:
-    """OCR_BACKEND: 'local' (default), 'tesseract', 'lighton' or 'hybrid'."""
+    """OCR_BACKEND: 'local' (default), 'tesseract', 'lighton', 'lighton_api' or 'hybrid'."""
     name = env.get("OCR_BACKEND", ocr_engine.BACKEND).strip().lower()
     if name not in (*BACKENDS, HYBRID):
         expected = ", ".join((*BACKENDS, HYBRID))
@@ -81,6 +85,25 @@ def page_backend(index: int) -> str:
     return first if index < n else rest
 
 
+def fallback_name() -> str:
+    """OCR_API_FALLBACK: the backend that reads a page when the OCR API fails, or 'none'."""
+    name = env.get("OCR_API_FALLBACK", ocr_tesseract.BACKEND).strip().lower()
+    allowed = tuple(b for b in BACKENDS if b != ocr_api.BACKEND)
+    if name not in (*allowed, NO_FALLBACK):
+        expected = ", ".join((*allowed, NO_FALLBACK))
+        raise ValueError(f"OCR_API_FALLBACK must be one of {expected}, got {name!r}")
+    return name
+
+
+_used: dict[tuple[str, int], str] = {}
+
+
+def used_backend(pdf: Path, index: int) -> str:
+    """The backend that actually read page `index` of `pdf` in this process (the fallback, when
+    the OCR API failed); page_backend(index) if the page was not read through ocr_page()."""
+    return _used.get((str(pdf), index)) or page_backend(index)
+
+
 def page_count(pdf: Path) -> int:
     """Number of pages in the PDF."""
     import pypdfium2
@@ -94,13 +117,13 @@ def page_count(pdf: Path) -> int:
 
 def ocr_page(pdf: Path, index: int) -> str:
     """Plain text of page `index` (0-based) of `pdf`, read by OCR (cached), diacritics kept."""
-    s = active_settings(index)
-    raw = ocr_page_entry(pdf, index, s)["raw"]
+    entry, s = _entry(pdf, index, active_settings(index))
+    _used[(str(pdf), index)] = backend_of(s)
     if isinstance(s, TesseractSettings):
-        return ocr_tesseract.clean_text(raw)
-    if isinstance(s, LightOnSettings):
-        return ocr_lighton.clean_text(raw)
-    return clean_text(raw)
+        return ocr_tesseract.clean_text(entry["raw"])
+    if isinstance(s, LightOnSettings | ApiSettings):  # same model, same markdown output
+        return ocr_lighton.clean_text(entry["raw"])
+    return clean_text(entry["raw"])
 
 
 # ---- settings and cache ------------------------------------------------------------------------
@@ -119,11 +142,29 @@ def active_settings(index: int | None = None) -> OcrSettings:
             raise ValueError("OCR_BACKEND=hybrid: settings depend on the page, pass its index")
     else:
         name = page_backend(index)
+    return _settings_of(name)
+
+
+def _settings_of(name: str) -> OcrSettings:
+    """Settings of one named (non-hybrid) backend from env."""
     if name == ocr_tesseract.BACKEND:
         return ocr_tesseract.settings_from_env()
     if name == ocr_lighton.BACKEND:
         return ocr_lighton.settings_from_env()
+    if name == ocr_api.BACKEND:
+        return ocr_api.settings_from_env()
     return ocr_engine.settings_from_env()
+
+
+def backend_of(s: OcrSettings) -> str:
+    """The backend name of a settings object."""
+    if isinstance(s, TesseractSettings):
+        return ocr_tesseract.BACKEND
+    if isinstance(s, LightOnSettings):
+        return ocr_lighton.BACKEND
+    if isinstance(s, ApiSettings):
+        return ocr_api.BACKEND
+    return ocr_engine.BACKEND
 
 
 def _render_dpi(s: OcrSettings) -> int:
@@ -131,6 +172,8 @@ def _render_dpi(s: OcrSettings) -> int:
         return s.dpi
     if isinstance(s, LightOnSettings):
         return ocr_lighton.RENDER_DPI
+    if isinstance(s, ApiSettings):
+        return ocr_api.RENDER_DPI
     return RENDER_DPI
 
 
@@ -144,6 +187,8 @@ def settings_key(s: OcrSettings | None = None, dpi: int | None = None) -> dict:
         return ocr_tesseract.cache_key(s)
     if isinstance(s, LightOnSettings):
         return ocr_lighton.cache_key(s)
+    if isinstance(s, ApiSettings):
+        return ocr_api.cache_key(s)
     raise TypeError(f"unsupported OCR settings type: {type(s).__name__}")
 
 
@@ -209,13 +254,29 @@ def render_page(pdf: Path, index: int, dpi: int = RENDER_DPI):
 
 def ocr_page_entry(pdf: Path, index: int, s: OcrSettings | None = None) -> dict:
     """The cache entry of one page (raw text + stats), running the backend on a miss."""
-    s = active_settings(index) if s is None else s
+    return _entry(pdf, index, active_settings(index) if s is None else s)[0]
+
+
+def _entry(pdf: Path, index: int, s: OcrSettings) -> tuple[dict, OcrSettings]:
+    """(cache entry, settings of the backend that produced it). An OCR API failure falls back to
+    OCR_API_FALLBACK for that page: the fallback reads it with its own settings and cache, so no
+    fallback text is ever stored under the API's settings id (the next run tries the API again)."""
     path = cache_path(pdf, index, s)
     if path.is_file():
-        return json.loads(path.read_text(encoding="utf-8"))
+        return json.loads(path.read_text(encoding="utf-8")), s
     if env.get("OCR_CACHE_ONLY") == "1":
         raise OcrCacheMiss(f"{pdf.name} page {index + 1}: not in the OCR cache ({path})")
 
+    fallback = fallback_name() if isinstance(s, ApiSettings) else NO_FALLBACK  # config errors raise
+    if isinstance(s, ApiSettings) and ocr_api.breaker_open():
+        if fallback == NO_FALLBACK:
+            raise RuntimeError(
+                f"OCR {pdf.name} page {index + 1}: OCR API disabled after "
+                f"{ocr_api.BREAKER_FAILURES} consecutive failures (OCR_API_FALLBACK=none)"
+            )
+        log.info("OCR [%s] %s page %d: API off, reading it with %s", ocr_api.BACKEND,
+                 pdf.name, index + 1, fallback)  # fmt: skip
+        return _entry(pdf, index, _settings_of(fallback))
     image = render_page(pdf, index, dpi=_render_dpi(s))
     if isinstance(s, TesseractSettings):
         log.info("OCR [tesseract] %s page %d ...", pdf.name, index + 1)
@@ -231,19 +292,34 @@ def ocr_page_entry(pdf: Path, index: int, s: OcrSettings | None = None) -> dict:
             len(result["raw"]),
         )
     else:
-        engine = ocr_lighton if isinstance(s, LightOnSettings) else ocr_engine
-        tag = f"OCR [{ocr_lighton.BACKEND}]" if engine is ocr_lighton else "OCR"
+        engine = {LightOnSettings: ocr_lighton, ApiSettings: ocr_api}.get(type(s), ocr_engine)
+        tag = "OCR" if engine is ocr_engine else f"OCR [{backend_of(s)}]"
         log.info("%s %s page %d ...", tag, pdf.name, index + 1)
         try:
             result = engine.run(image, s)
+        except ocr_api.OcrApiError as e:
+            ocr_api.record_result(ok=False)
+            if fallback == NO_FALLBACK:
+                raise RuntimeError(f"OCR {pdf.name} page {index + 1}: {e}") from e
+            log.warning(
+                "OCR [%s] %s page %d failed (%s); reading it with %s",
+                ocr_api.BACKEND,
+                pdf.name,
+                index + 1,
+                e,
+                fallback,
+            )
+            return _entry(pdf, index, _settings_of(fallback))
         except Exception as e:
             raise RuntimeError(f"OCR {pdf.name} page {index + 1}: {e}") from e
+        if engine is ocr_api:
+            ocr_api.record_result(ok=True)
         if result["finish"] != "stop":
             log.warning(
                 "OCR %s page %d: output cut at %d tokens", pdf.name, index + 1, s.max_tokens
             )
         log.info(
-            "%s %s page %d: %.1fs, %d tokens",
+            "%s %s page %d: %.1fs, %s tokens",
             tag,
             pdf.name,
             index + 1,
@@ -254,7 +330,7 @@ def ocr_page_entry(pdf: Path, index: int, s: OcrSettings | None = None) -> dict:
     entry = {"pdf_sha256": pdf_sha256(pdf), "page": index, "image_size": list(image.size), **result}
     _write_settings_file(s)
     _write_atomic(path, entry)
-    return entry
+    return entry, s
 
 
 def ocr_page_raw(pdf: Path, index: int) -> str:
