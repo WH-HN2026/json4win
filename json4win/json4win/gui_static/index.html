@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dokumenty · json4win</title>
+  <link rel="stylesheet" href="/static/ui.css">
+</head>
+<body class="view-docs">
+  <header class="top">
+    <a class="brand" href="/" title="json4win: dokumenty odwołania KIO w JSON">
+      <span class="brand-mark"></span><span class="brand-name">json4win</span>
+      <span class="brand-sep"></span><span class="brand-sub">Odwołania2json</span>
+    </a>
+    <nav class="top-nav" aria-label="Widoki">
+      <a href="/" class="active">Dokumenty</a>
+      <a href="/wizard">Nowa klasa</a>
+    </nav>
+    <div class="top-right">
+      <a class="job hidden" id="job-pill" href="/">
+        <span class="mk" id="job-mk"></span>
+        <span class="job-label" id="job-label"></span>
+        <span class="mono" id="job-count"></span>
+        <span class="job-time hidden" id="job-time"></span>
+      </a>
+    </div>
+    <div class="jobline"><div class="jobline-fill" id="jobline-fill"></div></div>
+  </header>
+
+  <div class="layout">
+    <aside class="rail" id="rail">
+      <nav class="nav" aria-label="Widoki">
+        <a href="/" class="active">Dokumenty</a>
+        <a href="/wizard">Nowa klasa</a>
+      </nav>
+
+      <div class="rail-head">
+        <h2 class="rail-title">Sprawy</h2>
+        <span class="group-count" id="cases-count"></span>
+        <button type="button" class="btn btn-quiet" id="btn-refresh" title="Odśwież listę spraw">Odśwież</button>
+      </div>
+      <div class="rail-cta">
+        <button type="button" class="btn btn-primary" id="btn-process-all" title="Przetwórz wszystkie pliki PDF z katalogu wejściowego">Przetwórz wszystko</button>
+      </div>
+
+      <div class="note note-muted rail-note hidden" id="upload-feedback" role="status"></div>
+
+      <div id="cases-list" role="listbox" aria-label="Sprawy i dokumenty">
+        <div class="empty">Ładowanie…</div>
+      </div>
+
+      <div class="group" id="new-case">
+        <div class="group-head">
+          <span class="group-name">Nowa sprawa</span>
+        </div>
+        <div class="group-body stack">
+          <input type="text" class="input" id="new-case-input" autocomplete="off" aria-label="Nazwa nowej sprawy" title="Nazwa katalogu sprawy w katalogu wejściowym">
+          <div class="drop" id="dropzone" tabindex="0" role="button" aria-label="Dodaj pliki PDF do nowej sprawy">
+            <span><strong>Dodaj PDF</strong> lub upuść tutaj</span>
+          </div>
+        </div>
+      </div>
+
+      <input type="file" id="file-input" accept=".pdf,application/pdf" multiple hidden>
+
+      <div class="rail-foot" id="dirs-info"></div>
+    </aside>
+
+    <main class="work" id="work">
+      <!-- Nothing selected -->
+      <section class="work" id="viewer-empty">
+        <div class="page-head">
+          <div class="grow">
+            <div class="crumb">Dokumenty</div>
+            <h1 class="page-title" id="empty-title">Wybierz dokument</h1>
+            <div class="page-meta" id="empty-summary"></div>
+          </div>
+        </div>
+        <div class="work-pad">
+          <div class="drop drop-big" id="big-drop" tabindex="0" role="button" aria-label="Dodaj pliki PDF do nowej sprawy">
+            <strong>Dodaj pliki PDF</strong>
+            <span>lub upuść je tutaj</span>
+            <span class="tag" id="big-drop-case" title="Sprawa docelowa (nazwa w panelu Nowa sprawa)"></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Selected document -->
+      <section class="work hidden" id="viewer-content">
+        <div class="page-head">
+          <div class="grow">
+            <div class="crumb">
+              <button type="button" class="btn btn-quiet back" id="btn-back">Sprawy</button>
+              <span class="sep back">/</span>
+              <span id="doc-case"></span>
+            </div>
+            <h1 class="page-title" id="doc-name"></h1>
+            <div class="page-meta">
+              <span class="state" id="doc-state"></span>
+              <span class="tag tag-blue hidden" id="doc-badge"></span>
+            </div>
+          </div>
+          <div class="actions">
+            <button type="button" class="btn" id="btn-process-one" title="Przetwórz ten plik ponownie">Przetwórz</button>
+            <button type="button" class="btn hidden" id="btn-copy-json">Kopiuj</button>
+            <a class="btn btn-primary hidden" id="btn-download-json" href="#" download>Pobierz JSON</a>
+          </div>
+        </div>
+
+        <div class="doc-body" id="doc-body">
+          <div class="note note-err hidden" id="doc-error" role="alert">
+            <span class="mk mk-err"></span><span class="note-text" id="doc-error-text"></span>
+          </div>
+
+          <div class="split">
+            <div class="panel pdf-pane">
+              <div class="panel-head">
+                <h2 class="panel-title">PDF</h2>
+                <span class="grow"></span>
+                <a class="btn btn-quiet" id="pdf-open-link" href="#" target="_blank" rel="noopener">Otwórz</a>
+              </div>
+              <iframe class="pdf-frame" id="pdf-frame" title="Podgląd PDF"></iframe>
+            </div>
+            <div class="panel json-pane">
+              <div class="panel-head">
+                <div class="tabs" role="tablist">
+                  <button type="button" class="tab active" id="tab-json" role="tab">JSON</button>
+                  <button type="button" class="tab hidden" id="tab-trace" role="tab" title="Ślad ekstrakcji: skąd pochodzi każda wartość">Ślad</button>
+                </div>
+                <span class="grow"></span>
+                <span class="tag" id="json-meta"></span>
+              </div>
+              <div class="panel-body" id="json-body">
+                <div class="stack pad" id="json-notes">
+                  <div class="note note-muted hidden" id="empty-json-banner">
+                    <span class="mk mk-empty"></span><span class="note-text">nie rozpoznano (pusty JSON)</span>
+                  </div>
+                  <div class="note note-muted hidden" id="no-result-banner">
+                    <span class="mk mk-idle"></span><span class="note-text">Brak wyniku.</span>
+                  </div>
+                  <div class="note hidden" id="running-banner">
+                    <span class="mk mk-run"></span><span class="note-text" id="running-text">W toku</span>
+                    <span class="busy-time" id="running-time"></span>
+                  </div>
+                  <div class="note note-err hidden" id="parse-error-banner"></div>
+                </div>
+                <pre class="json-view hidden" id="json-view"></pre>
+                <pre class="code hidden" id="trace-view"></pre>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="/static/ui.js"></script>
+  <script src="/static/docs.js"></script>
+</body>
+</html>

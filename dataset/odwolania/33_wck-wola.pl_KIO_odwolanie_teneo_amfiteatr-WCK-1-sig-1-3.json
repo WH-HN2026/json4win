@@ -1,0 +1,38 @@
+{
+  "OdwolanieKIO": {
+    "data": "2023-04-07",
+    "czynnosc_dzien": "2023-04-05",
+    "czynnosc_powod_id": 1,
+    "czynnosc_opis": "Decyzja o odrzuceniu oferty",
+    "miejscowosc": "Warszawa"
+  },
+  "Odwolujacy": [
+    {
+      "krs": null,
+      "nazwa": "TENEO Piotr Gregorczyk",
+      "nip": "5241785672",
+      "regon": null,
+      "przez-pelnomocnika": 0,
+      "pelnomocnik": {
+        "imie_nazwisko": null,
+        "nazwa": null,
+        "mail": null
+      }
+    }
+  ],
+  "Zamawiajacy": [
+    {
+      "krs": null,
+      "nazwa": "Wolskie Centrum Kultury",
+      "nip": null,
+      "regon": null,
+      "prowadzacy_postepowanie": null
+    }
+  ],
+  "ZamowieniePubliczne": {
+    "numer_bzp": null,
+    "numer_postepowania": "WCK/1/ZP/2023",
+    "numer_ted": null,
+    "tytul": "Modernizacja amfiteatru w Parku Sowińskiego ulica Elekcyjna 17"
+  }
+}

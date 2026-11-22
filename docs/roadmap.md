@@ -1,35 +1,58 @@
 # Roadmap
 
-One line = one task = one worktree = one branch `t/<id>-<slug>` = one PR titled `<ID>: <name>`.
-`[x]` = merged into `master`. A task may start when everything in its **deps** is `[x]`.
-Workers flip only their own line to `[x]` (in the finishing commit) and add new tasks at the end
-of a track. The open PR list is the claim list, not this file.
+One line = one task = one worktree = one branch `t/<id>-<slug>` = one squashed commit on `dev` (local git mode,
+see AGENTS.md). `[x]` = merged into `dev`. A task may start when everything in its **deps** is `[x]`; tasks that
+depend only on contract stubs already on `dev` (`ocr.py`, `normalize.py`, `env.py`, the config format) run in
+parallel. Workers flip only their own line to `[x]` (in the finishing commit) and add new tasks at the end of a
+track. `orca orchestration worker-list` is the claim list, not this file.
 
 ## I: infrastructure and decisions
-- [x] **I1** Repo bootstrap: `json4win/` skeleton, AGENTS.md, Makefile, CI `check`, `scripts/wt-env.sh`, `scripts/eval_training.py`.
-- [ ] **I2** LLM provider and client: decide O1 and O3 (docs/architecture.md), add a minimal client with timeouts, retries and env config, update `.env.example`. deps: I1
+- [x] **I1** Repo bootstrap: `json4win/` skeleton, AGENTS.md (local mode), Makefile, `scripts/wt-env.sh`, `scripts/eval_training.py`, decisions D10–D13, config format, contract stubs `env.py`, `ocr.py`, `normalize.py`.
 
-## P: document text
-- [ ] **P1** Text-layer extraction from PDFs, first N pages (N configurable), with page numbers kept for traces. deps: I1
-- [ ] **P2** OCR fallback for scanned or empty-text pages, CPU only. Pick the library (O2). deps: P1
+## P: OCR
+- [x] **P1** Local OCR engine: Unlimited-OCR-2 on CPU behind `json4win.ocr` (page rendering, pinned revision, shared cache, `OCR_CACHE_ONLY`), `scripts/ocr_cache.py` + `make ocr-cache`, speed/RAM/quality gate in `docs/ocr.md`. deps: I1
+- [ ] **P2** Fill the training OCR cache (coordinator runs `make ocr-cache` once, one process). deps: P1
+- [x] **P4** OCR backend switch (`OCR_BACKEND=local|tesseract`) + Tesseract comparison on real scans. deps: P1
+- [x] **P5** LightOnOCR-2-1B backend (`OCR_BACKEND=lighton`, benchmark-only: needs transformers 5) + comparison on real scans. deps: P4
+- [x] **P7** Hybrid OCR: the first page(s) with LightOnOCR, the rest with Tesseract, page texts joined in order for classification and extraction (opt-in, default unchanged) + comparison on real scans. deps: P4, P5
+- [x] **P8** OCR through an EU/EEA API: `OCR_BACKEND=lighton_api` (OpenAI-compatible vision chat completions; IONOS AI Model Hub or EUrouter, model LightOnOCR-2-1B), usable alone or as the hybrid first-page backend, Tesseract fallback per page on API errors. deps: P7
 
-## C: classification
-- [ ] **C1** Config-driven classifier: odwolanie / pelnomocnictwo / przelew / none (→ `{}`), by content only. Defines the class file format in `json4win/config/` (O4). Must pass `dane/negatywne` and the extra PDFs in cases (e.g. `przyklad_37`). deps: P1
+## C: core engine
+- [x] **C1** Config-driven engine: config loader/validator, base + decision prompts, LLM client (Mistral API), decision step, read-until-complete loop, extraction with validation/retry, wiring in `pipeline.py`. deps: I1
+- [x] **R1** LLM robustness: retries on finish_reason=length/empty answers, seed. deps: C1
 
-## E: extraction (one class per task, all driven by the class config)
-- [ ] **E1** `przelew` extraction (`przelew_bankowy`). deps: C1
-- [ ] **E2** `pelnomocnictwo` extraction (`mocodawca[]`, `podpisujacy[]`, `pelnomocnicy[]`). deps: C1
-- [ ] **E3** `odwolanie` extraction (`OdwolanieKIO`, `Odwolujacy[]`, `Zamawiajacy[]`, `ZamowieniePubliczne`), incl. `czynnosc_powod_id` from the first charge only. deps: C1
-- [ ] **E4** Shared normalisers: dates → ISO, NIP/REGON/KRS digits, IBAN/account digits, BZP/TED formats, amounts → float. deps: I1
+## E: classes and fields (all driven by the class config)
+- [x] **E1** `przelew.yaml`: first version of the class config (`przelew_bankowy`). deps: I1
+- [x] **E2** `pelnomocnictwo.yaml`: first version (`mocodawca[]`, `podpisujacy[]`, `pelnomocnicy[]`). deps: I1
+- [x] **E3** `odwolanie.yaml`: first version (`OdwolanieKIO`, `Odwolujacy[]`, `Zamawiajacy[]`, `ZamowieniePubliczne`), incl. `czynnosc_*` from the FIRST CHALLENGED ACT (item 1 after "wnoszę odwołanie wobec"), which is what the ground truth follows, not the wording of the first charge. deps: I1
+- [x] **E4** Normalisers in `normalize.py`: text, digits, date → ISO, amount → float, int, regex_sub. deps: I1
+
+## T: tuning on real OCR (one class per task)
+- [ ] **T1** Tune `przelew` with `OCR_CACHE_ONLY=1 make eval`: read the misses, fix config/prompt. deps: C1, P2, E1, E4
+- [ ] **T2** Tune `pelnomocnictwo`. deps: C1, P2, E2, E4
+- [ ] **T3** Tune `odwolanie` (incl. how many pages after the marker). deps: C1, P2, E3, E4
+- [ ] **T4** Negatives and extra PDFs in cases: all give `{}` (decision prompt / class descriptions). deps: C1, P2
+- [x] **TM1** Tune the class configs and prompt templates for `zai-glm-5-3-flash` on the real-scan OCR cache (single OCR inputs A/B/C, `dane/skany`, tune 0001–0007 / held-out 0008–0010); own branch, kept apart from `dev` until the user picks. deps: P4, P5
+- [ ] **TM2** Tune the class configs and prompt templates for `mistral-small-2603` on the real-scan OCR cache (single OCR inputs A/B/C, `dane/skany`, tune 0001–0007 / held-out 0008–0010); own branch, kept apart from `dev` until the user picks. deps: P4, P5
+- [ ] **TM3** Tune the class configs and prompt templates for `ministral-14b-2512` on the real-scan OCR cache (single OCR inputs A/B/C, `dane/skany`, tune 0001–0007 / held-out 0008–0010); own branch, kept apart from `dev` until the user picks. deps: P4, P5
+- [ ] **TM4** Tune the class configs and prompt templates for `ministral-8b-2512` on the real-scan OCR cache (single OCR inputs A/B/C, `dane/skany`, tune 0001–0007 / held-out 0008–0010); own branch, kept apart from `dev` until the user picks. deps: P4, P5
+- [ ] **TM5** Tune the class configs and prompt templates for `ministral-3b-2512` on the real-scan OCR cache (single OCR inputs A/B/C, `dane/skany`, tune 0001–0007 / held-out 0008–0010); own branch, kept apart from `dev` until the user picks. deps: P4, P5
 
 ## V: quality
-- [ ] **V1** Baseline F1 report in `docs/quality.md` (per-class and per-field misses from `make eval V=1`), rerun after every E task. deps: E1, E2, E3
+- [ ] **V1** F1 report in `docs/quality.md` (per class and per field, from `make eval V=1`), rerun after every T task. deps: T1, T2, T3
+- [ ] **M1** Model comparison on the EU endpoint: GLM-5.3-Flash vs smaller GA open-weight models (e.g. ministral-8b/14b, mistral-small), F1 and size (O6). deps: C1, V2
+- [x] **V0** Eval on real scans: `make eval-skany` (`scripts/eval_skany.py` with JSON→YAML GT conversion, per-kind + total F1, `--self-test`). deps: I1
+- [x] **V2** Ideal-OCR eval mode (dev-only upper bound) + negatives check. deps: C1
 
 ## X: extensibility and transparency (stage 2 scoring)
-- [ ] **X1** Demo: add a new document class purely through `json4win/config/`, documented step by step in docs/. deps: C1, E1
-- [ ] **X2** Extraction trace (per field: page, source snippet, method) written **outside** `output/`. deps: P1
+- [x] **X1** Demo: add a new document class purely through `json4win/config/`, documented step by step in docs/. deps: C1
+- [x] **X2** Extraction trace (per field: page, source snippet, method, retries) written **outside** `output/`. deps: C1
 
 ## D: delivery
-- [ ] **D1** Jury path: clean clone → `pip install -r json4win/requirements.txt` → `start.bat` / `start.sh` works on Windows and Linux, CPU only; README for the jury. deps: I2
+- [ ] **D1** Jury path: clean clone → `pip install -r json4win/requirements.txt` → `start.bat` / `start.sh` on Windows and Linux, CPU only, model download, timing on jury-like limits; jury key (O3); switch `LLM_BASE_URL` (default + .env.example) to the EU endpoint `https://api.eu.mistral.ai/v1`. deps: P1, C1
 - [ ] **D2** Submission docs: project title, LLM used and its size, own quality results. deps: V1
-- [ ] **G1** Optional GUI: upload PDFs, show the JSON results. deps: D1
+- [ ] **D4** Final presentation (Slides artifact, gov.pl-like style): product, problem, solution + GUI, EU models and diagram, comparisons, results, deployment examples, config-tool flow; placeholders for anything not decided yet. deps: D2, G3
+- [x] **G1** Optional GUI: upload PDFs, show the JSON results (O5). deps: I1
+- [x] **D3** LLM API compliance check (`docs/compliance.md`). deps: I1
+- [x] **G2** GUI config wizard: example PDFs → proposed JSON shape (editor) → proposed class YAML (live editor, test, save). deps: G1, X1
+- [x] **G3** GUI redesign: rethink the whole GUI (results view + Nowa klasa wizard) as one coherent tool; same features and API, offline, sharp-edged blue style, no emoji, minimal text. deps: G2

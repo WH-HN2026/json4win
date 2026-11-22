@@ -1,0 +1,38 @@
+{
+  "OdwolanieKIO": {
+    "data": "2023-03-27",
+    "czynnosc_dzien": "2023-03-17",
+    "czynnosc_powod_id": 7,
+    "czynnosc_opis": "Zaniechanie odrzucenia oferty",
+    "miejscowosc": "Wrocław"
+  },
+  "Odwolujacy": [
+    {
+      "krs": "0000005901",
+      "nazwa": "Impel Facility Services Sp. z o. o.",
+      "nip": "9542250979",
+      "regon": "276153155",
+      "przez-pelnomocnika": 1,
+      "pelnomocnik": {
+        "imie_nazwisko": "Piotr Dzikowski",
+        "nazwa": "Impel Facility Services Sp. z o. o.",
+        "mail": "p.dzikowski@impel.pl"
+      }
+    }
+  ],
+  "Zamawiajacy": [
+    {
+      "krs": null,
+      "nazwa": "Samodzielny Publiczny Miejski Zakład Opieki Zdrowotnej w Słupsku",
+      "nip": "8392559082",
+      "regon": "770979105",
+      "prowadzacy_postepowanie": null
+    }
+  ],
+  "ZamowieniePubliczne": {
+    "numer_bzp": null,
+    "numer_postepowania": "ZP-M-261-3/23",
+    "numer_ted": "035233-2023",
+    "tytul": "Usługi w zakresie kompleksowych zabiegów sanitarno – higienicznych i czynności transportowych"
+  }
+}

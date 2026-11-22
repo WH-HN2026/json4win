@@ -1,0 +1,38 @@
+{
+  "OdwolanieKIO": {
+    "data": "2026-08-13",
+    "czynnosc_dzien": "2026-08-03",
+    "czynnosc_powod_id": 11,
+    "czynnosc_opis": "Opis przedmiotu zamówienia (OPZ)",
+    "miejscowosc": "Warszawa"
+  },
+  "Odwolujacy": [
+    {
+      "krs": "0000571661",
+      "nazwa": "Optima Care Sp. z o.o.",
+      "nip": "8971812331",
+      "regon": null,
+      "przez-pelnomocnika": 1,
+      "pelnomocnik": {
+        "imie_nazwisko": "Artur Walkowicz",
+        "nazwa": null,
+        "mail": "a.walkowicz@impel.pl"
+      }
+    }
+  ],
+  "Zamawiajacy": [
+    {
+      "krs": null,
+      "nazwa": "Szpital Miejski Specjalistyczny im. Gabriela Narutowicza w Krakowie",
+      "nip": null,
+      "regon": null,
+      "prowadzacy_postepowanie": null
+    }
+  ],
+  "ZamowieniePubliczne": {
+    "numer_bzp": null,
+    "numer_postepowania": "ZP/32/2026",
+    "numer_ted": "534357-2026",
+    "tytul": "Świadczenie usługi kompleksowego utrzymania czystości w Szpitalu Miejskim Specjalistycznym im. Gabriela Narutowicza w Krakowie"
+  }
+}

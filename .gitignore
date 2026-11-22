@@ -1,4 +1,5 @@
 .venv/
+.venv-lighton/
 __pycache__/
 .pytest_cache/
 .ruff_cache/
@@ -8,3 +9,5 @@ json4win/input/*
 !json4win/input/.gitkeep
 json4win/output/*
 !json4win/output/.gitkeep
+json4win/traces/
+/minstal_token

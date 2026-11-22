@@ -1,0 +1,156 @@
+id: pelnomocnictwo
+nazwa: Pełnomocnictwo
+
+opis: >-
+  Dokument pełnomocnictwa (w tym pełnomocnictwa procesowego lub szczególnego), w którym
+  mocodawca — osoba prawna, jednostka organizacyjna, osoba fizyczna (także przedsiębiorca
+  jednoosobowy) albo konsorcjum wykonawców — upoważnia wskazaną osobę lub osoby fizyczne
+  (pełnomocników, zwykle radcę prawnego, adwokata lub pracownika) do reprezentowania go,
+  w szczególności w postępowaniu o udzielenie zamówienia publicznego lub przed Krajową Izbą
+  Odwoławczą (KIO).
+
+cechy:
+  - "nagłówek 'PEŁNOMOCNICTWO', 'PEŁNOMOCNICTWO PROCESOWE', 'PEŁNOMOCNICTWO SZCZEGÓLNE' lub 'UPOWAŻNIENIE'"
+  - "dane mocodawcy (nazwa firmy lub imię i nazwisko, adres, NIP, często KRS i REGON; przy konsorcjum lista kilku wykonawców)"
+  - "wskazanie pełnomocnika lub pełnomocników (imię i nazwisko, często 'r. pr.' / 'radca prawny' / 'adw.' / 'adwokat', numer wpisu na listę, czasem PESEL)"
+  - "zwroty typu 'udziela pełnomocnictwa', 'niniejszym upoważniam', 'ustanawiam pełnomocnikiem', 'do reprezentowania Mocodawcy/Wykonawcy w postępowaniu'"
+  - "wyliczenie zakresu umocowania (wniesienie odwołania do KIO, zastępowanie na posiedzeniach i rozprawach, składanie pism, udzielanie dalszych pełnomocnictw)"
+  - "krótki dokument (zwykle 1–2 strony) zakończony podpisami osób reprezentujących mocodawcę, podpisem elektronicznym ('Dokument podpisany przez ...') lub sekcją 'Pełnomocnictwo przyjmuję'"
+
+nie_mylic_z:
+  - "odwołanie do Krajowej Izby Odwoławczej (obszerne pismo procesowe z zarzutami, żądaniami i uzasadnieniem, które jedynie wymienia pełnomocnika lub załącza pełnomocnictwo)"
+  - "potwierdzenie przelewu bankowego, w tym potwierdzenie uiszczenia opłaty skarbowej od pełnomocnictwa (np. 17 zł / 34 zł z tytułem 'opłata skarbowa od pełnomocnictwa')"
+  - "ogłoszenie o zamówieniu lub publikacja z BZP albo TED (Dziennik Urzędowy UE)"
+  - "postanowienie lub wyrok KIO, decyzja administracyjna, pismo okólne/urzędowe, broszura, prezentacja lub materiały szkoleniowe"
+  - "odpis z KRS, wydruk z CEIDG, umowa konsorcjum lub uchwała organu spółki niebędąca pełnomocnictwem"
+
+czytanie:
+  max_stron: 2
+  kompletny_gdy: >-
+    Tekst zawiera już pełną treść pełnomocnictwa: dane identyfikujące każdego mocodawcę,
+    wskazanie wszystkich pełnomocników oraz podpisy osób reprezentujących każdego z mocodawców
+    (sekcję podpisów za każdego mocodawcę albo blok podpisu elektronicznego).
+
+szablon:
+  mocodawca:
+    - data:
+        imie_nazwisko: null
+        krs: null
+        nazwa: null
+        nip: null
+        typ: null
+      podpisujacy:
+        - imie_nazwisko: null
+  pelnomocnicy:
+    - imie_nazwisko: null
+      pesel: null
+
+pola:
+  mocodawca[].data.imie_nazwisko:
+    opis: >-
+      Imię i nazwisko mocodawcy w mianowniku (bez tytułów i zwrotów grzecznościowych),
+      wypełniane WYŁĄCZNIE gdy mocodawcą jest osoba fizyczna (typ = "osoba_fizyczna",
+      w tym przedsiębiorca prowadzący jednoosobową działalność gospodarczą). Dla osoby
+      prawnej (spółki, fundacji, stowarzyszenia itp.) ZAWSZE null — nie wpisuj tu osób
+      podpisujących w imieniu spółki (one trafiają do podpisujacy[]).
+    typ: str
+    normalizacja: text
+    przyklady:
+      - "Jan Kowalski"
+      - "Zofia Kwiatkowska-Bielska"
+
+  mocodawca[].data.krs:
+    opis: >-
+      10-cyfrowy numer KRS mocodawcy będącego osobą prawną (lub spółką osobową wpisaną do
+      KRS), z zachowaniem wiodących zer. Zwykle występuje
+      w opisie mocodawcy na początku dokumentu obok NIP i REGON. Zawsze null dla osoby
+      fizycznej (CEIDG) oraz gdy numer KRS nie został podany w dokumencie. Nie myl z NIP
+      ani REGON (9 cyfr).
+    typ: str
+    normalizacja: digits
+    format: '^\d{10}$'
+
+  mocodawca[].data.nazwa:
+    opis: >-
+      Pełna nazwa (firma) mocodawcy w mianowniku wraz z formą prawną (np. sp. z o.o.,
+      S.A., sp. k., sp. j., Spółka z ograniczoną odpowiedzialnością), bez adresu, siedziby,
+      numerów rejestrowych i dopisków typu "(dalej: Mocodawca)". Dla osoby fizycznej
+      prowadzącej działalność gospodarczą wpisz nazwę firmy podaną po zwrocie np.
+      "pod firmą ..."; gdy osoba fizyczna nie podaje nazwy firmy, wpisz null. Wybieraj
+      pełną nazwę z treści głównej dokumentu (nie skrót z nagłówka/pieczęci i nigdy nazwę
+      kancelarii prawnej ani zamawiającego).
+    typ: str
+    normalizacja: text
+    przyklady:
+      - "Przykładowa Budowa Sp. z o.o."
+      - "KOWAL-TECH Jan Kowalski"
+
+  mocodawca[].data.nip:
+    opis: >-
+      10-cyfrowy numer NIP mocodawcy. Zwykle podany w danych identyfikacyjnych mocodawcy
+      na początku dokumentu lub na pieczęci firmowej mocodawcy. Null tylko gdy NIP mocodawcy
+      nie występuje w dokumencie. Nie myl z KRS, REGON ani NIP-em innego podmiotu.
+    typ: str
+    normalizacja: digits
+    format: '^\d{10}$'
+    poprawki_ocr: "Usuń prefiks PL. Nie odrzucaj numeru z powodu sumy kontrolnej."
+
+  mocodawca[].data.typ:
+    opis: >-
+      Kategoria prawna mocodawcy ustalana na podstawie jego formy prawnej i danych
+      rejestrowych (KRS / spółka / instytucja → "osoba_prawna"; człowiek / CEIDG /
+      jednoosobowa działalność gospodarcza → "osoba_fizyczna").
+    typ: str
+    normalizacja: text
+    wartosci:
+      osoba_prawna: >-
+        spółka prawa handlowego (sp. z o.o., S.A., sp. k., sp. j., sp. p., sp. z o.o. sp. k.,
+        P.S.A.), fundacja, stowarzyszenie, spółdzielnia, jednostka samorządu lub inny podmiot
+        wpisany do KRS
+      osoba_fizyczna: >-
+        osoba fizyczna udzielająca pełnomocnictwa we własnym imieniu, w tym przedsiębiorca
+        prowadzący jednoosobową działalność gospodarczą (wpisany do CEIDG)
+
+  mocodawca[].podpisujacy[].imie_nazwisko:
+    opis: >-
+      Imię i nazwisko w mianowniku osoby podpisującej pełnomocnictwo w imieniu danego
+      mocodawcy (np. Prezes Zarządu, Członek Zarządu, Prokurent, Wspólnik, Dyrektor albo
+      sama osoba fizyczna udzielająca pełnomocnictwa). Bez funkcji, stanowiska i tytułów.
+      Szukaj w bloku podpisów ("Mocodawca:", "Za Mocodawcę:", "W imieniu ...:"), w bloku
+      podpisu elektronicznego ("Dokument podpisany przez ...") oraz w klauzuli reprezentacji
+      w treści ("reprezentowana przez: ..."). Nie wpisuj tu pełnomocników podpisujących
+      sekcję "Pełnomocnictwo przyjmuję:".
+    typ: str
+    normalizacja: text
+    przyklady:
+      - "Stanisław Borowski"
+      - "Danuta Chojnacka"
+
+  pelnomocnicy[].imie_nazwisko:
+    opis: >-
+      Imię i nazwisko w mianowniku osoby fizycznej otrzymującej pełnomocnictwo (np. radcy
+      prawnego, adwokata, aplikanta lub pracownika mocodawcy), bez tytułów, numeru wpisu na
+      listę i PESEL. Jeśli dokument wskazuje kilku pełnomocników, każdy stanowi
+      osobny element listy pelnomocnicy[]. Nie wpisuj nazwy kancelarii prawnej.
+    typ: str
+    normalizacja: text
+    przyklady:
+      - "Adam Krawczyk"
+      - "Beata Szymańska"
+
+  pelnomocnicy[].pesel:
+    opis: >-
+      11-cyfrowy numer PESEL danego pełnomocnika (z zachowaniem
+      wiodących zer). Wypełniaj WYŁĄCZNIE wtedy, gdy PESEL jest wprost podany w dokumencie
+      przy tym pełnomocniku; w przeciwnym razie ZAWSZE null. Nie zgaduj PESEL-u i nie myl
+      go z numerem wpisu na listę radców prawnych/adwokatów ani z NIP/KRS/REGON mocodawcy.
+    typ: str
+    normalizacja: digits
+    format: '^\d{11}$'
+
+instrukcje: |
+  1. Wielu mocodawców (konsorcjum): jeśli pełnomocnictwa udziela wspólnie kilku wykonawców (np. "Wykonawcy wspólnie ubiegający się o udzielenie zamówienia (Konsorcjum): 1) ...; 2) ..."), utwórz osobny obiekt w liście mocodawca[] dla każdego podmiotu. Przypisz każdą osobę podpisującą (podpisujacy[]) wyłącznie do tego mocodawcy, którego reprezentuje — korzystaj zarówno z opisów przy podpisach ("W imieniu ...:", pieczęć firmowa), jak i z klauzuli "reprezentowana przez: ..." w treści dokumentu.
+  2. Rozróżnienie osoba_prawna vs osoba_fizyczna: spółki kapitałowe i osobowe wpisane do KRS (sp. z o.o., S.A., sp. k., sp. j., sp. p., sp. z o.o. sp. k.) mają typ "osoba_prawna" oraz imie_nazwisko = null. Przedsiębiorca jednoosobowy (CEIDG, "prowadzący działalność gospodarczą pod firmą ...") ma typ "osoba_fizyczna", krs = null, imie_nazwisko = swoje imię i nazwisko, nazwa = nazwę firmy (jeśli podano), a ponadto występuje w podpisujacy[].
+  3. Podpisujący a pełnomocnicy: do podpisujacy[] trafiają wyłącznie osoby działające po stronie mocodawcy; osoby podpisujące klauzulę "Pełnomocnictwo przyjmuję:" są pełnomocnikami i należą wyłącznie do pelnomocnicy[]. Nie duplikuj tej samej osoby, jeśli występuje zarówno w treści ("reprezentowana przez ..."), jak i w bloku podpisów. Kolejność osób w podpisujacy[] bierz z klauzuli "reprezentowana przez: ..." w treści (nie z bloku podpisów, który bywa w innej kolejności); bez takiej klauzuli — z bloku podpisów.
+  4. Nagłówek kancelarii i Zamawiający: dane kancelarii prawnej w papierze firmowym lub stopce (np. "Kancelaria Radcy Prawnego ...", "Kancelaria Adwokacka ...") nie są mocodawcą ani pełnomocnikiem. Podmiot wskazany jako "Zamawiający" (prowadzący postępowanie o zamówienie publiczne) nie jest mocodawcą. Jeśli nazwa mocodawcy występuje w treści głównej w pełnym brzmieniu (np. "Spółka z ograniczoną odpowiedzialnością"), a w nagłówku lub na pieczęci w formie skróconej ("Sp. z o.o."), wybierz pełne brzmienie z treści głównej.
+  5. Numer REGON nie należy do żadnego pola schematu — ignoruj go.

@@ -1,0 +1,38 @@
+{
+  "OdwolanieKIO": {
+    "data": "2023-08-21",
+    "czynnosc_dzien": "2023-08-16",
+    "czynnosc_powod_id": 9,
+    "czynnosc_opis": "Decyzja o unieważnieniu postępowania",
+    "miejscowosc": "Warszawa"
+  },
+  "Odwolujacy": [
+    {
+      "krs": "0000494178",
+      "nazwa": "Solispharm sp. z o.o.",
+      "nip": null,
+      "regon": null,
+      "przez-pelnomocnika": 0,
+      "pelnomocnik": {
+        "imie_nazwisko": null,
+        "nazwa": null,
+        "mail": null
+      }
+    }
+  ],
+  "Zamawiajacy": [
+    {
+      "krs": null,
+      "nazwa": "Dom Pomocy Społecznej w Górze Kalwarii",
+      "nip": null,
+      "regon": null,
+      "prowadzacy_postepowanie": null
+    }
+  ],
+  "ZamowieniePubliczne": {
+    "numer_bzp": "2023/BZP00257021/01",
+    "numer_postepowania": "AG.261.9.2023",
+    "numer_ted": null,
+    "tytul": "Dostawy leków do Domu Pomocy Społecznej w Górze Kalwarii"
+  }
+}
