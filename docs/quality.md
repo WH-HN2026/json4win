@@ -490,3 +490,131 @@ the pipeline only adds PyYAML, pypdfium2, pillow and stdlib `urllib`). Deliverin
 within LLM noise) and removes C's cost on later pages (mean 61.5 s/doc instead of 86.2 s), but it still costs one
 LightOnOCR page per document and does not fit the time budget on CPU, so Tesseract alone (or Unlimited-OCR-2) stays the
 delivery choice.
+
+## Config tuning for zai-glm-5-3-flash (TM1)
+
+Task TM1 (branch `t/tm1-glm`, an alternative to the other TM branches, not merged into `dev` until the user picks a
+model). Only `json4win/config/` changed (class YAMLs + `prompt_ekstrakcja.md`), no code. Setup: the 30 scans in
+`dane/skany/`, OCR only from the cache (`OCR_CACHE_ONLY=1`), single OCR inputs A (`OCR_BACKEND=local`,
+Unlimited-OCR-2), B (`tesseract`) and C (`lighton`, LightOnOCR-2-1B), `LLM_MODEL_DECISION=LLM_MODEL_EXTRACT=zai-glm-5-3-flash`,
+`LLM_REASONING_EFFORT=low`. Tuned on ids 0001–0007 (21 docs); 0008–0010 (9 docs) are held out and were run only for
+the baseline and the final numbers. Every combination was run twice. Tokens and LLM time come from the extraction
+traces (all attempts, decision + extraction calls).
+
+### Before → after (TP/FP/FN, F1; run 1 · run 2)
+
+| OCR | set | before (dev d34d113) | after (TM1) |
+|---|---|---|---|
+| A | tune (21) | 191/0/0 1.000 · 191/0/0 1.000 | 191/0/0 1.000 · 191/0/0 1.000 |
+| A | held-out (9) | 74/1/1 0.987 · 75/1/0 0.993 | 75/1/0 0.993 · 75/1/0 0.993 |
+| A | all 30 | 265/1/1 0.996 · 266/1/0 0.998 | **266/1/0 0.998 · 266/1/0 0.998** |
+| B | tune (21) | 190/0/1 0.997 · 191/0/0 1.000 | 191/0/0 1.000 · 191/0/0 1.000 |
+| B | held-out (9) | 75/1/0 0.993 · 75/1/0 0.993 | 75/1/0 0.993 · 75/1/0 0.993 |
+| B | all 30 | 265/1/1 0.996 · 266/1/0 0.998 | **266/1/0 0.998 · 266/1/0 0.998** |
+| C | tune (21) | 191/0/0 1.000 · 191/0/0 1.000 | 191/0/0 1.000 · 191/0/0 1.000 |
+| C | held-out (9) | 75/1/0 0.993 · 75/1/0 0.993 | 75/1/0 0.993 · 75/1/0 0.993 |
+| C | all 30 | 266/1/0 0.998 · 266/1/0 0.998 | **266/1/0 0.998 · 266/1/0 0.998** |
+
+After: in all 6 final runs the only miss is the disputed `pelnomocnictwa_0010` `mocodawca[0].data.nazwa` (sole trader,
+GT null), left alone on purpose. Before, the extra misses were one-off model slips (A: `odwolania_0010` NIP with a
+dropped digit, then nulled by the validation retry; B: `odwolania_0001` `tytul` null).
+
+F1 cannot show more here: the evaluator accepts strings at similarity ≥ 0.55, so most remaining wrong values still
+count as TP. So we also count **exact matches** (whitespace/case-normalised equality with the scan ground truth,
+all leaves incl. `podpisujacy`, which `eval_skany.py` does not score):
+
+| OCR | tune exact (run 1 · 2) before → after | held-out exact before → after |
+|---|---|---|
+| A | 259 · 258 → **264 · 264** /275 | 107 · 109 → **111 · 111** /113 |
+| B | 262 · 261 → **268 · 267** /275 | 107 · 106 → **110 · 110** /113 |
+| C | 261 · 261 → **267 · 265** /275 | 109 · 109 → **111 · 111** /113 |
+
+Cost per 30 docs (sum of both calls per document, run 1 · run 2):
+
+| OCR | prompt tokens before → after | completion (reasoning) tokens before → after | LLM s total before → after | pages OCR'd |
+|---|---|---|---|---|
+| A | 245.7k · 239.0k → **225.2k · 225.2k** (−6 to −8%) | 9.2k (1.0k) · 8.7k (0.8k) → 8.9k (0.9k) · 8.5k (0.5k) | 77 · 81 → 71 · 74 | 37 → **35** |
+| B | 235.7k · 235.7k → **224.6k · 224.6k** (−5%) | 9.6k (1.8k) · 9.6k (1.7k) → 9.0k (1.0k) · 9.6k (1.6k) | 84 · 83 → 75 · 82 | 35 → 35 |
+| C | 239.1k · 239.1k → **225.3k · 225.3k** (−6%) | 8.9k (1.1k) · 8.5k (0.6k) → 8.5k (0.5k) · 8.6k (0.6k) | 73 · 66 → 74 · 73 | 37 → **35** |
+
+Median LLM time per document stays at 2.2–2.8 s (API latency dominates; differences are within run-to-run noise).
+Calls per document: 2 (decision + extraction) everywhere; validation retries: 1 in 12 baseline runs, 0 in the final
+runs. About 2/3 of the remaining prompt is the extraction prompt, 1/3 the decision prompt (~3k tokens per document,
+left unchanged, see below).
+
+### Changes and what each fixes
+
+1. **OCR-tolerant odwolanie marker** (`odwolanie.yaml` `czytanie.znacznik`): added the alternative
+   `\bz[aąeę]rzu[cćł]a\w*` next to the existing ones. C reads `zarzucam` as `ząrzucam` on `odwolania_0001` and A as
+   `zarzułam` on `odwolania_0002`; the marker missed and the pipeline read 2 extra pages each. Checked offline on the
+   cached text of the 10 appeals × A/B/C: with the new marker A, B and C stop on the same page for every appeal (the page where
+   B, which reads `zarzucam` correctly, stops), never earlier; the `\b` keeps `przerzucać` from matching. On clean text
+   it matches nothing new. Fixes: 2 pages and ~2×1.5k prompt tokens on A and C.
+2. **Numbers copied as printed** (`prompt_ekstrakcja.md`): accounts, NIP, KRS, REGON, PESEL are copied character by
+   character *with* their spaces/hyphens (the `digits` normaliser strips them before the format check), no regrouping,
+   no padding to the required length; the generic O→0, l/I→1, S→5, B→8 rule now lives here once. For `przelew`
+   accounts the `format` is `^(?:PL)?(?:\d ?){26}$` (still exactly 26 digits, since it is checked on the normalised
+   value) and the hint says "copy with spaces". Fixes: GLM dropped a `0` inside `… 1010 0081 …` and appended one at
+   the end to keep 26 digits (1–2 accounts per run, A/B/C, in 5 of 6 baseline tune runs; it passes F1 because of the
+   similarity threshold). With "copy as printed" in the prompt only, the error remained whenever the model still
+   stripped the spaces itself (nudged by the `\d{26}` format it is shown); with the spaced format it is gone (0 in the 18
+   runs since: 6 `przelew`-only tune runs + the 12 final runs; the baseline also had 1 on held-out in 2 of 6 runs). An intermediate "copy group by group" hint made the model regroup an unspaced number and slip (C,
+   `potwierdzenia_0004`), so the final wording only says "as printed, with or without spaces".
+3. **Trailing reference number stays in the transfer title** (`przelew.yaml` `tytul` + one sentence in
+   `instrukcje`): the "Opis" field often ends with the transaction reference (in all 60 training JSONs the expected
+   `tytul` ends with it), and GLM moved it to `numer_transakcji` only. Dropped references: 0–2 per run before,
+   0–1 after (final runs: `potwierdzenia_0001` once on A, `potwierdzenia_0006`, where the reference is on the
+   next line, once on B).
+4. **Signatory order** (`pelnomocnictwo.yaml` `instrukcje` item 3): `podpisujacy[]` in the order of the
+   representation clause ("reprezentowana przez: ..."), not of the signature block. Checked against the training
+   JSONs (dev-time, text layer as yardstick): 16 of 17 multi-signatory powers of attorney follow the clause order.
+   Swapped docs on the tune set: 2 in every baseline run → 0 in 11 of 12 full tune runs after the rule moved to
+   `instrukcje` (one doc in one C run); held-out `pelnomocnictwa_0009` was swapped in 6 of 6 baseline runs and in 0 of 6 final
+   runs. The rule was first put in the field `opis`, where it fixed only one of the two tune docs.
+5. **Duplicated text removed** (all three classes): the per-field `poprawki_ocr` lines repeating the digit rule
+   (19 fields, removed or shortened to their field-specific part), `przelew` `instrukcje` that restated every field description, `pelnomocnictwo` items 5–6 that
+   restated the base rules (nominative, null), the per-field "przy konsorcjum: Lidera" (kept once in `instrukcje`),
+   the ZAMAWIAJĄCY paragraph duplicating `prowadzacy_postepowanie`, "bez spacji / ciąg samych cyfr" phrases that
+   now contradict rule 2. Kept verbatim: the sole-trader wording (`mocodawca.nazwa`, item 2), every distinct
+   label list and layout rule (tuned on the 60 training layouts, which `dane/skany` cannot re-check). Fixes: ~4–5%
+   of the prompt tokens with no new error (exact matches went up, not down, in the runs after each cut).
+
+### Tried, did not help (reverted)
+
+- **Diacritics rule** ("OCR drops or adds Polish diacritics; fix them in ordinary words", in the base prompt and as
+  `poprawki_ocr` on both `tytul` fields): no measurable effect with GLM at `low` (`oplata`, `Usluga`,
+  `kanałizacyjnej`, `PEŁNOMOCNIĆTWA` stayed in C titles in 4 of 4 runs), and one run "corrected" the grammar of a
+  title (`RADCA PRAWNY` → `RADCY PRAWNEGO`). These are diacritics-only differences that pass F1 anyway; reverted.
+- **`LLM_REASONING_EFFORT=high`** (both roles, configs of commit c0a07fb, i.e. before change 2's account format;
+  A and C tune, 1 run each): same F1 (1.000) and the same
+  exact matches (A 264, C 267), but 3.5–4k reasoning tokens instead of ~0.5k and +20% LLM time (62–66 s vs 49–55 s
+  per 21 docs); it does not fix the diacritics either, and the A run still had the
+  account-digit slip that change 2 fixes.
+- Per-role effort and `LLM_VALIDATION_RETRIES`: at `low` the decision call already uses 0 reasoning tokens, and a
+  validation retry happened once in 12 baseline runs, so there is nothing to gain; not changed.
+
+### Recommended env (this branch)
+
+```
+LLM_MODEL_DECISION=zai-glm-5-3-flash
+LLM_MODEL_EXTRACT=zai-glm-5-3-flash
+LLM_REASONING_EFFORT=low     # code default; no per-role override, default retries
+```
+
+### Known gaps
+
+- The decision prompt (class `opis`/`cechy`/`nie_mylic_z`, ~3k tokens per document, a third of the prompt) was left
+  unchanged: the negatives (`dane/negatywne/`) are not in the OCR cache (1 of 12 first pages for A, none for B/C),
+  so a shorter decision text could not be checked for `{}` without running OCR. Checked instead: the decision prompt
+  and the `kompletny_gdy` questions rendered from these configs are byte-identical to `dev`, so classification and
+  the reading loop are unchanged (only the odwolanie marker, change 1, can stop reading earlier).
+- Rule 2 of the base prompt (numbers with spaces/hyphens, stripped by the program) holds for fields with
+  `normalizacja: digits`, as in all our classes and `config_examples/ogloszenie_bzp.yaml`. A new class whose NIP-like
+  field uses another normaliser with a strict `^\d{N}$` format would get one validation retry (the model is told the
+  format) before the value is nulled; `prompt_kreator_yaml.md` suggests `^\d{10}$` for NIP without naming the
+  normaliser.
+- The account format trick (change 2) is applied to the two `przelew` account fields only; NIP/KRS/REGON/PESEL keep
+  `^\d{N}$` (no copying error seen on the tune set).
+- Remaining exact mismatches are mostly OCR text errors the model copies faithfully (`Brzozewcu`, `Malnowski`,
+  `zamieszkłych`, diacritics on C) and the `PL` prefix of accounts, which the `digits` normaliser removes (GT keeps it
+  on 2 scans; F1 unaffected).

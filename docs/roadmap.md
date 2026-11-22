@@ -32,7 +32,7 @@ track. `orca orchestration worker-list` is the claim list, not this file.
 - [ ] **T2** Tune `pelnomocnictwo`. deps: C1, P2, E2, E4
 - [ ] **T3** Tune `odwolanie` (incl. how many pages after the marker). deps: C1, P2, E3, E4
 - [ ] **T4** Negatives and extra PDFs in cases: all give `{}` (decision prompt / class descriptions). deps: C1, P2
-- [ ] **TM1** Tune the class configs and prompt templates for `zai-glm-5-3-flash` on the real-scan OCR cache (single OCR inputs A/B/C, `dane/skany`, tune 0001–0007 / held-out 0008–0010); own branch, kept apart from `dev` until the user picks. deps: P4, P5
+- [x] **TM1** Tune the class configs and prompt templates for `zai-glm-5-3-flash` on the real-scan OCR cache (single OCR inputs A/B/C, `dane/skany`, tune 0001–0007 / held-out 0008–0010); own branch, kept apart from `dev` until the user picks. deps: P4, P5
 - [ ] **TM2** Tune the class configs and prompt templates for `mistral-small-2603` on the real-scan OCR cache (single OCR inputs A/B/C, `dane/skany`, tune 0001–0007 / held-out 0008–0010); own branch, kept apart from `dev` until the user picks. deps: P4, P5
 - [ ] **TM3** Tune the class configs and prompt templates for `ministral-14b-2512` on the real-scan OCR cache (single OCR inputs A/B/C, `dane/skany`, tune 0001–0007 / held-out 0008–0010); own branch, kept apart from `dev` until the user picks. deps: P4, P5
 - [ ] **TM4** Tune the class configs and prompt templates for `ministral-8b-2512` on the real-scan OCR cache (single OCR inputs A/B/C, `dane/skany`, tune 0001–0007 / held-out 0008–0010); own branch, kept apart from `dev` until the user picks. deps: P4, P5

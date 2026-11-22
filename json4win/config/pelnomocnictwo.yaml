@@ -62,16 +62,13 @@ pola:
   mocodawca[].data.krs:
     opis: >-
       10-cyfrowy numer KRS mocodawcy będącego osobą prawną (lub spółką osobową wpisaną do
-      KRS), zapisany jako ciąg samych cyfr z zachowaniem wiodących zer. Zwykle występuje
+      KRS), z zachowaniem wiodących zer. Zwykle występuje
       w opisie mocodawcy na początku dokumentu obok NIP i REGON. Zawsze null dla osoby
       fizycznej (CEIDG) oraz gdy numer KRS nie został podany w dokumencie. Nie myl z NIP
       ani REGON (9 cyfr).
     typ: str
     normalizacja: digits
     format: '^\d{10}$'
-    poprawki_ocr: >-
-      W cyfrach poprawiaj typowe błędy OCR: O/o→0, l/I/|→1, S→5, B→8, Z→2, G→6. Usuń
-      spacje i myślniki; zachowaj wiodące zera (KRS ma zawsze 10 cyfr).
 
   mocodawca[].data.nazwa:
     opis: >-
@@ -90,17 +87,13 @@ pola:
 
   mocodawca[].data.nip:
     opis: >-
-      10-cyfrowy numer NIP mocodawcy, zapisany jako ciąg samych cyfr (bez myślników,
-      spacji i prefiksu PL). Zwykle podany w danych identyfikacyjnych mocodawcy na początku
-      dokumentu lub na pieczęci firmowej mocodawcy. Null tylko gdy NIP mocodawcy nie
-      występuje w dokumencie. Nie myl z KRS, REGON ani NIP-em innego podmiotu.
+      10-cyfrowy numer NIP mocodawcy. Zwykle podany w danych identyfikacyjnych mocodawcy
+      na początku dokumentu lub na pieczęci firmowej mocodawcy. Null tylko gdy NIP mocodawcy
+      nie występuje w dokumencie. Nie myl z KRS, REGON ani NIP-em innego podmiotu.
     typ: str
     normalizacja: digits
     format: '^\d{10}$'
-    poprawki_ocr: >-
-      W cyfrach poprawiaj typowe błędy OCR: O/o→0, l/I/|→1, S→5, B→8, Z→2, G→6. Usuń
-      prefiks PL, myślniki i spacje (NIP ma zawsze 10 cyfr). Nie odrzucaj numeru z powodu
-      sumy kontrolnej.
+    poprawki_ocr: "Usuń prefiks PL. Nie odrzucaj numeru z powodu sumy kontrolnej."
 
   mocodawca[].data.typ:
     opis: >-
@@ -136,9 +129,8 @@ pola:
   pelnomocnicy[].imie_nazwisko:
     opis: >-
       Imię i nazwisko w mianowniku osoby fizycznej otrzymującej pełnomocnictwo (np. radcy
-      prawnego, adwokata, aplikanta lub pracownika mocodawcy). Bez tytułów zawodowych
-      i naukowych ("r. pr.", "radca prawny", "adw.", "adwokat", "mgr", "dr"), bez numeru
-      wpisu na listę i bez PESEL. Jeśli dokument wskazuje kilku pełnomocników, każdy stanowi
+      prawnego, adwokata, aplikanta lub pracownika mocodawcy), bez tytułów, numeru wpisu na
+      listę i PESEL. Jeśli dokument wskazuje kilku pełnomocników, każdy stanowi
       osobny element listy pelnomocnicy[]. Nie wpisuj nazwy kancelarii prawnej.
     typ: str
     normalizacja: text
@@ -148,21 +140,17 @@ pola:
 
   pelnomocnicy[].pesel:
     opis: >-
-      11-cyfrowy numer PESEL danego pełnomocnika jako ciąg samych cyfr (z zachowaniem
+      11-cyfrowy numer PESEL danego pełnomocnika (z zachowaniem
       wiodących zer). Wypełniaj WYŁĄCZNIE wtedy, gdy PESEL jest wprost podany w dokumencie
       przy tym pełnomocniku; w przeciwnym razie ZAWSZE null. Nie zgaduj PESEL-u i nie myl
       go z numerem wpisu na listę radców prawnych/adwokatów ani z NIP/KRS/REGON mocodawcy.
     typ: str
     normalizacja: digits
     format: '^\d{11}$'
-    poprawki_ocr: >-
-      W cyfrach poprawiaj typowe błędy OCR: O/o→0, l/I/|→1, S→5, B→8, Z→2, G→6. Usuń
-      spacje i myślniki; zachowaj wiodące zera (PESEL ma zawsze 11 cyfr).
 
 instrukcje: |
   1. Wielu mocodawców (konsorcjum): jeśli pełnomocnictwa udziela wspólnie kilku wykonawców (np. "Wykonawcy wspólnie ubiegający się o udzielenie zamówienia (Konsorcjum): 1) ...; 2) ..."), utwórz osobny obiekt w liście mocodawca[] dla każdego podmiotu. Przypisz każdą osobę podpisującą (podpisujacy[]) wyłącznie do tego mocodawcy, którego reprezentuje — korzystaj zarówno z opisów przy podpisach ("W imieniu ...:", pieczęć firmowa), jak i z klauzuli "reprezentowana przez: ..." w treści dokumentu.
   2. Rozróżnienie osoba_prawna vs osoba_fizyczna: spółki kapitałowe i osobowe wpisane do KRS (sp. z o.o., S.A., sp. k., sp. j., sp. p., sp. z o.o. sp. k.) mają typ "osoba_prawna" oraz imie_nazwisko = null. Przedsiębiorca jednoosobowy (CEIDG, "prowadzący działalność gospodarczą pod firmą ...") ma typ "osoba_fizyczna", krs = null, imie_nazwisko = swoje imię i nazwisko, nazwa = nazwę firmy (jeśli podano), a ponadto występuje w podpisujacy[].
-  3. Podpisujący a pełnomocnicy: do podpisujacy[] trafiają wyłącznie osoby działające po stronie mocodawcy; osoby podpisujące klauzulę "Pełnomocnictwo przyjmuję:" są pełnomocnikami i należą wyłącznie do pelnomocnicy[]. Nie duplikuj tej samej osoby, jeśli występuje zarówno w treści ("reprezentowana przez ..."), jak i w bloku podpisów.
+  3. Podpisujący a pełnomocnicy: do podpisujacy[] trafiają wyłącznie osoby działające po stronie mocodawcy; osoby podpisujące klauzulę "Pełnomocnictwo przyjmuję:" są pełnomocnikami i należą wyłącznie do pelnomocnicy[]. Nie duplikuj tej samej osoby, jeśli występuje zarówno w treści ("reprezentowana przez ..."), jak i w bloku podpisów. Kolejność osób w podpisujacy[] bierz z klauzuli "reprezentowana przez: ..." w treści (nie z bloku podpisów, który bywa w innej kolejności); bez takiej klauzuli — z bloku podpisów.
   4. Nagłówek kancelarii i Zamawiający: dane kancelarii prawnej w papierze firmowym lub stopce (np. "Kancelaria Radcy Prawnego ...", "Kancelaria Adwokacka ...") nie są mocodawcą ani pełnomocnikiem. Podmiot wskazany jako "Zamawiający" (prowadzący postępowanie o zamówienie publiczne) nie jest mocodawcą. Jeśli nazwa mocodawcy występuje w treści głównej w pełnym brzmieniu (np. "Spółka z ograniczoną odpowiedzialnością"), a w nagłówku lub na pieczęci w formie skróconej ("Sp. z o.o."), wybierz pełne brzmienie z treści głównej.
-  5. Mianownik i brak tytułów: wszystkie imiona i nazwiska (mocodawcy, podpisujących i pełnomocników) podawaj w mianowniku (np. "Janowi Kowalskiemu" → "Jan Kowalski", "Annie Nowak" → "Anna Nowak"), bez tytułów zawodowych ("r. pr.", "adw.", "radca prawny", "adwokat"), funkcji ("Prezes Zarządu", "Prokurent", "Wspólnik") ani numerów wpisu. Jeżeli nazwisko w dokumencie jest już podane w mianowniku, zachowaj je bez zmian.
-  6. Pola nieobecne = null: nigdy nie zgaduj brakujących danych (zwłaszcza pesel, krs, nip). Numer REGON nie należy do żadnego pola schematu — ignoruj go.
+  5. Numer REGON nie należy do żadnego pola schematu — ignoruj go.

@@ -32,7 +32,8 @@ nie_mylic_z:
 # zawsze kończy się przed 'zarzucam naruszenie' / 'Zarzut nr 1', więc wystarczy czytać do tego znacznika.
 czytanie:
   max_stron: 3
-  znacznik: '(?i)zarzuca\w*|zarzut\w*\s+(nr\.?\s*)?1\b'
+  # Druga alternatywa toleruje błędy OCR w 'zarzucam' ('ząrzucam', 'zarzułam'); \b chroni przed 'przerzuca'.
+  znacznik: '(?i)zarzuca\w*|\bz[aąeę]rzu[cćł]a\w*|zarzut\w*\s+(nr\.?\s*)?1\b'
   stron_po_znaczniku: 0
 
 szablon:
@@ -74,7 +75,7 @@ pola:
     normalizacja: date
     format: '^\d{4}-\d{2}-\d{2}$'
     przyklady: ["2027-03-15"]
-    poprawki_ocr: "W cyfrach O→0, l/I→1, S→5, B→8; 'r.' po roku to skrót 'roku', nie cyfra."
+    poprawki_ocr: "'r.' po roku to skrót 'roku', nie cyfra."
 
   OdwolanieKIO.czynnosc_dzien:
     opis: >-
@@ -87,14 +88,12 @@ pola:
     normalizacja: date
     format: '^\d{4}-\d{2}-\d{2}$'
     przyklady: ["2027-02-28"]
-    poprawki_ocr: "W cyfrach O→0, l/I→1, S→5, B→8."
 
   OdwolanieKIO.czynnosc_powod_id:
     opis: >-
-      Rodzaj PIERWSZEJ zaskarżonej czynności lub zaniechania Zamawiającego jako liczba 1–12 ze słownika
-      (pierwszy punkt wyliczenia po 'wnoszę odwołanie wobec:' / 'czynności i zaniechań ... polegających
-      na:' albo zdanie 'Zamawiający w dniu ... [czynność]' przed zarzutami). Rozstrzyga to, CO zrobił lub
-      czego zaniechał Zamawiający, a nie artykuły Pzp ani treść naruszeń wymienionych w zarzutach.
+      Rodzaj PIERWSZEJ zaskarżonej czynności lub zaniechania Zamawiającego (zob. CZYNNOŚĆ w instrukcjach)
+      jako liczba 1–12 ze słownika. Rozstrzyga to, CO zrobił lub czego zaniechał Zamawiający, a nie
+      artykuły Pzp ani treść naruszeń wymienionych w zarzutach.
     typ: int
     normalizacja: int
     wartosci:
@@ -113,8 +112,7 @@ pola:
 
   OdwolanieKIO.czynnosc_opis:
     opis: >-
-      Kanoniczny opis tej samej pierwszej zaskarżonej czynności: dokładnie tekst ze słownika odpowiadający
-      wybranemu czynnosc_powod_id (1:1), bez zmian.
+      Dokładnie tekst ze słownika odpowiadający wybranemu czynnosc_powod_id (1:1), bez zmian.
     normalizacja: text
     wartosci:
       "Decyzja o odrzuceniu oferty": "czynnosc_powod_id = 1"
@@ -141,32 +139,28 @@ pola:
 
   Odwolujacy[].krs:
     opis: >-
-      Numer KRS Odwołującego (przy konsorcjum: Lidera konsorcjum), z bloku 'Odwołujący'. 10 cyfr, z
-      zerami wiodącymi. Brak → null.
+      Numer KRS Odwołującego z bloku 'Odwołujący'. 10 cyfr, z zerami wiodącymi. Brak → null.
     normalizacja: digits
     format: '^\d{10}$'
-    poprawki_ocr: "W cyfrach O→0, l/I→1, S→5, B→8."
 
   Odwolujacy[].nazwa:
     opis: >-
       Pełna nazwa Odwołującego (wykonawcy wnoszącego odwołanie) z formą prawną, tak jak w bloku
-      'Odwołujący'. Przy konsorcjum: nazwa Lidera konsorcjum (nie 'Konsorcjum ...').
+      'Odwołujący'. Przy konsorcjum: nazwa Lidera (nie 'Konsorcjum ...').
     normalizacja: text
     przyklady: ["Przykładowa Firma Budowlana sp. z o.o."]
 
   Odwolujacy[].nip:
     opis: >-
-      NIP Odwołującego (przy konsorcjum: Lidera konsorcjum), 10 cyfr bez kresek i spacji. Brak → null.
+      NIP Odwołującego, 10 cyfr. Brak → null.
     normalizacja: digits
     format: '^\d{10}$'
-    poprawki_ocr: "W cyfrach O→0, l/I→1, S→5, B→8."
 
   Odwolujacy[].regon:
     opis: >-
-      REGON Odwołującego (przy konsorcjum: Lidera konsorcjum), 9 lub 14 cyfr. Brak → null.
+      REGON Odwołującego, 9 lub 14 cyfr. Brak → null.
     normalizacja: digits
     format: '^(\d{9}|\d{14})$'
-    poprawki_ocr: "W cyfrach O→0, l/I→1, S→5, B→8."
 
   Odwolujacy[].przez-pelnomocnika:
     opis: >-
@@ -182,7 +176,7 @@ pola:
   Odwolujacy[].pelnomocnik.imie_nazwisko:
     opis: >-
       Imię i nazwisko PIERWSZEGO wymienionego pełnomocnika Odwołującego, w mianowniku, bez tytułów
-      ('r. pr.', 'radca prawny', 'adw.', 'mec.', 'dr'). Brak pełnomocnika → null.
+      ('r. pr.', 'adw.', 'mec.', 'dr'). Brak pełnomocnika → null.
     normalizacja: text
     przyklady: ["Jan Przykładowy"]
 
@@ -211,7 +205,6 @@ pola:
       KRS tego Zamawiającego, tylko jeśli podany przy nim w bloku 'Zamawiający'. 10 cyfr. Brak → null.
     normalizacja: digits
     format: '^\d{10}$'
-    poprawki_ocr: "W cyfrach O→0, l/I→1, S→5, B→8."
 
   Zamawiajacy[].nazwa:
     opis: >-
@@ -221,16 +214,14 @@ pola:
     przyklady: ["Gmina Przykładowo", "Szpital Miejski w Przykładowie"]
 
   Zamawiajacy[].nip:
-    opis: "NIP tego Zamawiającego, tylko jeśli podany przy nim; 10 cyfr bez kresek. Brak → null."
+    opis: "NIP tego Zamawiającego, tylko jeśli podany przy nim; 10 cyfr. Brak → null."
     normalizacja: digits
     format: '^\d{10}$'
-    poprawki_ocr: "W cyfrach O→0, l/I→1, S→5, B→8."
 
   Zamawiajacy[].regon:
     opis: "REGON tego Zamawiającego, tylko jeśli podany przy nim; 9 lub 14 cyfr. Brak → null."
     normalizacja: digits
     format: '^(\d{9}|\d{14})$'
-    poprawki_ocr: "W cyfrach O→0, l/I→1, S→5, B→8."
 
   Zamawiajacy[].prowadzacy_postepowanie:
     opis: >-
@@ -253,7 +244,7 @@ pola:
       repl: ''
     format: '^\d{4}/BZP\d{8}(/\d{2})?$'
     przyklady: ["2027/BZP00123456", "2027/BZP00654321/02"]
-    poprawki_ocr: "W cyfrach O→0, l/I→1; 'B2P' → 'BZP'."
+    poprawki_ocr: "'B2P' → 'BZP'."
 
   ZamowieniePubliczne.numer_postepowania:
     opis: >-
@@ -262,7 +253,7 @@ pola:
       numer BZP ani TED. Brak → null.
     normalizacja: text
     przyklady: ["ZP.271.7.2027", "AB/PN/15/2027"]
-    poprawki_ocr: "W cyfrach O→0, l/I→1; usuń spacje wstawione przez OCR wewnątrz numeru."
+    poprawki_ocr: "Usuń spacje wstawione przez OCR wewnątrz numeru."
 
   ZamowieniePubliczne.numer_ted:
     opis: >-
@@ -276,7 +267,7 @@ pola:
       repl: '\2\3-\1\4'
     format: '^\d{1,8}-\d{4}$'
     przyklady: ["123456-2027"]
-    poprawki_ocr: "W cyfrach O→0, l/I→1; '5' zamiast 'S' przed numerem wydania."
+    poprawki_ocr: "'5' zamiast 'S' przed numerem wydania."
 
   ZamowieniePubliczne.tytul:
     opis: >-
@@ -294,17 +285,10 @@ instrukcje: >-
   czynności lub zaniechania Zamawiającego: pierwszy punkt wyliczenia po 'wnoszę odwołanie wobec:' lub
   'czynności i zaniechań Zamawiającego, polegających na:', a gdy wyliczenia nie ma — zdanie 'Zamawiający w
   dniu ... [co zrobił]' przed zarzutami. Kolejne punkty i zarzuty (np. 'zarzucam naruszenie art. ...',
-  'Zarzut nr 1 ...') nie zmieniają wyniku. czynnosc_opis to dokładnie tekst ze słownika dla wybranego
-  czynnosc_powod_id.
+  'Zarzut nr 1 ...') nie zmieniają wyniku.
 
   ODWOŁUJĄCY: lista ma zawsze jeden element. Gdy odwołanie wnosi konsorcjum (wykonawcy wspólnie ubiegający
-  się o zamówienie), podaj tylko Lidera konsorcjum: jego nazwę, KRS, NIP i REGON. Pełnomocnik: pierwszy
-  wymieniony; 'przez-pelnomocnika' = 1, gdy jest pełnomocnik, w przeciwnym razie 0 i wszystkie pola obiektu
-  'pelnomocnik' = null (obiekt zostaje).
+  się o zamówienie), podaj tylko Lidera konsorcjum: jego nazwę, KRS, NIP i REGON. Bez pełnomocnika
+  'przez-pelnomocnika' = 0 i wszystkie pola obiektu 'pelnomocnik' = null (obiekt zostaje).
 
   ZAMAWIAJĄCY: jeden element na każdego zamawiającego z bloku 'Zamawiający', w kolejności z dokumentu.
-  Przy kilku zamawiających (wspólne prowadzenie postępowania) prowadzacy_postepowanie = 1 dla lidera /
-  prowadzącego, 0 dla pozostałych; przy jednym zamawiającym null.
-
-  Numery KRS, NIP, REGON tylko cyfry. Daty w formacie RRRR-MM-DD. Gdy wartości nie ma w dokumencie lub
-  nie jest pewna, wpisz null zamiast zgadywać.

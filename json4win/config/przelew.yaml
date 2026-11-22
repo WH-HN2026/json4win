@@ -48,9 +48,7 @@ pola:
     normalizacja: date
     format: '^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$'
     przyklady: ["2029-05-14"]
-    poprawki_ocr: >-
-      W cyfrach daty poprawiaj typowe błędy OCR (O→0, l/I→1, S→5, B→8) oraz kropki lub myślniki
-      rozpoznane jako spacje (np. „14 05 2029” → „2029-05-14”).
+    poprawki_ocr: "Kropki lub myślniki rozpoznane jako spacje: „14 05 2029” → „2029-05-14”."
 
   przelew_bankowy.kwota:
     opis: >-
@@ -64,24 +62,20 @@ pola:
     normalizacja: amount
     format: '^\d+(\.\d+)?$'
     przyklady: [150.0, 12500.5]
-    poprawki_ocr: >-
-      W cyfrach kwoty poprawiaj typowe błędy OCR (O→0, l/I→1, S→5, B→8), rozróżniaj spacje
-      rozdzielające tysiące od separatora dziesiętnego (przecinek lub kropka).
+    poprawki_ocr: "Rozróżniaj spacje rozdzielające tysiące od separatora dziesiętnego (przecinek lub kropka)."
 
   przelew_bankowy.na_rachunek:
     opis: >-
       26-cyfrowy numer rachunku bankowego odbiorcy (beneficjenta / kontrahenta) przelewu —
-      rachunku uznawanego, bez spacji i bez prefiksu „PL”. Szukaj przy etykietach „Na rachunek”,
+      rachunku uznawanego. Szukaj przy etykietach „Na rachunek”,
       „Rachunek odbiorcy”, „Rachunek beneficjenta”, „Rachunek kontrahenta”, „Rachunek uznawany”,
       w sekcji „Dane odbiorcy” / „Dane kontrahenta” / „Beneficjent” / „Adresat przelewu” (także
       wewnątrz bloku „Opis”) albo w treści „na rachunek nr ...”. Nie myl z rachunkiem nadawcy
       (z_rachunku). Zwróć null, jeśli w dokumencie brak numeru rachunku odbiorcy.
     typ: str
     normalizacja: digits
-    format: '^(?:PL)?\d{26}$'
-    poprawki_ocr: >-
-      Polski numer rachunku NRB ma dokładnie 26 cyfr (po ewentualnym prefiksie PL i usunięciu
-      spacji); w cyfrach poprawiaj błędy OCR (O→0, l/I→1, Z→2, S→5, B→8).
+    format: '^(?:PL)?(?:\d ?){26}$'
+    poprawki_ocr: "NRB ma 26 cyfr; przepisz numer razem ze spacjami, dokładnie tak jak w dokumencie."
 
   przelew_bankowy.numer_transakcji:
     opis: >-
@@ -96,15 +90,14 @@ pola:
     typ: str
     normalizacja: text
     przyklady: ["REF2905140012345", "418920"]
-    poprawki_ocr: >-
-      W części cyfrowej identyfikatora poprawiaj oczywiste błędy OCR (O→0, l/I→1) i nie
-      wprowadzaj spacji wewnątrz numeru.
+    poprawki_ocr: "Nie wprowadzaj spacji wewnątrz numeru."
 
   przelew_bankowy.tytul:
     opis: >-
-      Dokładna treść tytułu przelewu przepisana wiernie, bez skracania, streszczania i bez
-      usuwania końcowych numerów referencyjnych, jeśli znajdują się wewnątrz pola tytułu. Szukaj
-      przy etykietach „Tytuł”, „Tytuł przelewu”, „Tytułem”, „Szczegóły płatności” albo „Opis”.
+      Pełna treść tytułu przelewu przepisana wiernie, bez skracania i streszczania, z numerami
+      postępowań i z numerem referencyjnym na końcu pola tytułu (także gdy ten sam numer jest
+      osobno przy „Numer referencyjny” albo stoi w następnej linii pola, przed kolejną etykietą).
+      Szukaj przy etykietach „Tytuł”, „Tytuł przelewu”, „Tytułem”, „Szczegóły płatności” albo „Opis”.
       UWAGA: gdy w układzie tabelarycznym cała kolumna ma nagłówek „Opis” i zawiera rachunki,
       dane stron oraz podpole „Tytuł: ...”, pobierz wyłącznie treść po „Tytuł:”. Połącz linie
       zawiniętego tekstu pojedynczą spacją; w potwierdzeniach w formie pisma usuń jedynie
@@ -119,7 +112,7 @@ pola:
   przelew_bankowy.z_rachunku:
     opis: >-
       26-cyfrowy numer rachunku bankowego nadawcy (zleceniodawcy / płatnika) przelewu — rachunku
-      obciążanego, bez spacji i bez prefiksu „PL”. Szukaj przy etykietach „Z rachunku”,
+      obciążanego. Szukaj przy etykietach „Z rachunku”,
       „Rachunek zleceniodawcy”, „Rachunek nadawcy”, „Rachunek obciążany”, w sekcji „Dane
       nadawcy” / „Płatnik” / „Zleceniodawca”, jako główny „Numer rachunku” na górze szczegółów
       transakcji przy danych właściciela rachunku albo w treści „z rachunku nr ...”. Nie myl z
@@ -127,23 +120,14 @@ pola:
       nadawcy.
     typ: str
     normalizacja: digits
-    format: '^(?:PL)?\d{26}$'
-    poprawki_ocr: >-
-      Polski numer rachunku NRB ma dokładnie 26 cyfr (po ewentualnym prefiksie PL i usunięciu
-      spacji); w cyfrach poprawiaj błędy OCR (O→0, l/I→1, Z→2, S→5, B→8).
+    format: '^(?:PL)?(?:\d ?){26}$'
+    poprawki_ocr: "NRB ma 26 cyfr; przepisz numer razem ze spacjami, dokładnie tak jak w dokumencie."
 
 instrukcje: >-
   Rozróżnienie rachunków: z_rachunku to zawsze rachunek nadawcy / zleceniodawcy / płatnika /
-  właściciela rachunku (rachunek obciążany), natomiast na_rachunek to zawsze rachunek odbiorcy /
+  właściciela rachunku (rachunek obciążany), na_rachunek to zawsze rachunek odbiorcy /
   beneficjenta / kontrahenta (rachunek uznawany). Jeśli u góry dokumentu widnieje ogólny „Numer
   rachunku” (przy danych właściciela), a w sekcji „Opis” podany jest „Rachunek odbiorcy”, to
-  górny numer jest z_rachunku, a numer w opisie to na_rachunek. Tytuł przelewu (tytul) kopiuj
-  dokładnie tak, jak widnieje w dokumencie (scalając jedynie zawinięte wiersze pojedynczą spacją
-  i zdejmując zewnętrzne cudzysłowy w pismach ciągłych) — nie skracaj go ani nie usuwaj z niego
-  numerów referencyjnych, jeżeli są wpisane w treści tytułu. Kwotę (kwota) podawaj zawsze jako
-  wartość dodatnią bez znaku minus i nie myl jej z opłatą lub prowizją bankową (0,00 PLN). Jako
-  data_operacji wybieraj datę operacji/transakcji/wykonania przelewu (przed datą księgowania i
-  waluty), a nigdy datę wydruku, wygenerowania, pieczątki wpływu ani podpisu elektronicznego.
-  Pole numer_transakcji ustaw na null, jeśli dokument nie podaje wyraźnie oznaczonego numeru
-  transakcji ani numeru referencyjnego — nie podstawiaj numeru klienta, nazwy pliku wydruku,
-  numeru L.dz. ani KRS/NIP banku.
+  górny numer jest z_rachunku, a numer w opisie to na_rachunek.
+  Numer referencyjny dopisany na końcu tytułu zostaje w tytule, nawet gdy ten sam numer trafia też do
+  numer_transakcji.
