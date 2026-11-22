@@ -30,8 +30,9 @@ Read before working:
 - **The brief's hard requirements:** Python **3.13+**; runtime deps only in `json4win/requirements.txt`,
   pinned, **open source only** (incl. the model: open weights); runs on a CPU-only laptop (16 GB RAM);
   an LLM only over an API hosted by a company **in the EU/EEA**.
-- **OCR always, locally:** test documents and real ones are scans, so the PDF text layer is **never** used. Every
-  page the pipeline reads goes through the local Unlimited-OCR-2 (`json4win.ocr`), on CPU. Read only as many pages as
+- **OCR always:** test documents and real ones are scans, so the PDF text layer is **never** used. Every page the
+  pipeline reads goes through `json4win.ocr`: local Tesseract, or LightOnOCR-2-1B (open weights) through an API hosted
+  in the EU/EEA (user decision 2026-11-22); local Unlimited-OCR-2 / LightOnOCR stay benchmark options. Read only as many pages as
   the class config needs.
 - **F1 is the score.** Expected `null` with a non-empty prediction is a false positive, so return `null` rather than guess.
   A smaller model and config-only document classes earn stage-2 points; see architecture §1.
@@ -108,7 +109,7 @@ OCR precompute) and edits docs for decisions the user made; feature code always 
   `input/`/`output/` contents, no secrets or `.env*` files except `.env.example`.
 - [ ] AGENTS.md rules are followed:
   - classification uses content only; nothing reads `dane/`, `ewaluacja/` or ground truth at runtime; no training-value tables;
-  - the PDF text layer is never used: every page goes through the local OCR (`json4win.ocr`);
+  - the PDF text layer is never used: every page goes through `json4win.ocr` (local, or the EU/EEA OCR API);
   - output shapes match the training JSONs exactly (keys, list vs. object, types), and unknown documents give `{}`;
   - class-specific behaviour (keywords, fields, prompts) lives in `json4win/config/`, not in `if class == …` code;
   - new deps are open source, pinned in the right requirements file, and install on Windows without a compiler or GPU;
